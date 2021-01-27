@@ -7,6 +7,7 @@ module PiMaker
   # Examines the RUBY_PLATFORM constant to determine what OS we are running on.
   # Returns one of :windows, :mac, :linux, or :raspberrypi
   class << self
+    # Returns a symbol corresponding to the operating system
     def host_os
       case RUBY_PLATFORM
       when /cygwin|mswin|mingw|bccwin|wince|emx/
