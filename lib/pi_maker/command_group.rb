@@ -24,21 +24,21 @@ module PiMaker
 
     # Generate commands from the different recipe collections
     def build_commands
-      @commands = []
-
-      @commands << 'sudo apt-get update' if recipe.apt_packages || recipe.gems
-      @commands << apt_packages if recipe&.apt_packages
-      @commands << 'mkdir ~/repos' if recipe&.github_repos
-      @commands += github_repos if recipe&.github_repos
-      @commands << gems if recipe&.gems
+      @commands = PiMaker::Recipe::LINES.reduce([]) do |acc, field|
+        acc << send(field)
+      end.flatten!
     end
 
     # Build text blocks to be copied and appended to files
     def build_text_blocks
-      txt = {}
-      txt['/home/pi/.bashrc'] = recipe.bashrc if recipe&.bashrc
+      @text_blocks = PiMaker::Recipe::TEXT_BLOCKS.map do |field, path|
+        [path, recipe.public_send(field)]
+      end.to_h
+    end
 
-      @text_blocks = txt
+    def pre_commands
+      @commands.unshift('sudo apt-get update') if recipe[:apt_packages] || recipe[:gems]
+      @commands.unshift('mkdir ~/repos') if recipe[:github_repos]
     end
 
     # Construct an apt-get install string from the packages
@@ -48,21 +48,17 @@ module PiMaker
 
     # Construct an array of git clone strings from the repos
     def github_repos
-      recipe.github_repos.map { |ghr| git_clone(ghr) }
+      recipe.github_repos.map do |ghr|
+        repo_args = ghr.match(%r{(\w+)(?:/(\w+))?})
+        url_str = "#{repo_args[1]}/#{repo_args[2] || repo_args[1]}"
+
+        "git clone https://github.com/#{url_str}.git ~/repos"
+      end
     end
 
     # Construct a gem install string from the gems
     def gems
       recipe.gems.reduce('sudo gem install') { |str, gm| [str, gm].join(' ') }
-    end
-
-    # Parse the +repo_str+ to create a git clone string
-    def git_clone(repo_str)
-      repo_args = repo_str.match(%r{(?<user>\w+)(?:/(?<repo>\w+))?})
-                          .named_captures
-                          .transform_keys(&:to_sym)
-
-      "git clone https://github.com/#{repo_args[:user]}/#{repo_args[:repo] || repo_args[:user]} ~/"
     end
   end
 end
