@@ -19,6 +19,7 @@ module PiMaker
     # Returns a list of commands to run generated from the recipe
     def build
       build_commands
+      pre_commands
       build_text_blocks
     end
 
@@ -36,6 +37,7 @@ module PiMaker
       end.to_h
     end
 
+    # Prepends the commands array with one off lines
     def pre_commands
       @commands.unshift('sudo apt-get update') if recipe[:apt_packages] || recipe[:gems]
       @commands.unshift('mkdir ~/repos') if recipe[:github_repos]

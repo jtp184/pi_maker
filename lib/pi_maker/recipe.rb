@@ -13,6 +13,7 @@ module PiMaker
       bashrc: '/home/pi/.bashrc'
     }.freeze
 
+    # Generate accessors for the defined attributes
     attr_reader(*LINES, *TEXT_BLOCKS.keys)
 
     # Use the +opts+ hash to populate instance vars

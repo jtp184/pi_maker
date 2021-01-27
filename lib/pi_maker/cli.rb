@@ -12,6 +12,7 @@ module PiMaker
     Error = Class.new(StandardError)
 
     desc 'version', 'pi_maker version'
+    # Return version number
     def version
       require_relative 'version'
       puts "v#{PiMaker::VERSION}"

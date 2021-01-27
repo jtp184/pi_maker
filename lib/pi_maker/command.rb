@@ -3,6 +3,7 @@
 require 'forwardable'
 
 module PiMaker
+  # CLI Command runner
   class Command
     extend Forwardable
 
