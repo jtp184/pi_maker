@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>PiMaker::Recipe</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+PiMaker::Recipe
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../files/lib/pi_maker/recipe_rb.html">lib/pi_maker/recipe.rb</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Definable inside a gem, passes options to it</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-define">define</a></li>
+<li><a href="#method-c-new">new</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>LINES</td>
+<td>=</td>
+<td class='context-item-value'>%i[
+apt_packages
+github_repos
+gems
+].freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Defined attributes on the class which are to generate shell lines</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>TEXT_BLOCKS</td>
+<td>=</td>
+<td class='context-item-value'>{
+bashrc: '/home/pi/.bashrc'
+}.freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Defined attributes which are to be included into files</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-define'>
+<a name='method-c-define'></a>
+<div class='synopsis'>
+<span class='name'>define</span><span class='arguments'>(hsh = {})</span>
+
+</div>
+<div class='description'>
+
+<p>Yield to a block, or directly use the <code>hsh</code> to create a new instance</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-define-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-define-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 29</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">define</span>(<span class="ruby-identifier">hsh</span> = {})&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">hsh</span>)&#x000A;  <span class="ruby-keyword">yield</span> <span class="ruby-identifier">opts</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;  <span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span><span class='arguments'>(opts = {})</span>
+
+</div>
+<div class='description'>
+
+<p>Use the <code>opts</code> hash to populate instance vars</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 20</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">LINES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>) <span class="ruby-operator">||</span> <span class="ruby-constant">TEXT_BLOCKS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>)&#x000A;&#x000A;    <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value">:&quot;@#{key}&quot;</span>, <span class="ruby-identifier">value</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

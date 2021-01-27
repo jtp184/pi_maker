@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>PiMaker</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+PiMaker
+</h1>
+<ol class='paths'>
+<li>
+<a href="../files/lib/pi_maker_rb.html">lib/pi_maker.rb</a>
+</li>
+<li class='other'>
+<a href="../files/lib/pi_maker/cli_rb.html">lib/pi_maker/cli.rb</a>
+</li>
+<li class='other'>
+<a href="../files/lib/pi_maker/command_rb.html">lib/pi_maker/command.rb</a>
+</li>
+<li class='other'>
+<a href="../files/lib/pi_maker/command_group_rb.html">lib/pi_maker/command_group.rb</a>
+</li>
+<li class='other'>
+<a href="../files/lib/pi_maker/recipe_rb.html">lib/pi_maker/recipe.rb</a>
+</li>
+<li class='other'>
+<a href="../files/lib/pi_maker/version_rb.html">lib/pi_maker/version.rb</a>
+</li>
+<li class='other'>
+<a href="../files/lib/pi_maker/wifi_config_rb.html">lib/pi_maker/wifi_config.rb</a>
+</li>
+<li>
+<a class='show' href='#' onclick='this.parentNode.parentNode.className += &quot; expanded&quot;; this.parentNode.removeChild(this); return false'>show all</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Easy bake Raspberry Pi</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-host_os">host_os</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="PiMaker/CLI.html">PiMaker::CLI</a></li>
+<li><a href="PiMaker/Command.html">PiMaker::Command</a></li>
+<li><a href="PiMaker/CommandGroup.html">PiMaker::CommandGroup</a></li>
+<li><a href="PiMaker/Recipe.html">PiMaker::Recipe</a></li>
+<li><a href="PiMaker/WifiConfig.html">PiMaker::WifiConfig</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-host_os'>
+<a name='method-c-host_os'></a>
+<div class='synopsis'>
+<span class='name'>host_os</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns a symbol corresponding to the operating system</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-host_os-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-host_os-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 11</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">host_os</span>&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-constant">RUBY_PLATFORM</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/cygwin|mswin|mingw|bccwin|wince|emx/</span>&#x000A;    <span class="ruby-value">:windows</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/darwin/</span>&#x000A;    <span class="ruby-value">:mac</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/linux/</span>&#x000A;    <span class="ruby-identifier">pi</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-string">&#39;/proc/cpuinfo&#39;</span>) <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Raspberry Pi/</span>&#x000A;    <span class="ruby-identifier">pi</span> <span class="ruby-operator">?</span> <span class="ruby-value">:raspberrypi</span> <span class="ruby-operator">:</span> <span class="ruby-value">:linux</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>
