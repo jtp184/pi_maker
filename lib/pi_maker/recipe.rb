@@ -19,7 +19,7 @@ module PiMaker
     # Use the +opts+ hash to populate instance vars
     def initialize(opts = {})
       opts.to_h.each do |key, value|
-        next unless LINES.include?(key) || TEXT_BLOCKS.include?(key)
+        next unless valid_attribute?(key)
 
         instance_variable_set(:"@#{key}", value)
       end
@@ -30,6 +30,18 @@ module PiMaker
       opts = OpenStruct.new(hsh)
       yield opts if block_given?
       new(opts)
+    end
+
+    # If the +field+ is valid, get its value
+    def [](field)
+      valid_attribute?(field) ? public_send(field) : nil
+    end
+
+    private
+
+    # Returns true if the +key+ is one of the LINES or TEXT_BLOCKS keys
+    def valid_attribute?(key)
+      LINES.include?(key) || TEXT_BLOCKS.keys.include?(key)
     end
   end
 end
