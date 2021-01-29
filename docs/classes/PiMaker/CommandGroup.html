@@ -198,7 +198,7 @@ Superclass:
 <div class='method public-instance' id='method-method-i-respond_to_missing-3F'>
 <a name='method-i-respond_to_missing-3F'></a>
 <div class='synopsis'>
-<span class='name'>respond_to_missing?</span><span class='arguments'>(method_name)</span>
+<span class='name'>respond_to_missing?</span><span class='arguments'>(method_name, priv)</span>
 
 </div>
 <div class='description'>
@@ -210,7 +210,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-respond_to_missing-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-respond_to_missing-3F-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 24</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">respond_to_missing?</span>(<span class="ruby-identifier">method_name</span>)&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">method_name</span>) <span class="ruby-operator">||</span> <span class="ruby-keyword">super</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-respond_to_missing-3F-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 24</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">respond_to_missing?</span>(<span class="ruby-identifier">method_name</span>, <span class="ruby-identifier">priv</span>)&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">method_name</span>, <span class="ruby-identifier">priv</span>) <span class="ruby-operator">||</span> <span class="ruby-keyword">super</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-text_blocks'>
