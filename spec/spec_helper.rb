@@ -1,8 +1,27 @@
 require 'bundler/setup'
-require 'factory_bot'
-require 'pi_maker'
+
+require 'simplecov'
+SimpleCov.start
+
 require 'securerandom'
+require 'factory_bot'
 require 'pry'
+require 'pi_maker'
+
+require_relative 'support/matchers'
+
+# Add a patch to pull fixtures in as well
+module FactoryBot
+  class << self
+    def fixtures
+      @fixtures ||= Dir.entries('./spec/fixtures')
+                       .reject { |f| f =~ /^\./ }
+                       .map { |f| [f, File.read("./spec/fixtures/#{f}")] }
+                       .to_h
+                       .transform_keys(&:to_sym)
+    end
+  end
+end
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
