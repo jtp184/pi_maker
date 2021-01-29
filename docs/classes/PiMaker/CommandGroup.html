@@ -49,19 +49,14 @@ Superclass:
 </ol>
 <h3>Public Instance</h3>
 <ol>
-<li><a href="#attribute-i-commands">commands</a></li>
-<li><a href="#attribute-i-recipe">recipe</a></li>
-<li><a href="#attribute-i-text_blocks">text_blocks</a></li>
-</ol>
-<h3>Private Instance</h3>
-<ol>
 <li><a href="#method-i-apt_packages">apt_packages</a></li>
-<li><a href="#method-i-build">build</a></li>
-<li><a href="#method-i-build_commands">build_commands</a></li>
-<li><a href="#method-i-build_text_blocks">build_text_blocks</a></li>
+<li><a href="#method-i-commands">commands</a></li>
 <li><a href="#method-i-gems">gems</a></li>
 <li><a href="#method-i-github_repos">github_repos</a></li>
-<li><a href="#method-i-pre_commands">pre_commands</a></li>
+<li><a href="#method-i-method_missing">method_missing</a></li>
+<li><a href="#attribute-i-recipe">recipe</a></li>
+<li><a href="#method-i-respond_to_missing-3F">respond_to_missing?</a></li>
+<li><a href="#method-i-text_blocks">text_blocks</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -79,29 +74,11 @@ Superclass:
 <table>
 <tr class='top-aligned-row context-row'>
 <td class='context-item-name'>
-<a name='attribute-i-commands'>commands</a>
-</td>
-<td class='context-item-value'>[R]</td>
-<td class='context-item-desc'>
-<p><a href="Recipe.html"><code>Recipe</code></a> generates commands and <a href="CommandGroup.html#attribute-i-text_blocks"><code>text_blocks</code></a></p>
-</td>
-</tr>
-<tr class='top-aligned-row context-row'>
-<td class='context-item-name'>
 <a name='attribute-i-recipe'>recipe</a>
 </td>
 <td class='context-item-value'>[R]</td>
 <td class='context-item-desc'>
-<p><a href="Recipe.html"><code>Recipe</code></a> generates commands and <a href="CommandGroup.html#attribute-i-text_blocks"><code>text_blocks</code></a></p>
-</td>
-</tr>
-<tr class='top-aligned-row context-row'>
-<td class='context-item-name'>
-<a name='attribute-i-text_blocks'>text_blocks</a>
-</td>
-<td class='context-item-value'>[R]</td>
-<td class='context-item-desc'>
-<p><a href="Recipe.html"><code>Recipe</code></a> generates commands and <a href="CommandGroup.html#attribute-i-text_blocks"><code>text_blocks</code></a></p>
+<p><a href="Recipe.html"><code>Recipe</code></a> generates commands and <a href="CommandGroup.html#method-i-text_blocks"><code>text_blocks</code></a></p>
 </td>
 </tr>
 </table>
@@ -124,11 +101,11 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@recipe</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:recipe</span>)&#x000A;  <span class="ruby-identifier">build</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@recipe</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:recipe</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<h2>Private Instance methods</h2>
-<div class='method private-instance' id='method-method-i-apt_packages'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-apt_packages'>
 <a name='method-i-apt_packages'></a>
 <div class='synopsis'>
 <span class='name'>apt_packages</span><span class='arguments'>()</span>
@@ -143,31 +120,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-apt_packages-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-apt_packages-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">apt_packages</span>&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">apt_packages</span>.<span class="ruby-identifier">reduce</span>(<span class="ruby-string">&#39;sudo apt-get install --y&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">str</span>, <span class="ruby-identifier">pkg</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">str</span>, <span class="ruby-identifier">pkg</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39; &#39;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-apt_packages-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 48</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">apt_packages</span>&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">apt_packages</span>.<span class="ruby-identifier">reduce</span>(<span class="ruby-string">&#39;sudo apt-get install --y&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">str</span>, <span class="ruby-identifier">pkg</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">str</span>, <span class="ruby-identifier">pkg</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39; &#39;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method private-instance' id='method-method-i-build'>
-<a name='method-i-build'></a>
+<div class='method public-instance' id='method-method-i-commands'>
+<a name='method-i-commands'></a>
 <div class='synopsis'>
-<span class='name'>build</span><span class='arguments'>()</span>
-
-</div>
-<div class='description'>
-
-<p>Returns a list of commands to run generated from the recipe</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-build-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-build-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 20</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">build</span>&#x000A;  <span class="ruby-identifier">build_commands</span>&#x000A;  <span class="ruby-identifier">pre_commands</span>&#x000A;  <span class="ruby-identifier">build_text_blocks</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-instance' id='method-method-i-build_commands'>
-<a name='method-i-build_commands'></a>
-<div class='synopsis'>
-<span class='name'>build_commands</span><span class='arguments'>()</span>
+<span class='name'>commands</span><span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -176,31 +135,13 @@ Superclass:
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-build_commands-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-commands-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-build_commands-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">build_commands</span>&#x000A;  <span class="ruby-ivar">@commands</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Recipe</span><span class="ruby-operator">::</span><span class="ruby-constant">LINES</span>.<span class="ruby-identifier">reduce</span>([]) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">acc</span>, <span class="ruby-identifier">field</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">acc</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">field</span>)&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">flatten!</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-commands-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 29</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">commands</span>&#x000A;  <span class="ruby-identifier">cmds</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Recipe</span><span class="ruby-operator">::</span><span class="ruby-constant">LISTS</span>.<span class="ruby-identifier">reduce</span>([]) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">acc</span>, <span class="ruby-identifier">field</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">acc</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">field</span>[<span class="ruby-value">0</span>])&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">cmds</span>.<span class="ruby-identifier">unshift</span>(<span class="ruby-string">&#39;mkdir ~/repos&#39;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">recipe</span>[<span class="ruby-value">:github_repos</span>]&#x000A;  <span class="ruby-identifier">cmds</span>.<span class="ruby-identifier">unshift</span>(<span class="ruby-string">&#39;sudo apt-get update&#39;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">recipe</span>[<span class="ruby-value">:apt_packages</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">recipe</span>[<span class="ruby-value">:gems</span>]&#x000A;&#x000A;  <span class="ruby-identifier">cmds</span>.<span class="ruby-identifier">flatten</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method private-instance' id='method-method-i-build_text_blocks'>
-<a name='method-i-build_text_blocks'></a>
-<div class='synopsis'>
-<span class='name'>build_text_blocks</span><span class='arguments'>()</span>
-
-</div>
-<div class='description'>
-
-<p>Build text blocks to be copied and appended to files</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-build_text_blocks-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-build_text_blocks-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 34</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">build_text_blocks</span>&#x000A;  <span class="ruby-ivar">@text_blocks</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Recipe</span><span class="ruby-operator">::</span><span class="ruby-constant">TEXT_BLOCKS</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">field</span>, <span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;    [<span class="ruby-identifier">path</span>, <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">public_send</span>(<span class="ruby-identifier">field</span>)]&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">to_h</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-instance' id='method-method-i-gems'>
+<div class='method public-instance' id='method-method-i-gems'>
 <a name='method-i-gems'></a>
 <div class='synopsis'>
 <span class='name'>gems</span><span class='arguments'>()</span>
@@ -215,10 +156,10 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-gems-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-gems-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 62</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">gems</span>&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">gems</span>.<span class="ruby-identifier">reduce</span>(<span class="ruby-string">&#39;sudo gem install&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">str</span>, <span class="ruby-identifier">gm</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">str</span>, <span class="ruby-identifier">gm</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39; &#39;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-gems-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 66</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">gems</span>&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">gems</span>.<span class="ruby-identifier">reduce</span>(<span class="ruby-string">&#39;sudo gem install&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">str</span>, <span class="ruby-identifier">gm</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">str</span>, <span class="ruby-identifier">gm</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39; &#39;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method private-instance' id='method-method-i-github_repos'>
+<div class='method public-instance' id='method-method-i-github_repos'>
 <a name='method-i-github_repos'></a>
 <div class='synopsis'>
 <span class='name'>github_repos</span><span class='arguments'>()</span>
@@ -233,25 +174,61 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-github_repos-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-github_repos-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 52</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">github_repos</span>&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">github_repos</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ghr</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">repo_args</span> = <span class="ruby-identifier">ghr</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r{(\w+)(?:/(\w+))?}</span>)&#x000A;    <span class="ruby-identifier">url_str</span> = <span class="ruby-node">&quot;#{repo_args[1]}/#{repo_args[2] || repo_args[1]}&quot;</span>&#x000A;&#x000A;    <span class="ruby-node">&quot;git clone https://github.com/#{url_str}.git ~/repos&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-github_repos-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">github_repos</span>&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">github_repos</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ghr</span>, <span class="ruby-identifier">post_install</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">repo_args</span> = <span class="ruby-identifier">ghr</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r{(\w+)(?:/(\w+))?}</span>)&#x000A;    <span class="ruby-identifier">url_str</span> = <span class="ruby-node">&quot;#{repo_args[1]}/#{repo_args[2] || repo_args[1]}&quot;</span>&#x000A;&#x000A;    [&#x000A;      <span class="ruby-node">&quot;git clone https://github.com/#{url_str}.git ~/repos&quot;</span>,&#x000A;      <span class="ruby-identifier">post_install</span>&#x000A;    ]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method private-instance' id='method-method-i-pre_commands'>
-<a name='method-i-pre_commands'></a>
+<div class='method public-instance' id='method-method-i-method_missing'>
+<a name='method-i-method_missing'></a>
 <div class='synopsis'>
-<span class='name'>pre_commands</span><span class='arguments'>()</span>
+<span class='name'>method_missing</span><span class='arguments'>(method_name, *args, &blk)</span>
 
 </div>
 <div class='description'>
 
-<p>Prepends the commands array with one off lines</p>
+<p>Use the <code>method_name</code> on the recipe</p>
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-pre_commands-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-method_missing-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-pre_commands-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 41</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">pre_commands</span>&#x000A;  <span class="ruby-ivar">@commands</span>.<span class="ruby-identifier">unshift</span>(<span class="ruby-string">&#39;sudo apt-get update&#39;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">recipe</span>[<span class="ruby-value">:apt_packages</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">recipe</span>[<span class="ruby-value">:gems</span>]&#x000A;  <span class="ruby-ivar">@commands</span>.<span class="ruby-identifier">unshift</span>(<span class="ruby-string">&#39;mkdir ~/repos&#39;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">recipe</span>[<span class="ruby-value">:github_repos</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-method_missing-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 17</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">method_missing</span>(<span class="ruby-identifier">method_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">blk</span>)&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">method_name</span>)&#x000A;&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">public_send</span>(<span class="ruby-identifier">method_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">blk</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-respond_to_missing-3F'>
+<a name='method-i-respond_to_missing-3F'></a>
+<div class='synopsis'>
+<span class='name'>respond_to_missing?</span><span class='arguments'>(method_name)</span>
+
+</div>
+<div class='description'>
+
+<p>Respond to the <code>method_name</code> on the recipe</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-respond_to_missing-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-respond_to_missing-3F-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 24</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">respond_to_missing?</span>(<span class="ruby-identifier">method_name</span>)&#x000A;  <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">method_name</span>) <span class="ruby-operator">||</span> <span class="ruby-keyword">super</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-text_blocks'>
+<a name='method-i-text_blocks'></a>
+<div class='synopsis'>
+<span class='name'>text_blocks</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Build text blocks to be copied and appended to files</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-text_blocks-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-text_blocks-source'><span class="ruby-comment"># File lib/pi_maker/command_group.rb, line 41</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">text_blocks</span>&#x000A;  <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Recipe</span><span class="ruby-operator">::</span><span class="ruby-constant">TEXT_BLOCKS</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">field</span>, <span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;    [<span class="ruby-identifier">path</span>, <span class="ruby-identifier">recipe</span>.<span class="ruby-identifier">public_send</span>(<span class="ruby-identifier">field</span>)]&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">to_h</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
