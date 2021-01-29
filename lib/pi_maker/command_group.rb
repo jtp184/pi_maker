@@ -21,8 +21,8 @@ module PiMaker
     end
 
     # Respond to the +method_name+ on the recipe
-    def respond_to_missing?(method_name)
-      recipe.respond_to?(method_name) || super
+    def respond_to_missing?(method_name, priv)
+      recipe.respond_to?(method_name, priv) || super
     end
 
     # Generate commands from the different recipe collections
