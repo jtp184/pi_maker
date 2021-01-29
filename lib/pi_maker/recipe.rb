@@ -1,12 +1,13 @@
 module PiMaker
   # Definable inside a gem, passes options to it
   class Recipe
-    # Defined attributes on the class which are to generate shell lines
-    LINES = %i[
-      apt_packages
-      github_repos
-      gems
-    ].freeze
+    # Defined attributes on the class which store collections
+    LISTS = {
+      apt_packages: Array,
+      github_repos: Hash,
+      gems: Array,
+      shell: Array
+    }.freeze
 
     # Defined attributes which are to be included into files
     TEXT_BLOCKS = {
@@ -14,12 +15,13 @@ module PiMaker
     }.freeze
 
     # Generate accessors for the defined attributes
-    attr_reader(*LINES, *TEXT_BLOCKS.keys)
+    attr_reader(*LISTS.keys, *TEXT_BLOCKS.keys)
 
     # Use the +opts+ hash to populate instance vars
     def initialize(opts = {})
       opts.to_h.each do |key, value|
         next unless valid_attribute?(key)
+        next if LISTS.include?(key) && !value.is_a?(LISTS[key])
 
         instance_variable_set(:"@#{key}", value)
       end
@@ -39,9 +41,9 @@ module PiMaker
 
     private
 
-    # Returns true if the +key+ is one of the LINES or TEXT_BLOCKS keys
+    # Returns true if the +key+ is one of the LISTS or TEXT_BLOCKS keys
     def valid_attribute?(key)
-      LINES.include?(key) || TEXT_BLOCKS.keys.include?(key)
+      LISTS.include?(key) || TEXT_BLOCKS.keys.include?(key)
     end
   end
 end
