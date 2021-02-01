@@ -17,6 +17,7 @@ module PiMaker
 
       private
 
+      # Check that nmap is installed
       def check_nmap
         return if TTY::Which.exist?('nmap')
 

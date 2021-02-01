@@ -82,12 +82,14 @@ PiMaker::NetworkIdentifier
 </div>
 <div class='description'>
 
+<p>Check that nmap is installed</p>
+
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-check_nmap-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-check_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 20</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">check_nmap</span>&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-string">&#39;nmap&#39;</span>)&#x000A;&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">LoadError</span>, <span class="ruby-string">&#39;Please install nmap before using this class&#39;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-check_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">check_nmap</span>&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-string">&#39;nmap&#39;</span>)&#x000A;&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">LoadError</span>, <span class="ruby-string">&#39;Please install nmap before using this class&#39;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-class' id='method-method-c-parse_nmap'>
@@ -105,7 +107,7 @@ PiMaker::NetworkIdentifier
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-parse_nmap-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-parse_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 28</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_nmap</span>(<span class="ruby-identifier">nmap</span>)&#x000A;  <span class="ruby-identifier">nmap</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-2</span>].<span class="ruby-identifier">each_slice</span>(<span class="ruby-value">3</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ip_str</span>, <span class="ruby-identifier">_up_str</span>, <span class="ruby-identifier">mf_str</span><span class="ruby-operator">|</span>&#x000A;    [&#x000A;      <span class="ruby-identifier">ip_str</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39; &#39;</span>).<span class="ruby-identifier">last</span>,&#x000A;      <span class="ruby-identifier">mf_str</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">mf_str</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/\((.*)\)/</span>)[<span class="ruby-value">1</span>] <span class="ruby-operator">:</span> <span class="ruby-string">&#39;Unknown&#39;</span>&#x000A;    ]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-parse_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 29</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_nmap</span>(<span class="ruby-identifier">nmap</span>)&#x000A;  <span class="ruby-identifier">nmap</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-2</span>].<span class="ruby-identifier">each_slice</span>(<span class="ruby-value">3</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ip_str</span>, <span class="ruby-identifier">_up_str</span>, <span class="ruby-identifier">mf_str</span><span class="ruby-operator">|</span>&#x000A;    [&#x000A;      <span class="ruby-identifier">ip_str</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39; &#39;</span>).<span class="ruby-identifier">last</span>,&#x000A;      <span class="ruby-identifier">mf_str</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">mf_str</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/\((.*)\)/</span>)[<span class="ruby-value">1</span>] <span class="ruby-operator">:</span> <span class="ruby-string">&#39;Unknown&#39;</span>&#x000A;    ]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-class' id='method-method-c-run_nmap'>
@@ -123,7 +125,7 @@ PiMaker::NetworkIdentifier
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-run_nmap-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-run_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 38</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_nmap</span>(<span class="ruby-identifier">ip_range</span>)&#x000A;  <span class="ruby-node">`sudo nmap -sn #{ip_range}`</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-run_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 39</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_nmap</span>(<span class="ruby-identifier">ip_range</span>)&#x000A;  <span class="ruby-node">`sudo nmap -sn #{ip_range}`</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
