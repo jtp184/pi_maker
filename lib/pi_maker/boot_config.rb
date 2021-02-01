@@ -35,11 +35,6 @@ module PiMaker
       config.public_send(mtd_name, *args, &blk)
     end
 
-    # True if responds to config
-    def respond_to_missing?(mtd_name, _priv = false)
-      config[mtd_name] || super
-    end
-
     # Output all config options as a stream of k=v
     def to_s
       config.to_h.map do |k, v|
