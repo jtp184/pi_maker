@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'factory_bot', '~> 6.1.0'
+  spec.add_development_dependency 'net-ssh', '~> 6.1.0'
   spec.add_development_dependency 'pry', '~> 0.13.1'
   spec.add_development_dependency 'rubocop', '~> 0.9.0'
   spec.add_development_dependency 'simplecov', '~> 0.19.0'
