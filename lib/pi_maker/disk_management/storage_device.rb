@@ -50,6 +50,11 @@ module PiMaker
         "#{dev_path}: #{first_mounted_path || 'unmounted'} (#{capacity.bytes_h})"
       end
 
+      # Given an image +path+, writes the image to this StorageDevice
+      def write_image(path)
+        `sudo dd bs=1m if=#{path} of=#{dev_path}`
+      end
+
       # Gets the partition which is largest by capacity
       def largest_partition
         partitions.max { |a, b| a.capacity <=> b.capacity }
