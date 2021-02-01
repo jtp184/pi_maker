@@ -15,6 +15,7 @@ module PiMaker
           end
         end
 
+        # Return non-storage devices
         def get_internal_devices
           list.reject(&:removable).map do |dsk|
             DiskManagement::StorageDevice.new(disk: dsk)
