@@ -4330,11 +4330,15 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
 
 Element.addMethods();
 var search_index = [
+  { method: 'call', module: 'pimaker::networkidentifier', html: '<a href="classes/PiMaker/NetworkIdentifier.html#method-c-call"><span class="method_name">::call</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a>' },
+  { method: 'check_nmap', module: 'pimaker::networkidentifier', html: '<a href="classes/PiMaker/NetworkIdentifier.html#method-c-check_nmap"><span class="method_name">::check_nmap</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a>' },
   { method: 'define', module: 'pimaker::recipe', html: '<a href="classes/PiMaker/Recipe.html#method-c-define"><span class="method_name">::define</span> <span class="module_name">(PiMaker::Recipe)</span></a>' },
   { method: 'host_os', module: 'pimaker', html: '<a href="classes/PiMaker.html#method-c-host_os"><span class="method_name">::host_os</span> <span class="module_name">(PiMaker)</span></a>' },
   { method: 'new', module: 'pimaker::commandgroup', html: '<a href="classes/PiMaker/CommandGroup.html#method-c-new"><span class="method_name">::new</span> <span class="module_name">(PiMaker::CommandGroup)</span></a>' },
   { method: 'new', module: 'pimaker::recipe', html: '<a href="classes/PiMaker/Recipe.html#method-c-new"><span class="method_name">::new</span> <span class="module_name">(PiMaker::Recipe)</span></a>' },
   { method: 'new', module: 'pimaker::wificonfig', html: '<a href="classes/PiMaker/WifiConfig.html#method-c-new"><span class="method_name">::new</span> <span class="module_name">(PiMaker::WifiConfig)</span></a>' },
+  { method: 'parse_nmap', module: 'pimaker::networkidentifier', html: '<a href="classes/PiMaker/NetworkIdentifier.html#method-c-parse_nmap"><span class="method_name">::parse_nmap</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a>' },
+  { method: 'run_nmap', module: 'pimaker::networkidentifier', html: '<a href="classes/PiMaker/NetworkIdentifier.html#method-c-run_nmap"><span class="method_name">::run_nmap</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a>' },
   { method: '[]', module: 'pimaker::recipe', html: '<a href="classes/PiMaker/Recipe.html#method-i-5B-5D"><span class="method_name">#[]</span> <span class="module_name">(PiMaker::Recipe)</span></a>' },
   { method: 'apt_packages', module: 'pimaker::commandgroup', html: '<a href="classes/PiMaker/CommandGroup.html#method-i-apt_packages"><span class="method_name">#apt_packages</span> <span class="module_name">(PiMaker::CommandGroup)</span></a>' },
   { method: 'build', module: 'pimaker::wificonfig', html: '<a href="classes/PiMaker/WifiConfig.html#method-i-build"><span class="method_name">#build</span> <span class="module_name">(PiMaker::WifiConfig)</span></a>' },
@@ -4437,11 +4441,15 @@ function performSearch() {
 <li><a href="classes/PiMaker/WifiConfig.html#attribute-i-country_code"><span class="method_name">#country_code</span> <span class="module_name">(PiMaker::WifiConfig)</span></a></li>
 <li><a href="classes/PiMaker/WifiConfig.html#attribute-i-networks"><span class="method_name">#networks</span> <span class="module_name">(PiMaker::WifiConfig)</span></a></li>
 <li><a href="classes/PiMaker/CommandGroup.html#attribute-i-recipe"><span class="method_name">#recipe</span> <span class="module_name">(PiMaker::CommandGroup)</span></a></li>
+<li><a href="classes/PiMaker/NetworkIdentifier.html#method-c-call"><span class="method_name">::call</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a></li>
+<li><a href="classes/PiMaker/NetworkIdentifier.html#method-c-check_nmap"><span class="method_name">::check_nmap</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a></li>
 <li><a href="classes/PiMaker/Recipe.html#method-c-define"><span class="method_name">::define</span> <span class="module_name">(PiMaker::Recipe)</span></a></li>
 <li><a href="classes/PiMaker.html#method-c-host_os"><span class="method_name">::host_os</span> <span class="module_name">(PiMaker)</span></a></li>
 <li><a href="classes/PiMaker/CommandGroup.html#method-c-new"><span class="method_name">::new</span> <span class="module_name">(PiMaker::CommandGroup)</span></a></li>
 <li><a href="classes/PiMaker/Recipe.html#method-c-new"><span class="method_name">::new</span> <span class="module_name">(PiMaker::Recipe)</span></a></li>
 <li><a href="classes/PiMaker/WifiConfig.html#method-c-new"><span class="method_name">::new</span> <span class="module_name">(PiMaker::WifiConfig)</span></a></li>
+<li><a href="classes/PiMaker/NetworkIdentifier.html#method-c-parse_nmap"><span class="method_name">::parse_nmap</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a></li>
+<li><a href="classes/PiMaker/NetworkIdentifier.html#method-c-run_nmap"><span class="method_name">::run_nmap</span> <span class="module_name">(PiMaker::NetworkIdentifier)</span></a></li>
 <li><a href="classes/PiMaker/Recipe.html#method-i-5B-5D"><span class="method_name">#[]</span> <span class="module_name">(PiMaker::Recipe)</span></a></li>
 <li><a href="classes/PiMaker/CommandGroup.html#method-i-apt_packages"><span class="method_name">#apt_packages</span> <span class="module_name">(PiMaker::CommandGroup)</span></a></li>
 <li><a href="classes/PiMaker/WifiConfig.html#method-i-build"><span class="method_name">#build</span> <span class="module_name">(PiMaker::WifiConfig)</span></a></li>
