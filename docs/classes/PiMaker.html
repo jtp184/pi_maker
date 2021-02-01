@@ -31,6 +31,9 @@ PiMaker
 <a href="../files/lib/pi_maker_rb.html">lib/pi_maker.rb</a>
 </li>
 <li class='other'>
+<a href="../files/lib/pi_maker/boot_config_rb.html">lib/pi_maker/boot_config.rb</a>
+</li>
+<li class='other'>
 <a href="../files/lib/pi_maker/cli_rb.html">lib/pi_maker/cli.rb</a>
 </li>
 <li class='other'>
@@ -74,6 +77,7 @@ PiMaker
 <h2>Classes and Modules</h2>
 <ol>
 <li><a href="PiMaker/NetworkIdentifier.html">PiMaker::NetworkIdentifier</a></li>
+<li><a href="PiMaker/BootConfig.html">PiMaker::BootConfig</a></li>
 <li><a href="PiMaker/CLI.html">PiMaker::CLI</a></li>
 <li><a href="PiMaker/Command.html">PiMaker::Command</a></li>
 <li><a href="PiMaker/CommandGroup.html">PiMaker::CommandGroup</a></li>
@@ -99,7 +103,7 @@ PiMaker
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-host_os-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-host_os-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">host_os</span>&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-constant">RUBY_PLATFORM</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/cygwin|mswin|mingw|bccwin|wince|emx/</span>&#x000A;    <span class="ruby-value">:windows</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/darwin/</span>&#x000A;    <span class="ruby-value">:mac</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/linux/</span>&#x000A;    <span class="ruby-identifier">pi</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-string">&#39;/proc/cpuinfo&#39;</span>) <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Raspberry Pi/</span>&#x000A;    <span class="ruby-identifier">pi</span> <span class="ruby-operator">?</span> <span class="ruby-value">:raspberrypi</span> <span class="ruby-operator">:</span> <span class="ruby-value">:linux</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-host_os-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 13</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">host_os</span>&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-constant">RUBY_PLATFORM</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/cygwin|mswin|mingw|bccwin|wince|emx/</span>&#x000A;    <span class="ruby-value">:windows</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/darwin/</span>&#x000A;    <span class="ruby-value">:mac</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/linux/</span>&#x000A;    <span class="ruby-identifier">pi</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-string">&#39;/proc/cpuinfo&#39;</span>) <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Raspberry Pi/</span>&#x000A;    <span class="ruby-identifier">pi</span> <span class="ruby-operator">?</span> <span class="ruby-value">:raspberrypi</span> <span class="ruby-operator">:</span> <span class="ruby-value">:linux</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>PiMaker::BootConfig</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+PiMaker::BootConfig
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../files/lib/pi_maker/boot_config_rb.html">lib/pi_maker/boot_config.rb</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Wrapper for the config.txt file on the boot volume</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-new">new</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#attribute-i-config">config</a></li>
+<li><a href="#method-i-method_missing">method_missing</a></li>
+<li><a href="#attribute-i-path">path</a></li>
+<li><a href="#method-i-to_s">to_s</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='attribute-list'>
+<h2 class='section-bar'>Attributes</h2>
+<div class='name-list'>
+<table>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-config'>config</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'>
+<p>The config object where options are set</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-path'>path</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'>
+<p>The path to save the file to</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span><span class='arguments'>(opts = {})</span>
+
+</div>
+<div class='description'>
+
+<p>Takes in <code>opts</code> for the config and path</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@config</span> = <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(&#x000A;    <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(&#x000A;      <span class="ruby-value">:config</span>,&#x000A;      {&#x000A;        <span class="ruby-string">&#39;dtparam=audio&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;on&#39;</span>,&#x000A;        <span class="ruby-string">&#39;dtoverlay&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;vc4-fkms-v3d&#39;</span>,&#x000A;        <span class="ruby-string">&#39;max_framebuffers&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;2&#39;</span>&#x000A;      }&#x000A;    )&#x000A;  )&#x000A;&#x000A;  <span class="ruby-ivar">@path</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:path</span>]&#x000A;&#x000A;  <span class="ruby-ivar">@path</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">case</span> <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">host_os</span>&#x000A;            <span class="ruby-keyword">when</span> <span class="ruby-value">:mac</span>&#x000A;              <span class="ruby-string">&#39;/Volumes/boot&#39;</span>&#x000A;            <span class="ruby-keyword">when</span> <span class="ruby-value">:linux</span>, <span class="ruby-value">:raspberrypi</span>&#x000A;              <span class="ruby-string">&#39;/mnt/boot&#39;</span>&#x000A;            <span class="ruby-keyword">else</span>&#x000A;              <span class="ruby-string">&#39;E:/&#39;</span>&#x000A;            <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-method_missing'>
+<a name='method-i-method_missing'></a>
+<div class='synopsis'>
+<span class='name'>method_missing</span><span class='arguments'>(mtd_name, *args, &blk)</span>
+
+</div>
+<div class='description'>
+
+<p>Pass arguments to config</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-method_missing-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-method_missing-source'><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">method_missing</span>(<span class="ruby-identifier">mtd_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">blk</span>)&#x000A;  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">public_send</span>(<span class="ruby-identifier">mtd_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">blk</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-to_s'>
+<a name='method-i-to_s'></a>
+<div class='synopsis'>
+<span class='name'>to_s</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Output all config options as a stream of k=v</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-to_s-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-to_s-source'><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 42</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_s</span>&#x000A;  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-node">&quot;#{k}=#{v}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;\n&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>
