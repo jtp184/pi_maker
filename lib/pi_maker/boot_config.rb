@@ -3,7 +3,10 @@ require 'ostruct'
 module PiMaker
   # Wrapper for the config.txt file on the boot volume
   class BootConfig
-    attr_reader :config, :path
+    # The config object where options are set
+    attr_reader :config
+    # The path to save the file to
+    attr_reader :path
 
     # Takes in +opts+ for the config and path
     def initialize(opts = {})
