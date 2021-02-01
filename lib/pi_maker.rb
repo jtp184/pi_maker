@@ -1,5 +1,6 @@
 require 'pi_maker/version'
 require 'pi_maker/recipe'
+require 'pi_maker/disk_management'
 require 'pi_maker/command_group'
 require 'pi_maker/network_identifier'
 require 'pi_maker/remote_runner'
