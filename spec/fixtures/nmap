@@ -1,0 +1,67 @@
+Starting Nmap 7.80 ( https://nmap.org ) at 2021-01-31 19:18 PST
+Nmap scan report for 192.168.1.1
+Host is up (0.029s latency).
+MAC Address: C8:B4:22:C1:E6:9A (Askey Computer)
+Nmap scan report for 192.168.1.20
+Host is up (0.16s latency).
+MAC Address: D4:F0:57:1E:ED:1C (Nintendo)
+Nmap scan report for 192.168.1.46
+Host is up (0.37s latency).
+MAC Address: C0:B5:D7:D1:74:BC (Chongqing Fugui Electronics)
+Nmap scan report for 192.168.1.65
+Host is up (0.13s latency).
+MAC Address: 18:EE:69:27:8D:D0 (Apple)
+Nmap scan report for 192.168.1.77
+Host is up (0.11s latency).
+MAC Address: 14:C9:13:A4:46:70 (LG Electronics)
+Nmap scan report for 192.168.1.82
+Host is up (0.27s latency).
+MAC Address: 48:D7:05:DD:D6:0F (Apple)
+Nmap scan report for 192.168.1.90
+Host is up (0.059s latency).
+MAC Address: D0:D2:B0:8E:82:09 (Apple)
+Nmap scan report for 192.168.1.91
+Host is up (0.37s latency).
+MAC Address: 16:49:A0:DC:67:E0 (Unknown)
+Nmap scan report for 192.168.1.119
+Host is up (0.38s latency).
+MAC Address: 82:DA:E4:B4:76:00 (Unknown)
+Nmap scan report for 192.168.1.146
+Host is up (0.11s latency).
+MAC Address: 8C:85:90:44:0A:B8 (Apple)
+Nmap scan report for 192.168.1.151
+Host is up (0.20s latency).
+MAC Address: CE:EB:96:F3:70:EB (Unknown)
+Nmap scan report for 192.168.1.159
+Host is up (0.10s latency).
+MAC Address: 58:D9:D5:4B:3B:1F (Tenda Technology,Ltd.Dongguan branch)
+Nmap scan report for 192.168.1.160
+Host is up (0.11s latency).
+MAC Address: D0:D2:B0:A2:28:D6 (Apple)
+Nmap scan report for 192.168.1.173
+Host is up (0.19s latency).
+MAC Address: 64:B5:C6:55:31:85 (Nintendo)
+Nmap scan report for 192.168.1.176
+Host is up (0.098s latency).
+MAC Address: C4:B3:01:DA:B8:00 (Apple)
+Nmap scan report for 192.168.1.181
+Host is up (0.35s latency).
+MAC Address: 6E:C0:1F:D5:7D:20 (Unknown)
+Nmap scan report for 192.168.1.182
+Host is up (0.28s latency).
+MAC Address: B8:A1:75:E2:17:1E (Roku)
+Nmap scan report for 192.168.1.187
+Host is up (0.20s latency).
+MAC Address: B8:27:EB:8F:9E:E1 (Raspberry Pi Foundation)
+Nmap scan report for 192.168.1.212
+Host is up (0.22s latency).
+MAC Address: F2:A6:28:35:4A:29 (Unknown)
+Nmap scan report for 192.168.1.218
+Host is up (0.15s latency).
+MAC Address: CE:1E:17:80:73:BB (Unknown)
+Nmap scan report for 192.168.1.247
+Host is up (0.22s latency).
+MAC Address: E6:53:83:A6:8D:4D (Unknown)
+Nmap scan report for 192.168.1.196
+Host is up.
+Nmap done: 256 IP addresses (22 hosts up) scanned in 5.73 seconds

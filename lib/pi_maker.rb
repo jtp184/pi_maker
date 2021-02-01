@@ -1,6 +1,7 @@
 require 'pi_maker/version'
 require 'pi_maker/recipe'
 require 'pi_maker/command_group'
+require 'pi_maker/network_identifier'
 
 # Easy bake Raspberry Pi
 module PiMaker
