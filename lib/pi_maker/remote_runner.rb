@@ -4,6 +4,7 @@ require 'net/scp'
 module PiMaker
   # Runs commands on a remote device
   class RemoteRunner
+    # ssh config, the CommandGroup to run, and the result after commands have been run
     attr_reader :config, :command_group, :result
 
     # Uses +opts+ to set the config and command group
