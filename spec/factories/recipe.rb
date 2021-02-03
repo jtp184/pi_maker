@@ -5,9 +5,8 @@ FactoryBot.define do
     github_repos do
       {
         'jtp184/arch_dotfiles' => [
-          'cp -ri ~/repos/arch_dotfiles/home ~/',
           'mkdir -p ~/.config',
-          'cp -ri ~/repos/config ~/.config'
+          'cp -ri ~/repos/arch_dotfiles/config ~/.config'
         ],
         'M0nica' => []
       }
