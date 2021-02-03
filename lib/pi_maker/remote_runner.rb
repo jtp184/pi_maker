@@ -104,7 +104,6 @@ module PiMaker
       end
     end
 
-
     # Given a timestamp as the first +append_opts+, creates the temp folder in /tmp/
     def create_temp_folder(append_opts)
       Net::SSH.start(*ssh_options) { |ssh| ssh.exec("mkdir /tmp/pi_maker_#{append_opts[0]}") }
