@@ -1,6 +1,7 @@
 RSpec.describe PiMaker::NetworkIdentifier do
   before(:each) do
     allow(PiMaker::NetworkIdentifier).to receive(:run_nmap) { FactoryBot.fixtures[:nmap] }
+    allow(TTY::Which).to receive(:exist?).with('nmap').and_return(true)
   end
 
   describe '.call' do
