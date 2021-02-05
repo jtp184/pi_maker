@@ -3,25 +3,50 @@ require 'tty-which'
 module PiMaker
   # Locate a pi on the network
   module NetworkIdentifier
+    # Registered Raspi MAC addresses
+    MAC_RANGES = [
+      %w[B8 27 EB],
+      %w[DC A6 32],
+      %w[E4 5F 01]
+    ].freeze
+
     class << self
-      # Takes in +ip_range+, and runs the nmap
-      def call(ip_range = '192.168.1.0/24')
-        check_nmap
+      # Takes in +opts+ for :scan_with program, returns an array of ips
+      def call(opts = {})
+        prog = opts.fetch(:scan_with, :arp)
 
-        hosts = parse_nmap PiMaker.system_cmd("sudo nmap -sn #{ip_range}")
+        hosts = case prog
+                when :nmap
+                  parse_nmap(
+                    PiMaker.system_cmd("sudo nmap -sn #{opts.fetch(:ip_address, '192.168.1.0/24')}")
+                  )
+                when :arp
+                  parse_arp(
+                    PiMaker.system_cmd('arp -a')
+                  )
+                end
 
-        parse_nmap(hosts).select! do |_ip, manufacturer|
-          manufacturer =~ /Raspberry Pi/i
+        hosts.select! do |_ipaddr, mac_address|
+          MAC_RANGES.include?(mac_address[0..2])
         end.map(&:first)
       end
 
       private
 
-      # Check that nmap is installed
-      def check_nmap
-        return if TTY::Which.exist?('nmap')
+      # Converts a mac address into an array of hex couplets
+      def convert_mac_address(arp)
+        arp.split(':')
+           .map { |addr| addr.to_i(16) }
+           .map { |addr| format('%02X', addr) }
+      end
 
-        raise LoadError, 'Please install nmap before using this class'
+      # Parses the +hosts+ from arp
+      def parse_arp(hosts)
+        hosts.split("\n")
+             .map { |l| l.match(/\(((?:\d+\.?){4})\) at ([a-f0-9:]+) on/) }
+             .map(&:captures)
+             .to_h
+             .transform_values { |l| convert_mac_address(l) }
       end
 
       # Takes in a string result from +nmap+, and converts it into a tuple of ip address
