@@ -39,6 +39,7 @@ module PiMaker
       config.public_send(mtd_name, *args, &blk) || super
     end
 
+    # Respond to the config's messages
     def respond_to_missing?(mtd_name, priv = false)
       config.respond_to?(mtd_name, priv) || super
     end
