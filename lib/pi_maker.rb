@@ -35,7 +35,9 @@ module PiMaker
     def system_cmd(opts = {})
       @system_cmd ||= TTY::Command.new(printer: :null)
 
-      opts = { command: opts, raise_errors: true } if opts.is_a?(String)
+      default_opts = { command: opts, raise_errors: true }
+
+      opts = opts.is_a?(String) ? default_opts : default_opts.merge(opts)
 
       result = if opts[:command].is_a?(String)
                  @system_cmd.run!(opts[:command])
