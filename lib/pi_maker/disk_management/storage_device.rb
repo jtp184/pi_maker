@@ -15,6 +15,14 @@ module PiMaker
       # Total drive capacity reported from cl
       attr_reader :capacity
 
+      BYTE_SIZES = {
+        byte: 1,
+        kilobyte: 1000**1,
+        megabyte: 1000**2,
+        gigabyte: 1000**3,
+        terrabyte: 1000**4
+      }
+
       # Takes in +opts+ for either the attributes, or a single :disk attribute to set them all
       def initialize(opts = {})
         if opts.key?(:disk)
@@ -45,14 +53,24 @@ module PiMaker
         h
       end
 
-      # Return a view of the path, mount status, and capacity
       def to_s
-        "#{dev_path}: #{first_mounted_path || 'unmounted'} (#{capacity.bytes_h})"
+        dev_path
       end
 
-      # Given an image +path+, writes the image to this StorageDevice
-      def write_image(path)
-        `sudo dd bs=1m if=#{path} of=#{dev_path}`
+      # Return a view of the path, mount status, and capacity
+      def inspect
+        "#{dev_path}: #{first_mounted_path || 'unmounted'} (#{size})"
+      end
+
+      def size(round_to = 4)
+        unit = BYTE_SIZES.to_a.reject { |_scalar, value| capacity < value }.last
+
+        value_str = (capacity / unit[1].to_f).round(round_to)
+
+        unit_str = unit[0].to_s
+        unit_str << 's' unless capacity % 10 == 1
+
+        "#{value_str} #{unit_str}"
       end
 
       # Gets the partition which is largest by capacity

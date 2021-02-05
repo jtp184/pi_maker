@@ -21,6 +21,12 @@ module PiMaker
           dstruct(adp, drm)
         end
 
+        # Given an image +img_path+, writes the image to the disk +dsk+
+        def write_image(img_path, dsk)
+          unmount_disk(dsk)
+          `sudo dd bs=1m if=#{img_path} of=#{rdisk_for_disk dsk}`
+        end
+
         # Gets maximal info for disk at +dev_path+ using diskutil info
         def disk_info(dev_path)
           parse_diskinfo(`diskutil info #{dev_path}`)
@@ -43,6 +49,15 @@ module PiMaker
         end
 
         private
+
+        def rdisk_for_disk(dsk)
+          return dsk unless dsk.respond_to?(:dev_path)
+
+          dsk.dev_path
+             .split('/')
+             .tap { |a| a[2] = "r#{a[2]}" }
+             .join('/')
+        end
 
         # Parse returned table from diskutil info +dinfo+
         def parse_diskinfo(dinfo)
