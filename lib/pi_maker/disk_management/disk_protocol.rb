@@ -52,7 +52,7 @@ module PiMaker
             .last
         end
 
-        # Scans the mount_list result for +dev_path+ and returns the filesystem type if it is mounted
+        # Scans the mount_list result for +dev_path+ and returns the filesystem type
         def mount_fs(dev_path)
           p1 = /#{Regexp.escape(dev_path)}\b/
           p2 = /type (\w+)\s/
