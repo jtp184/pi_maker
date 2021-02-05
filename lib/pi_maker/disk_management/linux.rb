@@ -8,30 +8,32 @@ module PiMaker
       class << self
         # Gets all attached disks, turns them into DiskProtocol::Disk objects, and returns
         def list
-          cmd = `lsblk -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM`
-          data = JSON.parse(cmd)['blockdevices']
+          cmd = PiMaker.system_cmd('lsblk -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM')
 
-          sdi = data.map { |di| dstruct(di) }
+          JSON.parse(cmd)
+              .dig('blockdevices')
+              .map { |di| dstruct(di) }
         end
 
         # Gets maximal info for disk at +dev_path+ from lsblk
         def disk_info(dev_path)
-          cmd = `lsblk #{dev_path} -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM`
+          cmd = PiMaker.system_cmd("lsblk #{dev_path} -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM")
           data = JSON.parse(cmd)['blockdevices'].first
 
           dstruct(data)
         end
 
         # Uses the mount command to mount disk +dsk+, with mount point +mp+
-        def mount_disk(dsk, mp = nil)
-          mtp = mp.nil? ? dsk : mp
+        def mount_disk(dsk, mountp = nil)
+          mtp = mountp.nil? ? dsk : mountp
+
           FileUtils.mkdir_p(mtp)
-          `sudo mount #{dsk} #{mtp}`
+          PiMaker.system_cmd(command: ["sudo mount #{dsk}", mtp])
         end
 
         # Unmounts the disk at path +dsk+
         def unmount_disk(dsk)
-          `sudo umount #{dsk}`
+          PiMaker.system_cmd("sudo umount #{dsk}")
         end
 
         # Prepare the disk +dsk+ to be removed from the computer
@@ -40,6 +42,11 @@ module PiMaker
         end
 
         private
+
+        # Same dev and raw path on linux
+        def raw_disk_path(dsk)
+          dsk.dev_path
+        end
 
         # Takes in a +subhsh+ from lksblk's json result and turns it into a DiskProtocol::Disk
         def dstruct(subhsh)

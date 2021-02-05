@@ -24,12 +24,17 @@ module PiMaker
 
         # Gets the size of the entire directory using `du`
         def dir_size(path)
-          cmd = `du -sk #{path}`
+          PiMaker.system_cmd(command: ['du -sk', path])
+                 .split(/\t/)
+                 .first
+                 .to_i
+                 .*(1000)
+        end
 
-          cmd.split(/\t/)
-             .first
-             .to_i
-             .*(1000)
+        # Given an image +img_path+, writes the image to the disk +dsk+
+        def write_image(img_path, dsk)
+          unmount_disk(dsk)
+          PiMaker.system_cmd("sudo dd bs=1m if=#{img_path} of=#{raw_disk_path(dsk)}")
         end
 
         # Scans the mount_list result for +dev_path+ and returns the path if it is mounted
@@ -73,7 +78,7 @@ module PiMaker
 
         # Uses the system mount command to identify mounted devices
         def mount_list
-          `mount`.split("\n")
+          PiMaker.system_cmd('mount').split("\n")
         end
       end
     end

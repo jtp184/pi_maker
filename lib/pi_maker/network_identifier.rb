@@ -4,13 +4,13 @@ module PiMaker
   # Locate a pi on the network
   module NetworkIdentifier
     class << self
-      # Takes in +opts+ for :ip_range, and runs the nmap
-      def call(opts = {})
+      # Takes in +ip_range+, and runs the nmap
+      def call(ip_range = '192.168.1.0/24')
         check_nmap
 
-        hosts = parse_nmap(run_nmap(opts.fetch(:ip_range, '192.168.1.0/24')))
+        hosts = PiMaker.system_cmd("sudo nmap -sn #{ip_range}")
 
-        hosts.select! do |_ip, manufacturer|
+        parse_nmap(hosts).select! do |_ip, manufacturer|
           manufacturer =~ /Raspberry Pi/i
         end.map(&:first)
       end
@@ -33,11 +33,6 @@ module PiMaker
             mf_str ? mf_str.match(/\((.*)\)/)[1] : 'Unknown'
           ]
         end
-      end
-
-      # Given an +ip_range+, runs nmap and returns the results
-      def run_nmap(ip_range)
-        `sudo nmap -sn #{ip_range}`
       end
     end
   end

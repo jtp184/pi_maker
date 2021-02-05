@@ -10,12 +10,13 @@ module PiMaker
       # Pass any calls through to the protocol object
       def method_missing(mtd_name, *args)
         super unless protocol.respond_to?(mtd_name)
+
         protocol.public_send(mtd_name, *args)
       end
 
-      # Returns true if the selected protocol responds to +mtd+ as well
-      def respond_to?(mtd)
-        protocol.respond_to?(mtd) || super
+      # Respond to protocol messages
+      def respond_to_missing?(mtd, priv = false)
+        protocol.respond_to?(mtd, priv) || super
       end
 
       # Returns the platform specific DiskProtocol in use

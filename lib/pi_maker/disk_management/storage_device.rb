@@ -15,13 +15,14 @@ module PiMaker
       # Total drive capacity reported from cl
       attr_reader :capacity
 
+      # Mapping for byte values
       BYTE_SIZES = {
         byte: 1,
         kilobyte: 1000**1,
         megabyte: 1000**2,
         gigabyte: 1000**3,
         terrabyte: 1000**4
-      }
+      }.freeze
 
       # Takes in +opts+ for either the attributes, or a single :disk attribute to set them all
       def initialize(opts = {})
@@ -53,6 +54,7 @@ module PiMaker
         h
       end
 
+      # Returns the dev path for munging
       def to_s
         dev_path
       end
@@ -62,6 +64,7 @@ module PiMaker
         "#{dev_path}: #{first_mounted_path || 'unmounted'} (#{size})"
       end
 
+      # Returns a string representation with digits to +round_to+
       def size(round_to = 4)
         unit = BYTE_SIZES.to_a.reject { |_scalar, value| capacity < value }.last
 
@@ -93,6 +96,11 @@ module PiMaker
       # Returns this mounted path if there is one, otherwise finds the first mounted partition
       def first_mounted_path
         first_mounted&.mount_point
+      end
+
+      # Given an image +img_path+, writes the image to the disk of this StorageDevice
+      def write_image(img_path)
+        DiskManagement.write_image(img_path, self)
       end
 
       # Mounts the device if it isn't already

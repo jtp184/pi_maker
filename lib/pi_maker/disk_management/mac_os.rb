@@ -8,12 +8,12 @@ module PiMaker
       class << self
         # Gets all attached disks, turns them into DiskProtocol::Disk objects
         def list
-          dinfo = `diskutil list -plist`
-          drm = `diskutil list`.split("\n\n")
-                               .map(&:lines)
-                               .map(&:first)
-                               .map { |x| x.split(' (') }
-                               .map { |a, b| [Regexp.new(Regexp.escape(a)), b.match?(/external/)] }
+          dinfo = PiMaker.system_cmd('diskutil list -plist')
+          drm = PiMaker.system_cmd('diskutil list').split("\n\n")
+                       .map(&:lines)
+                       .map(&:first)
+                       .map { |x| x.split(' (') }
+                       .map { |a, b| [Regexp.new(Regexp.escape(a)), b.match?(/external/)] }
 
           adp = Plist.parse_xml(dinfo)['AllDisksAndPartitions']
           adp.map! { |x| parse_disk_plist_entry(x) }
@@ -21,39 +21,32 @@ module PiMaker
           dstruct(adp, drm)
         end
 
-        # Given an image +img_path+, writes the image to the disk +dsk+
-        def write_image(img_path, dsk)
-          unmount_disk(dsk)
-          `sudo dd bs=1m if=#{img_path} of=#{rdisk_for_disk dsk}`
-        end
-
         # Gets maximal info for disk at +dev_path+ using diskutil info
         def disk_info(dev_path)
-          parse_diskinfo(`diskutil info #{dev_path}`)
+          parse_diskinfo(PiMaker.system_cmd("diskutil info #{dev_path}"))
         end
 
         # Mounts the disk +dsk+, ignoring the +_mp+ arg since Mac has
         # default mounting paths under /Volumes
-        def mount_disk(dsk, _mp = nil)
-          `diskutil mountDisk #{dsk}`
+        def mount_disk(dsk, _mountp = nil)
+          PiMaker.system_cmd("diskutil mountDisk #{dsk}")
         end
 
         # Unmounts the disk at +dsk+
         def unmount_disk(dsk)
-          `diskutil unmountDisk #{dsk}`
+          PiMaker.system_cmd("diskutil unmountDisk #{dsk}")
         end
 
         # Prepare the disk +dsk+ to be removed from the computer
         def eject_disk(dsk)
-          `diskutil eject #{dsk}`
+          PiMaker.system_cmd("diskutil eject #{dsk}")
         end
 
         private
 
-        def rdisk_for_disk(dsk)
-          return dsk unless dsk.respond_to?(:dev_path)
-
-          dsk.dev_path
+        # Prepends the +dev_path+ with 'r'
+        def raw_disk_path(dsk)
+          dsk.to_s
              .split('/')
              .tap { |a| a[2] = "r#{a[2]}" }
              .join('/')
@@ -72,55 +65,51 @@ module PiMaker
               .transform_keys!(&:to_sym)
 
           info.transform_values! do |x|
-            if x.match?(/Bytes/)
-              x.match(/(\d+) Bytes/)
-               .captures
-               .first
-               .to_i
-            else
-              x
-            end
+            next x unless x.match?(/Bytes/)
+
+            x.match(/(\d+) Bytes/)
+             .captures
+             .first
+             .to_i
           end
 
           info.transform_values! do |x|
-            if %w[Yes No].include?(x)
-              x == 'Yes'
-            else
-              x
-            end
+            next x unless %w[Yes No].include?(x)
+
+            x == 'Yes'
           end
 
           info
         end
 
-        # Turns the passed plist +pl+ and path/removability matrix +fs+ to create Disks
-        def dstruct(pl, fs)
-          pl.map! do |entry|
+        # Turns the passed plist +pl+ and path/removability matrix +pathset+ to create Disks
+        def dstruct(plist, pathset)
+          plist.map! do |entry|
             entry.merge!(
-              removable: fs.find { |a, _b| entry[:dev_path].match(a) }[1]
+              removable: pathset.find { |a, _b| entry[:dev_path].match(a) }[1]
             )
 
             d = DiskProtocol::Disk.new
 
             entry.each_pair { |k, v| d[k] = v }
-            dstruct(d.partitions, fs)
+            dstruct(d.partitions, pathset)
             d
           end
         end
 
         # Converts an individual entry from the plist +pl+ into a hash of Disk options
-        def parse_disk_plist_entry(pl)
-          dpath = '/dev/' + pl['DeviceIdentifier']
-          parts = if pl.key?('Partitions')
-                    pl['Partitions'].map { |x| parse_disk_plist_entry(x) }
+        def parse_disk_plist_entry(plist)
+          dpath = '/dev/' + plist['DeviceIdentifier']
+          parts = if plist.key?('Partitions')
+                    plist['Partitions'].map { |x| parse_disk_plist_entry(x) }
                   else
                     []
                   end
 
           {
             dev_path: dpath,
-            size: pl['Size'],
-            mount_point: pl['MountPoint'],
+            size: plist['Size'],
+            mount_point: plist['MountPoint'],
             partitions: parts,
             filesystem: mount_fs(dpath)
           }
@@ -129,19 +118,16 @@ module PiMaker
         # Takes in a string estimation of size in GB/MB and converts it to
         # single byte representation
         def byte_convert(bstr)
-          sz = /(\d+(?:\.\d)) (GB|MB)/.match(bstr)
+          sz = /(\d+(?:\.\d)) (\w)B/.match(bstr)
 
-          isz = sz[1]
+          isz = sz[1].to_f
           scale = sz[2]
 
-          case scale
-          when 'KB'
-            isz.to_f * 1000
-          when 'MB'
-            isz.to_f * (1000**2)
-          when 'GB'
-            isz.to_f * (1000**3)
-          end.floor
+          factor = StorageDevice::BYTE_SIZES.detect do |k, _v|
+            k.to_s.chars.first.upcase == scale
+          end.last
+
+          (isz * factor).floor
         end
       end
     end
