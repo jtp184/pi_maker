@@ -30,12 +30,14 @@ module PiMaker
            .map { |addr| format('%02X', addr) }
       end
 
+      # Takes the +hosts+ and returns only those whose MAC begins with one of the constants
       def filter_arp(hosts)
         hosts.select do |_ipaddr, mac_address|
           MAC_RANGES.include?(mac_address[0..2])
         end.map(&:first)
       end
 
+      # Takes the +hosts+ and returns only the ones which have raspi as manufacturer
       def filter_nmap(hosts)
         hosts.select do |_ipaddr, manufacturer|
           manufacturer =~ /Raspberry Pi/
