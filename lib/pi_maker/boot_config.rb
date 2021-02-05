@@ -26,9 +26,13 @@ module PiMaker
           parse_file(File.read(path))
         else
           OpenStruct.new(
-            'dtparam=audio' => 'on',
-            'dtoverlay' => 'vc4-fkms-v3d',
-            'max_framebuffers' => '2'
+            'pi4' => {
+              'dtparam=audio' => 'on',
+              'max_framebuffers' => '2'
+            },
+            'all' => {
+              'dtoverlay' => 'vc4-fkms-v3d'
+            }
           )
         end
       end
@@ -47,7 +51,7 @@ module PiMaker
     # Output all config options as a stream of k=v
     def to_s
       config.to_h.map do |k, v|
-        "#{k}=#{v}"
+        "[#{k}]\n#{v.map { |i, f| "#{i}=#{f}" }.join("\n")}"
       end.join("\n")
     end
 
@@ -55,13 +59,29 @@ module PiMaker
 
     # Takes the +file_contents+ and interprets them
     def parse_file(file_contents)
-      opts = file_contents.split("\n").map do |line|
-        next if line =~ /^#/
+      set_lines = file_contents.split("\n").map do |line|
         next if line =~ /^$/
-        next unless line =~ /=/
+        next if line =~ /^#/
 
-        line.match(/(.*)=(.*)/).captures
-      end.compact.to_h
+        [/^(\[)(.*)\]/, /(.*)=(.*)/].map { |ma| ma.match(line) }
+                                    .compact
+                                    .first
+      end.compact
+
+      opts = { all: {} }
+      current_group = :all
+
+      set_lines.each do |val|
+        group_declare = val[1] == '['
+
+        if group_declare
+          current_group = val[2].to_sym
+          opts[current_group] ||= {}
+          next
+        end
+
+        opts[current_group][val[1]] = val[2]
+      end
 
       OpenStruct.new(opts)
     end
