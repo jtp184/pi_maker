@@ -1,0 +1,8 @@
+? (192.168.1.119) at 82:da:e4:b4:76:0 on en0 ifscope [ethernet]
+? (192.168.1.130) at 3e:f:5:bf:8e:d7 on en0 ifscope [ethernet]
+? (192.168.1.151) at ce:eb:96:f3:70:eb on en0 ifscope [ethernet]
+? (192.168.1.187) at dc:a6:32:d5:7d:20 on en0 ifscope [ethernet]
+? (192.168.1.219) at 78:31:c1:be:5d:e6 on en0 ifscope permanent [ethernet]
+? (224.0.0.251) at 1:0:5e:0:0:fb on en0 ifscope permanent [ethernet]
+? (239.192.152.143) at 1:0:5e:40:98:8f on en0 ifscope permanent [ethernet]
+? (239.255.255.250) at 1:0:5e:7f:ff:fa on en0 ifscope permanent [ethernet]

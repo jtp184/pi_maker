@@ -15,20 +15,10 @@ module PiMaker
       def call(opts = {})
         prog = opts.fetch(:scan_with, :arp)
 
-        hosts = case prog
-                when :nmap
-                  parse_nmap(
-                    PiMaker.system_cmd("sudo nmap -sn #{opts.fetch(:ip_address, '192.168.1.0/24')}")
-                  )
-                when :arp
-                  parse_arp(
-                    PiMaker.system_cmd('arp -a')
-                  )
-                end
+        hosts = send(:"run_#{prog}", opts)
+        hosts = send(:"parse_#{prog}", hosts)
 
-        hosts.select! do |_ipaddr, mac_address|
-          MAC_RANGES.include?(mac_address[0..2])
-        end.map(&:first)
+        send(:"filter_#{prog}", hosts)
       end
 
       private
@@ -38,6 +28,18 @@ module PiMaker
         arp.split(':')
            .map { |addr| addr.to_i(16) }
            .map { |addr| format('%02X', addr) }
+      end
+
+      def filter_arp(hosts)
+        hosts.select do |_ipaddr, mac_address|
+          MAC_RANGES.include?(mac_address[0..2])
+        end.map(&:first)
+      end
+
+      def filter_nmap(hosts)
+        hosts.select do |_ipaddr, manufacturer|
+          manufacturer =~ /Raspberry Pi/
+        end.map(&:first)
       end
 
       # Parses the +hosts+ from arp
@@ -58,6 +60,16 @@ module PiMaker
             mf_str ? mf_str.match(/\((.*)\)/)[1] : 'Unknown'
           ]
         end
+      end
+
+      # Performs the nmap command
+      def run_nmap(opts = {})
+        PiMaker.system_cmd("sudo nmap -sn #{opts.fetch(:ip_address, '192.168.1.0/24')}")
+      end
+
+      # Performs the arp command
+      def run_arp(_opts = {})
+        PiMaker.system_cmd('arp -a')
       end
     end
   end

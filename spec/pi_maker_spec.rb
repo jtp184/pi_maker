@@ -28,7 +28,10 @@ RSpec.describe 'Base Module' do
     end
 
     context 'on linux' do
-      before(:each) { stub_const('RUBY_PLATFORM', platform_strings[:linux]) }
+      before(:each) do
+        stub_const('RUBY_PLATFORM', platform_strings[:linux])
+        allow(File).to receive(:read).with('/proc/cpuinfo').and_return('Ubuntu')
+      end
 
       it { is_expected.to eq(:linux) }
     end
