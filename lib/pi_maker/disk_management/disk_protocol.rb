@@ -5,7 +5,7 @@ module PiMaker
     # Abstract class for acquiring disks and disk information.
     class DiskProtocol
       # A connected disk and its information
-      Disk = Struct.new(:dev_path, :mount_point, :removable, :partitions, :size, :filesystem)
+      Disk = Struct.new(:dev_path, :mount_point, :removable, :partitions, :bytesize, :filesystem)
 
       class << self
         # Converts listed disks into StorageDevice objects

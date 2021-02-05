@@ -35,7 +35,11 @@ module PiMaker
 
     # Pass arguments to config
     def method_missing(mtd_name, *args, &blk)
-      config.public_send(mtd_name, *args, &blk)
+      config.public_send(mtd_name, *args, &blk) || super
+    end
+
+    def respond_to_missing?(mtd_name, priv = false)
+      config.respond_to?(mtd_name, priv) || super
     end
 
     # Output all config options as a stream of k=v

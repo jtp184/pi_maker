@@ -32,9 +32,10 @@ module PiMaker
 
             instance_variable_set(:"@#{k}", v)
           end
+
           @partitions ||= []
           @partitions.map! { |x| StorageDevice.new(disk: x) }
-          @capacity = opts[:disk].size
+          @capacity = opts[:disk].bytesize
         else
           opts.each_pair do |k, v|
             next unless respond_to?(:"#{k}=")

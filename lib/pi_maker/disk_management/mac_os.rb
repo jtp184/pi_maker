@@ -61,10 +61,15 @@ module PiMaker
                       .map(&:captures)
                       .to_h
 
-          info.transform_keys! { |x| Strings::Case.underscore(x) }
-              .transform_keys!(&:to_sym)
+          transform_diskinfo(info)
+        end
 
-          info.transform_values! do |x|
+        # Applies transformations to diskinfo
+        def transform_diskinfo(dinfo)
+          dinfo.transform_keys! { |x| Strings::Case.underscore(x) }
+               .transform_keys!(&:to_sym)
+
+          dinfo.transform_values! do |x|
             next x unless x.match?(/Bytes/)
 
             x.match(/(\d+) Bytes/)
@@ -73,13 +78,11 @@ module PiMaker
              .to_i
           end
 
-          info.transform_values! do |x|
+          dinfo.transform_values! do |x|
             next x unless %w[Yes No].include?(x)
 
             x == 'Yes'
           end
-
-          info
         end
 
         # Turns the passed plist +pl+ and path/removability matrix +pathset+ to create Disks
@@ -99,7 +102,7 @@ module PiMaker
 
         # Converts an individual entry from the plist +pl+ into a hash of Disk options
         def parse_disk_plist_entry(plist)
-          dpath = '/dev/' + plist['DeviceIdentifier']
+          dpath = "/dev/#{plist['DeviceIdentifier']}"
           parts = if plist.key?('Partitions')
                     plist['Partitions'].map { |x| parse_disk_plist_entry(x) }
                   else
@@ -121,10 +124,9 @@ module PiMaker
           sz = /(\d+(?:\.\d)) (\w)B/.match(bstr)
 
           isz = sz[1].to_f
-          scale = sz[2]
 
           factor = StorageDevice::BYTE_SIZES.detect do |k, _v|
-            k.to_s.chars.first.upcase == scale
+            k.to_s.chars.first.upcase == sz[2]
           end.last
 
           (isz * factor).floor

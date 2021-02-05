@@ -10,8 +10,7 @@ module PiMaker
         def list
           cmd = PiMaker.system_cmd('lsblk -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM')
 
-          JSON.parse(cmd)
-              .dig('blockdevices')
+          JSON.parse(cmd)['blockdevices']
               .map { |di| dstruct(di) }
         end
 
