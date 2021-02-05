@@ -10,27 +10,28 @@ module PiMaker
 
     # Takes in +opts+ for the config and path
     def initialize(opts = {})
-      @config = OpenStruct.new(
-        opts.fetch(
-          :config,
-          {
+      @path = opts.fetch(:path) do
+        case PiMaker.host_os
+        when :mac
+          '/Volumes/boot/config.txt'
+        when :linux, :raspberrypi
+          '/mnt/boot/config.txt'
+        else
+          'E:/config.txt'
+        end
+      end
+
+      @config = opts.fetch(:config) do
+        if File.exist?(path)
+          parse_file(File.read(path))
+        else
+          OpenStruct.new(
             'dtparam=audio' => 'on',
             'dtoverlay' => 'vc4-fkms-v3d',
             'max_framebuffers' => '2'
-          }
-        )
-      )
-
-      @path = opts[:path]
-
-      @path ||= case PiMaker.host_os
-                when :mac
-                  '/Volumes/boot'
-                when :linux, :raspberrypi
-                  '/mnt/boot'
-                else
-                  'E:/'
-                end
+          )
+        end
+      end
     end
 
     # Pass arguments to config
@@ -47,6 +48,19 @@ module PiMaker
       config.to_h.map do |k, v|
         "#{k}=#{v}"
       end.join("\n")
+    end
+
+    private
+
+    # Takes the +file_contents+ and interprets them
+    def parse_file(file_contents)
+      file_contents.split("\n").map do |line|
+        next if line =~ /^#/
+        next if line =~ /^$/
+        next unless line =~ /=/
+
+        line.match(/(.*)=(.*)/).captures
+      end.compact.to_h
     end
   end
 end
