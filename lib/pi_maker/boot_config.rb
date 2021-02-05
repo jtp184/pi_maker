@@ -54,13 +54,15 @@ module PiMaker
 
     # Takes the +file_contents+ and interprets them
     def parse_file(file_contents)
-      file_contents.split("\n").map do |line|
+      opts = file_contents.split("\n").map do |line|
         next if line =~ /^#/
         next if line =~ /^$/
         next unless line =~ /=/
 
         line.match(/(.*)=(.*)/).captures
       end.compact.to_h
+
+      OpenStruct.new(opts)
     end
   end
 end
