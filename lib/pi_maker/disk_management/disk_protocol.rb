@@ -9,14 +9,14 @@ module PiMaker
 
       class << self
         # Converts listed disks into StorageDevice objects
-        def get_storage_devices
+        def list_storage_devices
           list.select(&:removable).map do |dsk|
             DiskManagement::StorageDevice.new(disk: dsk)
           end
         end
 
         # Return non-storage devices
-        def get_internal_devices
+        def list_internal_devices
           list.reject(&:removable).map do |dsk|
             DiskManagement::StorageDevice.new(disk: dsk)
           end
