@@ -8,7 +8,7 @@ module PiMaker
       def call(ip_range = '192.168.1.0/24')
         check_nmap
 
-        hosts = PiMaker.system_cmd("sudo nmap -sn #{ip_range}")
+        hosts = parse_nmap PiMaker.system_cmd("sudo nmap -sn #{ip_range}")
 
         parse_nmap(hosts).select! do |_ip, manufacturer|
           manufacturer =~ /Raspberry Pi/i
