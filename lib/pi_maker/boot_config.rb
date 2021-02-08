@@ -25,15 +25,7 @@ module PiMaker
         if File.exist?(path)
           parse_file(File.read(path))
         else
-          OpenStruct.new(
-            'pi4' => {
-              'dtparam=audio' => 'on',
-              'max_framebuffers' => '2'
-            },
-            'all' => {
-              'dtoverlay' => 'vc4-fkms-v3d'
-            }
-          )
+          OpenStruct.new(default_config)
         end
       end
     end
@@ -50,12 +42,32 @@ module PiMaker
 
     # Output all config options as a stream of k=v
     def to_s
-      config.to_h.map do |k, v|
-        "[#{k}]\n#{v.map { |i, f| "#{i}=#{f}" }.join("\n")}"
-      end.join("\n")
+      s = +''
+
+      config.to_h.each do |k, v|
+        s << "[#{k}]\n"
+
+        v.to_h.each { |i, f| s << "#{i}=#{f}\n" }
+      end
+
+      s << "\n"
     end
 
     private
+
+    def default_config
+      conf = {
+        'pi4' => {
+          'dtparam=audio' => 'on',
+          'max_framebuffers' => '2'
+        },
+        'all' => {
+          'dtoverlay' => 'vc4-fkms-v3d'
+        }
+      }.transform_values { |v| OpenStruct.new(v) }
+
+      OpenStruct.new(conf)
+    end
 
     # Takes the +file_contents+ and interprets them
     def parse_file(file_contents)
