@@ -59,7 +59,7 @@ module PiMaker
       def parse_nmap(nmap)
         nmap.split("\n")[1..-2].each_slice(3).map do |ip_str, _up_str, mf_str|
           [
-            ip_str.match(/\((.*)\)/)[1],
+            ip_str.match(/((\d+\.?){4})/)[1],
             mf_str ? mf_str.match(/\((.*)\)/)[1] : 'Unknown'
           ]
         end
