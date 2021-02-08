@@ -48,6 +48,7 @@ module PiMaker
       def parse_arp(hosts)
         hosts.split("\n")
              .map { |l| l.match(/\(((?:\d+\.?){4})\) at ([a-f0-9:]+) on/) }
+             .compact
              .map(&:captures)
              .to_h
              .transform_values { |l| convert_mac_address(l) }
@@ -58,7 +59,7 @@ module PiMaker
       def parse_nmap(nmap)
         nmap.split("\n")[1..-2].each_slice(3).map do |ip_str, _up_str, mf_str|
           [
-            ip_str.split(' ').last,
+            ip_str.match(/\((.*)\)/)[1],
             mf_str ? mf_str.match(/\((.*)\)/)[1] : 'Unknown'
           ]
         end
