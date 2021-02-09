@@ -8,6 +8,18 @@ module PiMaker
     # The path to save the file to
     attr_reader :path
 
+    # The different groups a config option can belong to
+    FILTERS = %w[
+      all
+      pi1
+      pi2
+      pi3
+      pi3+
+      pi4
+      pi0
+      pi0w
+    ].freeze
+
     # Takes in +opts+ for the config and path
     def initialize(opts = {})
       @path = opts.fetch(:path) do
@@ -32,7 +44,12 @@ module PiMaker
 
     # Pass arguments to config
     def method_missing(mtd_name, *args, &blk)
-      config.public_send(mtd_name, *args, &blk) || super
+      if FILTERS.include?(mtd_name.to_s)
+        config.public_send(mtd_name, *args, &blk)
+      else
+        config.public_send(:all)
+              .public_send(mtd_name, *args, &blk)
+      end || super
     end
 
     # Respond to the config's messages
