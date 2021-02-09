@@ -57,11 +57,20 @@ module PiMaker
       FILTERS.include?(mtd_name.to_s) || config.respond_to?(mtd_name, priv) || super
     end
 
+    # Get the +key+ from the config
+    def [](key)
+      if FILTERS.include?(key)
+        config[key] ||= OpenStruct.new
+      else
+        config['all'][key]
+      end
+    end
+
     # Output all config options as a stream of k=v
     def to_s
       s = +''
 
-      config.to_h.each do |k, v|
+      config.to_h.sort.reverse.each do |k, v|
         s << "[#{k}]\n"
 
         v.to_h.each { |i, f| s << "#{i}=#{f}\n" }
