@@ -10,7 +10,7 @@ module PiMaker
 
     # Take +opts+ in to capture the recipe
     def initialize(opts = {})
-      @recipe = opts.fetch(:recipe)
+      @recipe = opts.fetch(:recipe, Recipe.new)
     end
 
     # Use the +method_name+ on the recipe
@@ -39,14 +39,14 @@ module PiMaker
 
     # Build text blocks to be copied and appended to files
     def text_blocks
-      PiMaker::Recipe::TEXT_BLOCKS.map do |field, path|
-        [path, recipe.public_send(field)]
-      end.to_h
+      PiMaker::Recipe::TEXT_BLOCKS.map { |field, path| [path, recipe.public_send(field)] }
+                                  .reject { |b| b[1].nil? }
+                                  .to_h
     end
 
     # Construct an apt-get install string from the packages
     def apt_packages
-      recipe.apt_packages.reduce('sudo apt-get install --y') { |str, pkg| [str, pkg].join(' ') }
+      recipe.apt_packages.reduce('sudo apt-get install -y') { |str, pkg| [str, pkg].join(' ') }
     end
 
     # Construct an array of git clone strings from the repos
@@ -56,7 +56,7 @@ module PiMaker
         url_str = "#{repo_args[1]}/#{repo_args[2] || repo_args[1]}"
 
         [
-          "git clone https://github.com/#{url_str}.git ~/repos",
+          "git clone https://github.com/#{url_str}.git ~/repos/#{repo_args[2] || repo_args[1]}",
           post_install
         ]
       end

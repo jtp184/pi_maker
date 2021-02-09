@@ -5,22 +5,19 @@ FactoryBot.define do
     github_repos do
       {
         'jtp184/arch_dotfiles' => [
-          'git clone git@github.com:jtp184/arch_dotfiles.git',
-          'cd ~/repos/arch_dotfiles',
-          'cp -ri ./home/* ~/',
           'mkdir -p ~/.config',
-          'cp -ri ./config/* ~/.config'
+          'cp -ri ~/repos/arch_dotfiles/config ~/.config'
         ],
-        'rails' => []
+        'M0nica' => []
       }
     end
 
-    gems { %w[bundler pry colorize tty-prompt] }
+    gems { %w[colorize tty-prompt] }
     shell { ['touch ~/.hushlogin', 'utime'] }
 
     bashrc do
       [
-        "export RECIPEOPTION=#{SecureRandom.hex}"
+        "export RECIPEOPTION_#{Time.now.to_i}=#{SecureRandom.hex}"
       ]
     end
 
