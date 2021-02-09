@@ -66,7 +66,7 @@ module PiMaker
     # Use the raspi-config tool on the pi for these options
     def raspi_config
       recipe.raspi_config.map do |k, v|
-        "sudo raspi-config nonint #{k} #{v}"
+        %(sudo raspi-config nonint #{k}#{v ? " #{v}" : ''})
       end
     end
 
