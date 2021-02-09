@@ -28,8 +28,9 @@ module PiMaker
     # Generate commands from the different recipe collections
     def commands
       cmds = PiMaker::Recipe::LISTS.reduce([]) do |acc, field|
-        acc << send(field[0])
-      end
+        acc << (recipe.public_send(field[0]).nil? ? nil : send(field[0]))
+        acc
+      end.compact
 
       cmds.unshift('mkdir ~/repos') if recipe[:github_repos]
       cmds.unshift('sudo apt-get update') if recipe[:apt_packages] || recipe[:gems]
@@ -65,7 +66,7 @@ module PiMaker
     # Use the raspi-config tool on the pi for these options
     def raspi_config
       recipe.raspi_config.map do |k, v|
-        "sudo raspi-config nonint #{k} #{v}"
+        %(sudo raspi-config nonint #{k}#{v ? " #{v}" : ''})
       end
     end
 
