@@ -6,7 +6,8 @@ module PiMaker
       apt_packages: Array,
       github_repos: Hash,
       gems: Array,
-      shell: Array
+      shell: Array,
+      raspi_config: Hash
     }.freeze
 
     # Defined attributes which are to be included into files
@@ -15,7 +16,7 @@ module PiMaker
     }.freeze
 
     # Generate accessors for the defined attributes
-    attr_reader(*LISTS.keys, *TEXT_BLOCKS.keys)
+    attr_accessor(*LISTS.keys, *TEXT_BLOCKS.keys)
 
     # Use the +opts+ hash to populate instance vars
     def initialize(opts = {})
