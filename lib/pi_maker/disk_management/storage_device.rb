@@ -62,7 +62,15 @@ module PiMaker
 
       # Return a view of the path, mount status, and capacity
       def inspect
-        "#{dev_path}: #{first_mounted_path || 'unmounted'} (#{size})"
+        s = +''
+        s << dev_path
+        s << ': '
+        s << (first_mounted_path || 'unmounted')
+        s << ' | '
+        s << partitions.count.to_s
+        s << ' partition'
+        s << 's' unless partitions.count == 1
+        s << " (#{size})"
       end
 
       # Returns a string representation with digits to +round_to+

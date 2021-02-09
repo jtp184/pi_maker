@@ -29,10 +29,12 @@ module PiMaker
 
       # Returns true once the pipe is ready for reading, which indicates completeness
       def finished?
-        return unless @pipe
-
-        @pipe.ready?
+        pipe&.ready?
       end
+
+      private
+
+      attr_reader :pipe
     end
   end
 end
