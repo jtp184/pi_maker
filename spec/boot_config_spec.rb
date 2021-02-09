@@ -16,8 +16,7 @@ RSpec.describe PiMaker::BootConfig do
   end
 
   it 'can have options set' do
-    boot_config.ssh_enabled = true
-
+    boot_config.all.ssh_enabled = true
     expect(boot_config.to_s).to match(/ssh_enabled=/)
   end
 end
