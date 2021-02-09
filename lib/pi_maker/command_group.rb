@@ -62,6 +62,13 @@ module PiMaker
       end
     end
 
+    # Use the raspi-config tool on the pi for these options
+    def raspi_config
+      recipe.raspi_config.map do |k, v|
+        "sudo raspi-config nonint #{k} #{v}"
+      end
+    end
+
     # Construct a gem install string from the gems
     def gems
       recipe.gems.reduce('sudo gem install') { |str, gm| [str, gm].join(' ') }
