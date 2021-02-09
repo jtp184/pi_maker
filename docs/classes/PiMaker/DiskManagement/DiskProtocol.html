@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>PiMaker::DiskManagement::DiskProtocol</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+PiMaker::DiskManagement::DiskProtocol
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/pi_maker/disk_management/disk_protocol_rb.html">lib/pi_maker/disk_management/disk_protocol.rb</a>
+</li>
+<li class='other'>
+<a href="../../../files/lib/pi_maker/disk_management/linux_rb.html">lib/pi_maker/disk_management/linux.rb</a>
+</li>
+<li class='other'>
+<a href="../../../files/lib/pi_maker/disk_management/mac_os_rb.html">lib/pi_maker/disk_management/mac_os.rb</a>
+</li>
+<li>
+<a class='show' href='#' onclick='this.parentNode.parentNode.className += &quot; expanded&quot;; this.parentNode.removeChild(this); return false'>show all</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Abstract class for acquiring disks and disk information.</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-dir_size">dir_size</a></li>
+<li><a href="#method-c-list_devices">list_devices</a></li>
+<li><a href="#method-c-mount_fs">mount_fs</a></li>
+<li><a href="#method-c-mount_point_for">mount_point_for</a></li>
+<li><a href="#method-c-mounted-3F">mounted?</a></li>
+<li><a href="#method-c-write_image">write_image</a></li>
+</ol>
+<h3>Private Class</h3>
+<ol>
+<li><a href="#method-c-mount_list">mount_list</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>Disk</td>
+<td>=</td>
+<td class='context-item-value'>Struct.new(:dev_path, :mount_point, :removable, :partitions, :bytesize, :filesystem)</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>A connected disk and its information</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-dir_size'>
+<a name='method-c-dir_size'></a>
+<div class='synopsis'>
+<span class='name'>dir_size</span><span class='arguments'>(path)</span>
+
+</div>
+<div class='description'>
+
+<p>Gets the size of the entire directory using `du`</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-dir_size-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-dir_size-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/disk_protocol.rb, line 17</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dir_size</span>(<span class="ruby-identifier">path</span>)&#x000A;  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-value">command:</span> [<span class="ruby-string">&#39;du -sk&#39;</span>, <span class="ruby-identifier">path</span>])&#x000A;         .<span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\t/</span>)&#x000A;         .<span class="ruby-identifier">first</span>&#x000A;         .<span class="ruby-identifier">to_i</span>&#x000A;         .<span class="ruby-identifier">*</span>(<span class="ruby-value">1000</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-list_devices'>
+<a name='method-c-list_devices'></a>
+<div class='synopsis'>
+<span class='name'>list_devices</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Converts listed disks into <a href="StorageDevice.html"><code>StorageDevice</code></a> objects</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-list_devices-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-list_devices-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/disk_protocol.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">list_devices</span>&#x000A;  <span class="ruby-identifier">list</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">dsk</span><span class="ruby-operator">|</span> <span class="ruby-constant">DiskManagement</span><span class="ruby-operator">::</span><span class="ruby-constant">StorageDevice</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">disk:</span> <span class="ruby-identifier">dsk</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-mount_fs'>
+<a name='method-c-mount_fs'></a>
+<div class='synopsis'>
+<span class='name'>mount_fs</span><span class='arguments'>(dev_path)</span>
+
+</div>
+<div class='description'>
+
+<p>Scans the <a href="DiskProtocol.html#method-c-mount_list"><code>mount_list</code></a> result for <code>dev_path</code> and returns the filesystem type</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-mount_fs-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-mount_fs-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/disk_protocol.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mount_fs</span>(<span class="ruby-identifier">dev_path</span>)&#x000A;  <span class="ruby-identifier">p1</span> = <span class="ruby-regexp">/#{Regexp.escape(dev_path)}\b/</span>&#x000A;  <span class="ruby-identifier">p2</span> = <span class="ruby-regexp">/type (\w+)\s/</span>&#x000A;  <span class="ruby-identifier">p3</span> = <span class="ruby-regexp">/\((\w+), /</span>&#x000A;&#x000A;  <span class="ruby-identifier">mp</span> = <span class="ruby-identifier">mount_list</span>.<span class="ruby-identifier">find</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">=~</span> <span class="ruby-identifier">p1</span> }&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">mp</span>.<span class="ruby-identifier">nil?</span>&#x000A;&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-identifier">mp</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-identifier">p2</span>&#x000A;    <span class="ruby-identifier">mp</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">p2</span>)[<span class="ruby-value">1</span>]&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-identifier">p3</span>&#x000A;    <span class="ruby-identifier">mp</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">p3</span>)[<span class="ruby-value">1</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-mount_point_for'>
+<a name='method-c-mount_point_for'></a>
+<div class='synopsis'>
+<span class='name'>mount_point_for</span><span class='arguments'>(dev_path)</span>
+
+</div>
+<div class='description'>
+
+<p>Scans the <a href="DiskProtocol.html#method-c-mount_list"><code>mount_list</code></a> result for <code>dev_path</code> and returns the path if it is mounted</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-mount_point_for-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-mount_point_for-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/disk_protocol.rb, line 32</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mount_point_for</span>(<span class="ruby-identifier">dev_path</span>)&#x000A;  <span class="ruby-identifier">p1</span> = <span class="ruby-regexp">/#{Regexp.escape(dev_path)}\b/</span>&#x000A;  <span class="ruby-identifier">p2</span> = <span class="ruby-regexp">/type \w+\s/</span>&#x000A;&#x000A;  <span class="ruby-identifier">mp</span> = <span class="ruby-identifier">mount_list</span>.<span class="ruby-identifier">find</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">=~</span> <span class="ruby-identifier">p1</span> }&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">mp</span>.<span class="ruby-identifier">nil?</span>&#x000A;&#x000A;  <span class="ruby-identifier">mp</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-identifier">p2</span>, <span class="ruby-string">&#39;&#39;</span>)&#x000A;    .<span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\s\(/</span>)&#x000A;    .<span class="ruby-identifier">[]</span>(<span class="ruby-value">0</span>)&#x000A;    .<span class="ruby-identifier">split</span>(<span class="ruby-regexp">/\son\s/</span>)&#x000A;    .<span class="ruby-identifier">last</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-mounted-3F'>
+<a name='method-c-mounted-3F'></a>
+<div class='synopsis'>
+<span class='name'>mounted?</span><span class='arguments'>(dev_path)</span>
+
+</div>
+<div class='description'>
+
+<p>True if a <a href="DiskProtocol.html#method-c-mount_list"><code>mount_list</code></a> result is found for <code>dev_path</code></p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-mounted-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-mounted-3F-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/disk_protocol.rb, line 64</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mounted?</span>(<span class="ruby-identifier">dev_path</span>)&#x000A;  <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">mount_list</span>.<span class="ruby-identifier">find</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/#{Regexp.escape(dev_path)}\b/</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-write_image'>
+<a name='method-c-write_image'></a>
+<div class='synopsis'>
+<span class='name'>write_image</span><span class='arguments'>(img_path, dsk)</span>
+
+</div>
+<div class='description'>
+
+<p>Given an image <code>img_path</code>, writes the image to the disk <code>dsk</code></p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-write_image-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-write_image-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/disk_protocol.rb, line 26</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">write_image</span>(<span class="ruby-identifier">img_path</span>, <span class="ruby-identifier">dsk</span>)&#x000A;  <span class="ruby-identifier">unmount_disk</span>(<span class="ruby-identifier">dsk</span>)&#x000A;  <span class="ruby-constant">FlashingOperation</span>.<span class="ruby-identifier">start</span>(<span class="ruby-value">image_path:</span> <span class="ruby-identifier">img_path</span>, <span class="ruby-value">disk:</span> <span class="ruby-identifier">dsk</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Private Class methods</h2>
+<div class='method private-class' id='method-method-c-mount_list'>
+<a name='method-c-mount_list'></a>
+<div class='synopsis'>
+<span class='name'>mount_list</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Uses the system mount command to identify mounted devices</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-mount_list-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-mount_list-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/disk_protocol.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mount_list</span>&#x000A;  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;mount&#39;</span>).<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>
