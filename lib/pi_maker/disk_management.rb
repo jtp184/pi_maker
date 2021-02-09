@@ -1,4 +1,5 @@
 require 'pi_maker/disk_management/storage_device'
+require 'pi_maker/disk_management/flashing_operation'
 require 'pi_maker/disk_management/disk_protocol'
 require 'pi_maker/disk_management/mac_os'
 require 'pi_maker/disk_management/linux'

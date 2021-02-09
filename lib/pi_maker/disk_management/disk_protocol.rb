@@ -25,7 +25,7 @@ module PiMaker
         # Given an image +img_path+, writes the image to the disk +dsk+
         def write_image(img_path, dsk)
           unmount_disk(dsk)
-          IO.popen("sudo dd bs=1m if=#{img_path} of=#{raw_disk_path(dsk)}", err: %i[child out])
+          FlashingOperation.start(image_path: img_path, disk: dsk)
         end
 
         # Scans the mount_list result for +dev_path+ and returns the path if it is mounted

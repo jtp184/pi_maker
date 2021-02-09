@@ -40,12 +40,12 @@ module PiMaker
           unmount_disk(dsk)
         end
 
-        private
-
         # Same dev and raw path on linux
         def raw_disk_path(dsk)
           dsk.dev_path
         end
+
+        private
 
         # Takes in a +subhsh+ from lksblk's json result and turns it into a DiskProtocol::Disk
         def dstruct(subhsh)

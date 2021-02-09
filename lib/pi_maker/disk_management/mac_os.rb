@@ -42,8 +42,6 @@ module PiMaker
           PiMaker.system_cmd("diskutil eject #{dsk}")
         end
 
-        private
-
         # Prepends the +dev_path+ with 'r'
         def raw_disk_path(dsk)
           dsk.to_s
@@ -51,6 +49,8 @@ module PiMaker
              .tap { |a| a[2] = "r#{a[2]}" }
              .join('/')
         end
+
+        private
 
         # Parse returned table from diskutil info +dinfo+
         def parse_diskinfo(dinfo)
