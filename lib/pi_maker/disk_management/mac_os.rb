@@ -111,7 +111,7 @@ module PiMaker
 
           {
             dev_path: dpath,
-            size: plist['Size'],
+            bytesize: plist['Size'],
             mount_point: plist['MountPoint'],
             partitions: parts,
             filesystem: mount_fs(dpath)

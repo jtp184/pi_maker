@@ -9,17 +9,8 @@ module PiMaker
 
       class << self
         # Converts listed disks into StorageDevice objects
-        def list_storage_devices
-          list.select(&:removable).map do |dsk|
-            DiskManagement::StorageDevice.new(disk: dsk)
-          end
-        end
-
-        # Return non-storage devices
-        def list_internal_devices
-          list.reject(&:removable).map do |dsk|
-            DiskManagement::StorageDevice.new(disk: dsk)
-          end
+        def list_devices
+          list.map { |dsk| DiskManagement::StorageDevice.new(disk: dsk) }
         end
 
         # Gets the size of the entire directory using `du`
@@ -34,7 +25,7 @@ module PiMaker
         # Given an image +img_path+, writes the image to the disk +dsk+
         def write_image(img_path, dsk)
           unmount_disk(dsk)
-          PiMaker.system_cmd("sudo dd bs=1m if=#{img_path} of=#{raw_disk_path(dsk)}")
+          IO.popen("sudo dd bs=1m if=#{img_path} of=#{raw_disk_path(dsk)}", err: %i[child out])
         end
 
         # Scans the mount_list result for +dev_path+ and returns the path if it is mounted
