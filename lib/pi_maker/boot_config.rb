@@ -55,6 +55,7 @@ module PiMaker
 
     private
 
+    # The default options
     def default_config
       conf = {
         'pi4' => {

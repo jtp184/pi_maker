@@ -107,8 +107,9 @@ module PiMaker
         first_mounted&.mount_point
       end
 
+      # Get a raw disk path for the disk
       def raw_disk_path
-        DiskManagement.raw_disk_path(to_s)
+        DiskManagement.raw_disk_path(self)
       end
 
       # Given an image +img_path+, writes the image to the disk of this StorageDevice

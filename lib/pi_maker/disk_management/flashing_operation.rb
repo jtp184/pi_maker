@@ -4,7 +4,12 @@ module PiMaker
   module DiskManagement
     # Wraps a pipe running dd to write the image to the SD card
     class FlashingOperation
-      attr_reader :image_path, :disk, :pipe
+      # The image being flashed
+      attr_reader :image_path
+      # The disk to flash to
+      attr_reader :disk
+      # The operation in progress
+      attr_reader :pipe
 
       # Creates a new instance and runs #call on it
       def self.start(opts = {})
