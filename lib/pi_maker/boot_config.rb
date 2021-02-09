@@ -54,7 +54,7 @@ module PiMaker
 
     # Respond to the config's messages
     def respond_to_missing?(mtd_name, priv = false)
-      config.respond_to?(mtd_name, priv) || super
+      FILTERS.include?(mtd_name.to_s) || config.respond_to?(mtd_name, priv) || super
     end
 
     # Output all config options as a stream of k=v
