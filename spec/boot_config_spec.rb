@@ -10,7 +10,7 @@ RSpec.describe PiMaker::BootConfig do
     expect(boot_config.to_s).to match(/ssh_enabled=/)
   end
 
-  define 'default path by OS' do
+  describe 'default path by OS' do
     subject { described_class.new.path }
 
     context 'on mac' do
@@ -32,7 +32,7 @@ RSpec.describe PiMaker::BootConfig do
     end
   end
 
-  define '#to_s' do
+  describe '#to_s' do
     subject { described_class.new.to_s }
 
     it 'returns a list of config options' do
@@ -42,7 +42,7 @@ RSpec.describe PiMaker::BootConfig do
     end
   end
 
-  define '#[]' do
+  describe '#[]' do
     let(:config_params) do
       {
         'pi3' => { 'test_3_param' => true },
@@ -50,7 +50,7 @@ RSpec.describe PiMaker::BootConfig do
       }
     end
 
-    let(:boot_config) { FactoryBot.new(:boot_config, config: config_params) }
+    let(:boot_config) { FactoryBot.build(:boot_config, config: config_params) }
 
     context 'key is one of the filters' do
       subject { boot_config['pi3'] }
