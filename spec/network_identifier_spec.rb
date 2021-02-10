@@ -1,14 +1,10 @@
 RSpec.describe PiMaker::NetworkIdentifier do
-  before(:each) do
-    allow(PiMaker::NetworkIdentifier).to receive(:run_nmap) { FactoryBot.fixtures[:nmap] }
-    allow(PiMaker::NetworkIdentifier).to receive(:run_arp) { FactoryBot.fixtures[:arp] }
-  end
-
   describe '.call' do
     subject { described_class.call(scan_with: program) }
 
     context 'using nmap' do
       let(:program) { :nmap }
+      before { allow(PiMaker).to receive(:system_cmd).and_return(FactoryBot.fixtures[:nmap]) }
 
       it 'returns a list of ips' do
         expect(subject).to all(be_a(String))
@@ -21,6 +17,7 @@ RSpec.describe PiMaker::NetworkIdentifier do
 
     context 'using arp' do
       let(:program) { :arp }
+      before { allow(PiMaker).to receive(:system_cmd).and_return(FactoryBot.fixtures[:arp]) }
 
       it 'returns a list of ips' do
         expect(subject).to all(be_a(String))
