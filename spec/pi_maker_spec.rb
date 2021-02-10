@@ -16,31 +16,25 @@ RSpec.describe 'Base Module' do
     subject { PiMaker.host_os }
 
     context 'on windows' do
-      before(:each) { stub_const('RUBY_PLATFORM', platform_strings[:windows]) }
+      include_context 'on windows platform'
 
       it { is_expected.to eq(:windows) }
     end
 
     context 'on mac' do
-      before(:each) { stub_const('RUBY_PLATFORM', platform_strings[:mac]) }
+      include_context 'on mac platform'
 
       it { is_expected.to eq(:mac) }
     end
 
     context 'on linux' do
-      before(:each) do
-        stub_const('RUBY_PLATFORM', platform_strings[:linux])
-        allow(File).to receive(:read).with('/proc/cpuinfo').and_return('Ubuntu')
-      end
+      include_context 'on linux platform'
 
       it { is_expected.to eq(:linux) }
     end
 
     context 'on raspberrypi' do
-      before(:each) do
-        stub_const('RUBY_PLATFORM', platform_strings[:raspberrypi])
-        allow(File).to receive(:read).with('/proc/cpuinfo').and_return('Raspberry Pi')
-      end
+      include_context 'on raspberrypi platform'
 
       it { is_expected.to eq(:raspberrypi) }
     end
