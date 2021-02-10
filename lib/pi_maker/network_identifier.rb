@@ -11,14 +11,26 @@ module PiMaker
     ].freeze
 
     class << self
-      # Takes in +opts+ for :scan_with program, returns an array of ips
+      # Takes in +opts+ for :scan_with program, and optional overrides for run, parse, and filter with.
+      # returns an array of ips
       def call(opts = {})
-        prog = opts.fetch(:scan_with, :arp)
+        prog = opts.fetch(:scan_with) do
+          %i[arp nmap].detect { |r| TTY::Which.which(r.to_s) }
+        end
 
-        hosts = send(:"run_#{prog}", opts)
-        hosts = send(:"parse_#{prog}", hosts)
+        raise ArgumentError, "#{prog} is not installed" unless TTY::Which.which(prog.to_s)
 
-        send(:"filter_#{prog}", hosts)
+        hosts = opts.fetch(:run_with) do
+          method(:"run_#{prog}") if respond_to?(:"run_#{prog}")
+        end.call(opts)
+
+        hosts = opts.fetch(:parse_with) do
+          method(:"parse_#{prog}") if respond_to?(:"parse_#{prog}")
+        end.call(hosts)
+
+        opts.fetch(:filter_with) do
+          method(:"filter_#{prog}") if respond_to?(:"filter_#{prog}")
+        end.call(hosts)
       end
 
       private
