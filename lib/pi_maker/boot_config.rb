@@ -122,7 +122,7 @@ module PiMaker
         opts[current_group][val[1]] = val[2]
       end
 
-      OpenStruct.new(opts)
+      OpenStruct.new(opts.transform_values { |v| OpenStruct.new(v) })
     end
   end
 end

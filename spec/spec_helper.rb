@@ -1,7 +1,9 @@
 require 'bundler/setup'
 
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter(/spec/)
+end
 
 require 'securerandom'
 require 'factory_bot'
@@ -9,6 +11,7 @@ require 'pry'
 require 'pi_maker'
 
 require_relative 'support/matchers'
+require_relative 'support/shared_contexts'
 
 # Add a patch to pull fixtures in as well
 module FactoryBot

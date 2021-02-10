@@ -21,6 +21,13 @@ FactoryBot.define do
       ]
     end
 
+    raspi_config do
+      {
+        do_spi: 0,
+        do_expand_rootfs: nil
+      }
+    end
+
     initialize_with { PiMaker::Recipe.new(**attributes) }
   end
 end
