@@ -10,6 +10,10 @@ RSpec.describe PiMaker::BootConfig do
     expect(boot_config.to_s).to match(/ssh_enabled=/)
   end
 
+  it 'responds to filters' do
+    expect(boot_config).to respond_to(:pi3)
+  end
+
   describe 'default path by OS' do
     subject { described_class.new.path }
 
@@ -29,6 +33,20 @@ RSpec.describe PiMaker::BootConfig do
       before { allow(PiMaker).to receive(:host_os).and_return(:windows) }
 
       it { is_expected.to eq('E:/config.txt') }
+    end
+  end
+
+  describe 'reading files when path is passed' do
+    before do
+      allow(File).to receive(:read).and_return(
+        "[pi4]\ndtparam=audio=on\nmax_framebuffers=2\n[all]\ndtoverlay=vc4-fkms-v3d\ntest_option=0\n\n"
+      )
+
+      allow(File).to receive(:exist?).and_return(true)
+    end
+
+    it 'reads the file' do
+      expect(described_class.new(path: '/path/to/file').test_option).to eq('0')
     end
   end
 
