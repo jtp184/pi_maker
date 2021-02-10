@@ -21,15 +21,15 @@ module PiMaker
         raise ArgumentError, "#{prog} is not installed" unless TTY::Which.which(prog.to_s)
 
         hosts = opts.fetch(:run_with) do
-          method(:"run_#{prog}") if respond_to?(:"run_#{prog}")
+          method(:"run_#{prog}")
         end.call(opts)
 
         hosts = opts.fetch(:parse_with) do
-          method(:"parse_#{prog}") if respond_to?(:"parse_#{prog}")
+          method(:"parse_#{prog}")
         end.call(hosts)
 
         opts.fetch(:filter_with) do
-          method(:"filter_#{prog}") if respond_to?(:"filter_#{prog}")
+          method(:"filter_#{prog}")
         end.call(hosts)
       end
 
