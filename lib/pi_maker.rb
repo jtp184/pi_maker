@@ -8,7 +8,7 @@ require 'pi_maker/command_group'
 require 'pi_maker/network_identifier'
 require 'pi_maker/remote_runner'
 require 'pi_maker/boot_config'
-require 'pi_maker/wifi_config'
+require 'pi_maker/wpa_config'
 require 'pi_maker/recipe'
 require 'pi_maker/file_encrypter'
 

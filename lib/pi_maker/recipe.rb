@@ -1,3 +1,5 @@
+require 'psych'
+
 module PiMaker
   # Define a pi and its dependencies and config options
   class Recipe
@@ -6,7 +8,7 @@ module PiMaker
     # A password to set instead of raspberry
     attr_accessor :password
     # A WifiConfig to install on the card
-    attr_accessor :wifi_config
+    attr_accessor :wpa_config
     # A BootConfig to install on the card
     attr_accessor :boot_config
     # An Ingredients to set install options
@@ -16,8 +18,8 @@ module PiMaker
     def initialize(opts = {})
       @hostname =  opts.fetch(:hostname, nil)
       @password =  opts.fetch(:password, nil)
-      @wifi_config =  opts.fetch(:wifi_config, WifiConfig.new)
-      @boot_config =  opts.fetch(:boot_config, BootConfig.new)
+      @wpa_config = opts.fetch(:wpa_config, WpaConfig.new)
+      @boot_config = opts.fetch(:boot_config, BootConfig.new)
       @initial_setup = opts.fetch(:initial_setup, Ingredients.new)
     end
 
@@ -28,11 +30,11 @@ module PiMaker
 
       # TODO Wifi
 
-      inst.yaml[:boot_config_options].each do |key, value|
-        boot_config.public_send(:"#{key}=", value)
+      yaml[:boot_config_options].each do |key, value|
+        inst.boot_config.public_send(:"#{key}=", value)
       end
 
-      inst.initial_setup = Ingredients.new(yaml[:initial_setup])
+      inst.initial_setup = Ingredients.new(yaml[:initial_setup_options])
 
       inst
     end
