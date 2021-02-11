@@ -28,7 +28,15 @@ module PiMaker
 
       inst = new(yaml.slice(:hostname, :password))
 
-      # TODO Wifi
+      yaml[:wifi_config_options].each do |wifi|
+        if wifi.is_a?(String)
+          # TODO: pull out of a loaded persistance file
+        elsif wifi.is_a?(Hash)
+          inst.wpa_config.append(*wifi.first)
+        else
+          next
+        end
+      end
 
       yaml[:boot_config_options].each do |key, value|
         inst.boot_config.public_send(:"#{key}=", value)
