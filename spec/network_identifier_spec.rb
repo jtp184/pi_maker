@@ -2,6 +2,12 @@ RSpec.describe PiMaker::NetworkIdentifier do
   describe '.call' do
     subject { described_class.call(scan_with: program) }
 
+    before do
+      allow(TTY::Which).to(
+        receive(:which).with(program.to_s).and_return(!FactoryBot.fixtures[program].nil?)
+      )
+    end
+
     context 'using nmap' do
       let(:program) { :nmap }
       before { allow(PiMaker).to receive(:system_cmd).and_return(FactoryBot.fixtures[:nmap]) }
