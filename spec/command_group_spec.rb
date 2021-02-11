@@ -25,8 +25,8 @@ RSpec.describe PiMaker::CommandGroup do
   end
 
   describe 'transformation methods' do
-    it 'responds to all of the Recipe fields' do
-      mtds = PiMaker::Recipe::LISTS.keys + PiMaker::Recipe::TEXT_BLOCKS.keys
+    it 'responds to all of the Ingredients fields' do
+      mtds = PiMaker::Ingredients::LISTS.keys + PiMaker::Ingredients::TEXT_BLOCKS.keys
 
       mtds.each do |mtd|
         expect(command_group).to respond_to(mtd)
