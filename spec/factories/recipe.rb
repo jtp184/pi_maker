@@ -6,7 +6,7 @@ FactoryBot.define do
       {
         'jtp184/arch_dotfiles' => [
           'mkdir -p ~/.config',
-          'cp -ri ~/repos/arch_dotfiles/config ~/.config'
+          'cp -R ~/repos/arch_dotfiles/config ~/.config'
         ],
         'M0nica' => []
       }
@@ -23,8 +23,8 @@ FactoryBot.define do
 
     raspi_config do
       {
-        do_spi: 0,
-        do_expand_rootfs: nil
+        'do_spi' => 0,
+        'do_expand_rootfs' => nil
       }
     end
 

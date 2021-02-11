@@ -40,6 +40,12 @@ module PiMaker
       valid_attribute?(field) ? public_send(field) : nil
     end
 
+    def to_h
+      (LISTS.keys + TEXT_BLOCKS.keys).map.with_object({}) do |val, acc|
+        acc[val] = send(val) if send(val)
+      end
+    end
+
     private
 
     # Returns true if the +key+ is one of the LISTS or TEXT_BLOCKS keys

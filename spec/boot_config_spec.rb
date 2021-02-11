@@ -73,7 +73,7 @@ RSpec.describe PiMaker::BootConfig do
     context 'key is one of the filters' do
       subject { boot_config['pi3'] }
 
-      it { is_expected.to be_a(Hash) }
+      it { is_expected.to be_a(OpenStruct) }
     end
 
     context 'key is not one of the filters' do

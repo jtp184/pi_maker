@@ -7,6 +7,8 @@ module PiMaker
     attr_reader :config
     # The path to save the file to
     attr_reader :path
+    # Enable ssh on the boot volume
+    attr_reader :ssh
 
     # The different groups a config option can belong to
     FILTERS = %w[
@@ -33,13 +35,20 @@ module PiMaker
         end
       end
 
-      @config = opts.fetch(:config) do
-        if File.exist?(path)
-          parse_file(File.read(path))
-        else
-          OpenStruct.new(default_config)
+      @config = File.exist?(path) ? parse_file(File.read(path)) : OpenStruct.new(default_config)
+
+      if opts.key?(:config)
+        opts[:config].each do |key, value|
+          if FILTERS.include?(key.to_s) && value.is_a?(Hash)
+            config[key] ||= OpenStruct.new
+            value.each { |k, v| config[key][k] = v }
+          else
+            send(:"#{key}=", value)
+          end
         end
       end
+
+      @ssh = opts.fetch(:ssh, true)
     end
 
     # Pass arguments to config
