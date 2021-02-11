@@ -1,5 +1,5 @@
 module PiMaker
-  # Definable inside a gem, passes options to it
+  # Set options for what to install / run
   class Ingredients
     # Defined attributes on the class which store collections
     LISTS = {
@@ -20,6 +20,16 @@ module PiMaker
 
     # Use the +opts+ hash to populate instance vars
     def initialize(opts = {})
+      opt_hash = opts.to_h
+
+      LISTS.each do |c, t|
+        instance_variable_set(:"@#{c}", opt_hash.key?(c) ? opt_hash[c] : t.new)
+      end
+
+      TEXT_BLOCKS.each_key do |c|
+        instance_variable_set(:"@#{c}", opt_hash.key?(c) ? opt_hash[c] : [])
+      end
+
       opts.to_h.each do |key, value|
         next unless valid_attribute?(key)
         next if LISTS.include?(key) && !value.is_a?(LISTS[key])
@@ -40,6 +50,7 @@ module PiMaker
       valid_attribute?(field) ? public_send(field) : nil
     end
 
+    # Convert to a hash representation by map reducing the keys
     def to_h
       (LISTS.keys + TEXT_BLOCKS.keys).map.with_object({}) do |val, acc|
         acc[val] = send(val) if send(val)

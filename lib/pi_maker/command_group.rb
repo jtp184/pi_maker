@@ -32,7 +32,7 @@ module PiMaker
         acc
       end.compact
 
-      cmds.unshift('mkdir ~/repos') if ingredients[:github_repos]
+      cmds.unshift('mkdir -p ~/repos') if ingredients[:github_repos]
       cmds.unshift('sudo apt-get update') if ingredients[:apt_packages] || ingredients[:gems]
 
       cmds.flatten
@@ -41,8 +41,8 @@ module PiMaker
     # Build text blocks to be copied and appended to files
     def text_blocks
       PiMaker::Ingredients::TEXT_BLOCKS.map { |field, path| [path, ingredients.public_send(field)] }
-                                  .reject { |b| b[1].nil? }
-                                  .to_h
+                                       .reject { |b| b[1].nil? }
+                                       .to_h
     end
 
     # Construct an apt-get install string from the packages

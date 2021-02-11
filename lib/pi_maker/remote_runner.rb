@@ -32,10 +32,10 @@ module PiMaker
     def run_commands
       return if command_group.commands.empty?
 
-      command_group.commands.each do |cmd|
-        @result << [cmd, []]
+      Net::SSH.start(*ssh_options) do |connection|
+        command_group.commands.each do |cmd|
+          @result << [cmd, []]
 
-        Net::SSH.start(*ssh_options) do |connection|
           connection.open_channel do |ssh|
             ssh.exec(cmd) do |tty, _ret|
               tty.on_data do |_c, line|
@@ -47,9 +47,9 @@ module PiMaker
               end
             end
           end.wait
-        end
 
-        @result.last.last << '' if @result.last.last.empty?
+          @result.last.last << '' if @result.last.last.empty?
+        end
       end
     end
 
