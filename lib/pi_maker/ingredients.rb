@@ -1,6 +1,6 @@
 module PiMaker
   # Definable inside a gem, passes options to it
-  class Recipe
+  class Ingredients
     # Defined attributes on the class which store collections
     LISTS = {
       apt_packages: Array,

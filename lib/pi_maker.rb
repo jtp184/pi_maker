@@ -2,7 +2,7 @@ require 'strings-case'
 require 'tty-command'
 
 require 'pi_maker/version'
-require 'pi_maker/recipe'
+require 'pi_maker/ingredients'
 require 'pi_maker/disk_management'
 require 'pi_maker/command_group'
 require 'pi_maker/network_identifier'

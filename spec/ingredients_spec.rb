@@ -1,6 +1,6 @@
-RSpec.describe PiMaker::Recipe do
-  let(:recipe) { FactoryBot.build(:recipe) }
-  let(:init_args) { FactoryBot.attributes_for(:recipe) }
+RSpec.describe PiMaker::Ingredients do
+  let(:ingredients) { FactoryBot.build(:ingredients) }
+  let(:init_args) { FactoryBot.attributes_for(:ingredients) }
 
   it 'Allows defining by hash' do
     created = described_class.define(init_args)
@@ -8,9 +8,9 @@ RSpec.describe PiMaker::Recipe do
   end
 
   it 'Allows defining by block' do
-    created = described_class.define do |recipe|
+    created = described_class.define do |ingredients|
       init_args.each do |key, value|
-        recipe.send(:"#{key}=", value)
+        ingredients.send(:"#{key}=", value)
       end
     end
 
