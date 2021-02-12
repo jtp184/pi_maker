@@ -21,6 +21,13 @@ module PiMaker
       end
     end
 
+    # Yield to a block, or directly use the +hsh+ to create a new instance
+    def self.define(hsh = {})
+      opts = OpenStruct.new(hsh)
+      yield opts if block_given?
+      new(opts)
+    end
+
     # Takes in the +yml+ string, loads the options from it and returns a new instance
     def self.from_yaml(yml)
       yaml = Psych.load(yml)
@@ -31,13 +38,10 @@ module PiMaker
         inst.wpa_config = WpaConfig.new
 
         yaml[:wifi_config_options][:networks].each do |wifi|
-          if wifi.is_a?(String)
-            # TODO: pull out of a loaded persistance file
-          elsif wifi.is_a?(Hash)
-            inst.wpa_config.append(*wifi.first)
-          else
-            next
-          end
+          next unless [Hash, String].detect { |c| wifi.is_a?(c) }
+
+          # TODO: in place ssid
+          wifi.respond_to?(:[]) ? inst.wpa_config.append(*wifi.first) : nil
         end
       end
 
