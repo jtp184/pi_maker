@@ -8,7 +8,7 @@ module PiMaker
     attr_accessor :country_code
 
     # How to output a network into string format
-    LINE = <<~DOC.freeze
+    NETWORK_FORMATTER = <<~DOC.freeze
       network={
         ssid="%<ssid>s"
         psk="%<password>s"
@@ -70,7 +70,7 @@ module PiMaker
     # completed file contents string
     def build
       "#{PREAMBLE}country=#{country_code}\n\n" + networks.map.with_index do |n, x|
-        format(LINE, ssid: n[0], password: n[1], priority: x + 1)
+        format(NETWORK_FORMATTER, ssid: n[0], password: n[1], priority: x + 1)
       end.join("\n\n")
     end
   end
