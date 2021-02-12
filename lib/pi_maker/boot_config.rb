@@ -98,8 +98,10 @@ module PiMaker
     end
 
     # Dump the hash representation
-    def to_yaml
-      Psych.dump(to_h)
+    def to_yaml(opts = {})
+      yml = Psych.dump(to_h)
+
+      opts[:encrypt] ? FileEncrypter.encrypt(yml, opts.fetch(:password)) : yml
     end
 
     private

@@ -29,8 +29,8 @@ module PiMaker
     end
 
     # Takes in the +yml+ string, loads the options from it and returns a new instance
-    def self.from_yaml(yml)
-      yaml = Psych.load(yml)
+    def self.from_yaml(yml, encrypted = nil)
+      yaml = Psych.load(encrypted ? FileEncrypter.decrypt(yml, encrypted) : yml)
 
       inst = new(yaml.slice(:hostname, :password))
 
@@ -56,7 +56,9 @@ module PiMaker
 
     # Dumps the hash to a YAML format, taking in +opts+ to pass to to_h
     def to_yaml(opts = {})
-      Psych.dump(to_h(opts))
+      yml = Psych.dump(to_h(opts))
+
+      opts[:encrypt] ? FileEncrypter.encrypt(yml, opts.fetch(:password)) : yml
     end
 
     class << self

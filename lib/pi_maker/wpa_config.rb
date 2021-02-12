@@ -20,8 +20,10 @@ module PiMaker
     PREAMBLE = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\n".freeze
 
     # Parse the +yml+ string and create a new instance from it
-    def self.from_yaml(yml)
-      new(Psych.load(yml))
+    def self.from_yaml(yml, encrypted = nil)
+      yml_str = Psych.load(encrypted ? FileEncrypter.decrypt(yml, encrypted) : yml)
+
+      new(yml_str)
     end
 
     # Take in +opts+ for networks and country_code
@@ -61,7 +63,9 @@ module PiMaker
 
     # Export a YAML representation of the class
     def to_yaml
-      Psych.dump(to_h)
+      yml = Psych.dump(to_h)
+
+      opts[:encrypt] ? FileEncrypter.encrypt(yml, opts.fetch(:password)) : yml
     end
 
     private
