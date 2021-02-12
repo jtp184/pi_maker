@@ -8,7 +8,14 @@ module PiMaker
     attr_accessor :country_code
 
     # How to output a network into string format
-    LINE = %(network={\n  ssid="%<ssid>s"\n  psk="%<password>s"\n  priority=%<priority>s\n}).freeze
+    LINE = <<~DOC.freeze
+      network={
+        ssid="%<ssid>s"
+        psk="%<password>s"
+        priority=%<priority>d
+      }
+    DOC
+
     # Two opening lines present in a wpa_config
     PREAMBLE = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\n".freeze
 
@@ -62,17 +69,9 @@ module PiMaker
     # Adds together the preamble and country code to the networks to make the
     # completed file contents string
     def build
-      str = [
-        PREAMBLE,
-        "country=#{country_code}",
-        "\n\n"
-      ].join
-
-      str += networks.map.with_index do |n, x|
+      "#{PREAMBLE}country=#{country_code}\n\n" + networks.map.with_index do |n, x|
         format(LINE, ssid: n[0], password: n[1], priority: x + 1)
       end.join("\n\n")
-
-      str
     end
   end
 end
