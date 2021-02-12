@@ -92,16 +92,19 @@ module PiMaker
       s << "\n"
     end
 
+    # Return a hash representation
     def to_h
-      deep_hashify
+      { ssh: ssh, config: deep_hashify }
     end
 
+    # Dump the hash representation
     def to_yaml
-      Psych.dump(ssh: ssh, config: deep_hashify)
+      Psych.dump(to_h)
     end
 
     private
 
+    # Given the starting +note+, recursively transforms the subvalues to hashes
     def deep_hashify(node = config)
       node.to_h.transform_values do |v|
         v.respond_to?(:to_h) ? deep_hashify(v) : v

@@ -21,6 +21,7 @@ module PiMaker
       end
     end
 
+    # Takes in the +yml+ string, loads the options from it and returns a new instance
     def self.from_yaml(yml)
       yaml = Psych.load(yml)
 
@@ -55,6 +56,7 @@ module PiMaker
       inst
     end
 
+    # Takes in +opts+ for whether to export :with_passwords, and returns a hash representation
     def to_h(opts = {})
       data = {}
 
@@ -67,6 +69,7 @@ module PiMaker
       data
     end
 
+    # Dumps the hash to a YAML format, taking in +opts+ to pass to to_h
     def to_yaml(opts = {})
       Psych.dump(to_h(opts))
     end
