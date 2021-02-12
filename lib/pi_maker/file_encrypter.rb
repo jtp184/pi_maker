@@ -9,26 +9,26 @@ module PiMaker
 
       # Given +opts+ for the :data to encrypt, and a :password to encrypt it with, returns an
       # encoded string
-      def encrypt(opts = {})
+      def encrypt(str, passwd)
         new_cipher.encrypt
 
-        cipher.key = key_from_password(opts.fetch(:password))
+        cipher.key = key_from_password(passwd)
         vector = cipher.random_iv
 
-        data = cipher.update(opts.fetch(:data)) + cipher.final
+        data = cipher.update(str) + cipher.final
 
         [vector, "\nJ\nT\nP", data].join
       end
 
       # Given +opts+ for the :data to decrypt, and a :password to decrypt it with, returns the
       # original string
-      def decrypt(opts = {})
-        vector, data = opts.fetch(:data).split("\nJ\nT\nP")
+      def decrypt(str, passwd)
+        vector, data = str.split("\nJ\nT\nP")
 
         new_cipher.decrypt
 
         cipher.iv = vector
-        cipher.key = key_from_password(opts.fetch(:password))
+        cipher.key = key_from_password(passwd)
 
         cipher.update(data) + cipher.final
       end
@@ -36,9 +36,7 @@ module PiMaker
       # Given a +str+ and a +passwd+, decides whether to encrypt or decrypt based on matching the
       # ENCRYPTED_FILE_MATCHER and then does so
       def call(str, passwd)
-        args = { data: str, password: passwd }
-
-        str.match?(ENCRYPTED_FILE_MATCHER) ? decrypt(args) : encrypt(args)
+        str.match?(ENCRYPTED_FILE_MATCHER) ? decrypt(str, passwd) : encrypt(str, passwd)
       end
 
       alias [] call
