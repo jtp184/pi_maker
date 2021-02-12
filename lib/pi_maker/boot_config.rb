@@ -53,8 +53,12 @@ module PiMaker
 
     # Pass arguments to config
     def method_missing(mtd_name, *args, &blk)
-      if FILTERS.include?(mtd_name.to_s)
-        config.public_send(mtd_name, *args, &blk)
+      if FILTERS.any? { |f| mtd_name =~ /^(#{f})=$/ } && args.one?
+        filter = Regexp.last_match[1].to_sym
+        config[filter] ||= OpenStruct.new
+        args.first.each { |k, v| config[filter][k] = v }
+      elsif FILTERS.include?(mtd_name.to_s)
+        config[mtd_name]
       else
         config.public_send(:all)
               .public_send(mtd_name, *args, &blk)
@@ -88,7 +92,21 @@ module PiMaker
       s << "\n"
     end
 
+    def to_h
+      deep_hashify
+    end
+
+    def to_yaml
+      Psych.dump(ssh: ssh, config: deep_hashify)
+    end
+
     private
+
+    def deep_hashify(node = config)
+      node.to_h.transform_values do |v|
+        v.respond_to?(:to_h) ? deep_hashify(v) : v
+      end
+    end
 
     # The default options
     def default_config

@@ -16,11 +16,9 @@ module PiMaker
 
     # Takes in +opts+ for the attributes
     def initialize(opts = {})
-      @hostname =  opts.fetch(:hostname, nil)
-      @password =  opts.fetch(:password, nil)
-      @wpa_config = opts.fetch(:wpa_config, WpaConfig.new)
-      @boot_config = opts.fetch(:boot_config, BootConfig.new)
-      @initial_setup = opts.fetch(:initial_setup, Ingredients.new)
+      %i[hostname password wpa_config boot_config initial_setup].each do |key|
+        instance_variable_set("@#{key}", opts[key]) if opts.key?(key)
+      end
     end
 
     def self.from_yaml(yml)
@@ -28,28 +26,49 @@ module PiMaker
 
       inst = new(yaml.slice(:hostname, :password))
 
-      yaml[:wifi_config_options].each do |wifi|
-        if wifi.is_a?(String)
-          # TODO: pull out of a loaded persistance file
-        elsif wifi.is_a?(Hash)
-          inst.wpa_config.append(*wifi.first)
-        else
-          next
+      if yaml.key?(:wifi_config_options)
+        inst.wpa_config = WpaConfig.new
+
+        yaml[:wifi_config_options][:networks].each do |wifi|
+          if wifi.is_a?(String)
+            # TODO: pull out of a loaded persistance file
+          elsif wifi.is_a?(Hash)
+            inst.wpa_config.append(*wifi.first)
+          else
+            next
+          end
         end
       end
 
-      yaml[:boot_config_options].each do |key, value|
-        inst.boot_config.public_send(:"#{key}=", value)
+      if yaml.key?(:boot_config_options)
+        inst.boot_config = BootConfig.new
+
+        yaml[:boot_config_options].each do |key, value|
+          inst.boot_config.public_send(:"#{key}=", value)
+        end
       end
 
-      inst.initial_setup = Ingredients.new(yaml[:initial_setup_options])
+      if yaml.key?(:initial_setup_options)
+        inst.initial_setup = Ingredients.new(yaml[:initial_setup_options])
+      end
 
       inst
     end
 
-    def to_yaml
+    def to_h(opts = {})
+      data = {}
+
+      %i[hostname password].each { |k| data[k] = send(k) if send(k) }
+
+      data[:wifi_config_options] = wpa_config.to_h(opts.fetch(:with_passwords, false)) if wpa_config
+      data[:boot_config_options] = boot_config.to_h if boot_config
+      data[:initial_setup_options] = initial_setup.to_h if initial_setup
+
+      data
     end
 
-    private
+    def to_yaml(opts = {})
+      Psych.dump(to_h(opts))
+    end
   end
 end

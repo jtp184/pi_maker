@@ -36,6 +36,12 @@ module PiMaker
       prioritize_networks
     end
 
+    # Adds a priority based on index to the networks
+    def prioritize_networks
+      networks.each_with_index { |n, i| n.priority = i + 1 }
+      self
+    end
+
     # Runs the build method and returns the result
     def to_s
       build
@@ -46,15 +52,21 @@ module PiMaker
       build
     end
 
-    # Adds a priority based on index to the networks
-    def prioritize_networks
-      networks.each_with_index { |n, i| n.priority = i + 1 }
-      self
+    # Returns a hash representation, optionally +with_passwords+
+    def to_h(with_passwords = false)
+      data = {}
+
+      convert_networks = with_passwords ? ->(n) { { n.ssid => n.password } } : ->(n) { n.ssid }
+
+      data[:country_code] = country_code
+      data[:networks] = networks.map(&convert_networks)
+
+      data
     end
 
     # Export a YAML representation of the class
     def to_yaml
-      Psych.dump(country_code: country_code, networks: networks.map { |n| { n.ssid => n.password } })
+      Psych.dump(to_h)
     end
 
     private
