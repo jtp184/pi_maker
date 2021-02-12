@@ -34,28 +34,9 @@ module PiMaker
 
       inst = new(yaml.slice(:hostname, :password))
 
-      if yaml.key?(:wifi_config_options)
-        inst.wpa_config = WpaConfig.new
-
-        yaml[:wifi_config_options][:networks].each do |wifi|
-          next unless [Hash, String].detect { |c| wifi.is_a?(c) }
-
-          # TODO: in place ssid
-          wifi.respond_to?(:[]) ? inst.wpa_config.append(*wifi.first) : nil
-        end
-      end
-
-      if yaml.key?(:boot_config_options)
-        inst.boot_config = BootConfig.new
-
-        yaml[:boot_config_options].each do |key, value|
-          inst.boot_config.public_send(:"#{key}=", value)
-        end
-      end
-
-      if yaml.key?(:initial_setup_options)
-        inst.initial_setup = Ingredients.new(yaml[:initial_setup_options])
-      end
+      parse_wifi_config_options(inst, yaml)
+      parse_boot_config_options(inst, yaml)
+      parse_initial_config_options(inst, yaml)
 
       inst
     end
@@ -76,6 +57,43 @@ module PiMaker
     # Dumps the hash to a YAML format, taking in +opts+ to pass to to_h
     def to_yaml(opts = {})
       Psych.dump(to_h(opts))
+    end
+
+    class << self
+      private
+
+      # Parses the initial config options
+      def parse_initial_config_options(inst, opts)
+        return unless opts.key?(:initial_setup_options)
+
+        inst.initial_setup ||= Ingredients.new(opts[:initial_setup_options])
+      end
+
+      # Parses the boot config options
+      def parse_boot_config_options(inst, opts)
+        return unless opts.key?(:boot_config_options)
+
+        inst.boot_config ||= BootConfig.new
+
+        opts[:boot_config_options].each do |key, value|
+          inst.boot_config.public_send(:"#{key}=", value)
+        end
+      end
+
+      # Parses the wifi config options
+      def parse_wifi_config_options(inst, opts)
+        return unless opts.key?(:wifi_config_options)
+
+        conf = opts[:wifi_config_options]
+        inst.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
+
+        conf[:networks].each do |args|
+          next unless [Array, String].detect { |c| args.is_a?(c) }
+
+          # TODO: in place ssid
+          inst.wpa_config.append(*args) if args.respond_to?(:[])
+        end
+      end
     end
   end
 end
