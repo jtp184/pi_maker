@@ -42,8 +42,12 @@ module PiMaker
           if FILTERS.include?(key.to_s) && value.is_a?(Hash)
             config[key] ||= OpenStruct.new
             value.each { |k, v| config[key][k] = v }
+          elsif value.is_a?(Hash)
+            config['all'] ||= OpenStruct.new
+            value.each { |k, v| config['all'][k] = v }
           else
-            send(:"#{key}=", value)
+            config['all'] ||= OpenStruct.new
+            config['all'][key] = value
           end
         end
       end
@@ -58,7 +62,7 @@ module PiMaker
         config[filter] ||= OpenStruct.new
         args.first.each { |k, v| config[filter][k] = v }
       elsif FILTERS.include?(mtd_name.to_s)
-        config[mtd_name]
+        config[mtd_name] ||= OpenStruct.new
       else
         config.public_send(:all)
               .public_send(mtd_name, *args, &blk)
@@ -140,7 +144,7 @@ module PiMaker
       end.compact
 
       opts = { all: {} }
-      current_group = :all
+      current_group = 'all'
 
       set_lines.each do |val|
         group_declare = val[1] == '['

@@ -1,5 +1,6 @@
 RSpec.describe PiMaker::BootConfig do
   let(:boot_config) { described_class.new }
+  let(:test_value) { { 'testkey=testval' => 1 } }
 
   it 'has default options' do
     expect(described_class.new.to_h.keys.count).not_to be(0)
@@ -8,6 +9,29 @@ RSpec.describe PiMaker::BootConfig do
   it 'can have options set' do
     boot_config.all.ssh_enabled = true
     expect(boot_config.to_s).to match(/ssh_enabled=/)
+  end
+
+  it 'can have options set directly and put them in \'all\'' do
+    boot_config.testexample = true
+    expect(boot_config.all.testexample).to eq(true)
+  end
+
+  it 'can write a filter config directly' do
+    boot_config.pi0 = test_value
+    expect(boot_config.pi0).to be_a(OpenStruct)
+  end
+
+  it 'can instantiate a filter config' do
+    fc = described_class.new(config: { pi0: test_value })
+
+    expect(fc.pi0).to be_a(OpenStruct)
+    expect(fc['pi0']['testkey=testval']).to eq(1)
+  end
+
+  it 'can instantiate a general config' do
+    fc = described_class.new(config: test_value)
+
+    expect(fc['all']['testkey=testval']).to eq(1)
   end
 
   it 'responds to filters' do

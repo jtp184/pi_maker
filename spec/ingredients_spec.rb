@@ -22,4 +22,12 @@ RSpec.describe PiMaker::Ingredients do
 
     expect(created.instance_variable_get(:"@invalid")).to be_nil
   end
+
+  it 'can be accessed with []' do
+    expect(ingredients[:gems]).to include('colorize')
+  end
+
+  it 'can convert to a hash' do
+    expect(ingredients.to_h[:gems]).to include('colorize')
+  end
 end
