@@ -39,14 +39,13 @@ module PiMaker
 
     # Guards against lack of wifi config, then memoizes loading the config file
     def wifi_networks
-      return unless file_present?(/#{WIFI_CONFIG_FILENAME}/)
+      @wifi_networks ||= if file_present?(/#{WIFI_CONFIG_FILENAME}/)
+                           fn = file_list.detect { |d| d.match?(/#{WIFI_CONFIG_FILENAME}/) }
 
-      @wifi_networks ||= Psych.load(
-        FileEncrypter.call(
-          File.read(file_list.detect { |d| d.match?(/#{WIFI_CONFIG_FILENAME}/) }),
-          password
-        )
-      )
+                           Psych.load(FileEncrypter.call(File.read(fn)), password)
+                         else
+                           []
+                         end
     end
 
     private
