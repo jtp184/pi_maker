@@ -5,7 +5,7 @@ module PiMaker
   module FileEncrypter
     class << self
       # Regex for files encrypted with this method
-      ENCRYPTED_FILE_MATCHER = /^.{16}\nJ\nT\nP/.freeze
+      JOINER = "\nJ\nT\nP\n".freeze
 
       # Given +opts+ for the :data to encrypt, and a :password to encrypt it with, returns an
       # encoded string
@@ -17,13 +17,14 @@ module PiMaker
 
         data = cipher.update(str) + cipher.final
 
-        [vector, "\nJ\nT\nP", data].join
+        [vector, JOINER, data].join
       end
 
       # Given +opts+ for the :data to decrypt, and a :password to decrypt it with, returns the
       # original string
       def decrypt(str, passwd)
-        vector, data = str.split("\nJ\nT\nP")
+        vector = str[0...16]
+        data = str[(16 + JOINER.length)..-1]
 
         new_cipher.decrypt
 
@@ -35,8 +36,11 @@ module PiMaker
 
       # Given a +str+ and a +passwd+, decides whether to encrypt or decrypt based on matching the
       # ENCRYPTED_FILE_MATCHER and then does so
-      def call(str, passwd)
-        str.match?(ENCRYPTED_FILE_MATCHER) ? decrypt(str, passwd) : encrypt(str, passwd)
+      def call(str, passwd = nil)
+        return str if passwd.nil? && str.is_utf8?
+        raise SecurityError, 'No password provided for encrypted data' unless passwd
+
+        str.is_utf8? ? encrypt(str, passwd) : decrypt(str, passwd)
       end
 
       alias [] call

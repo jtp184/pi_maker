@@ -18,7 +18,9 @@ module PiMaker
   # Returns one of :windows, :mac, :linux, or :raspberrypi
 
   # Failed system commands
-  class SystemCommandError < RuntimeError; end
+  class SystemCommandError < StandardError; end
+  # When an issue with encryption occurs
+  class SecurityError < StandardError; end
 
   class << self
     # Returns a symbol corresponding to the operating system
