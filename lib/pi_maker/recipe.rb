@@ -30,7 +30,7 @@ module PiMaker
 
     # Takes in the +yml+ string, loads the options from it and returns a new instance
     def self.from_yaml(yml, encrypted = nil)
-      yaml = Psych.load(encrypted ? FileEncrypter.decrypt(yml, encrypted) : yml)
+      yaml = Psych.load(FileEncrypter.call(yml, encrypted))
 
       inst = new(yaml.slice(:hostname, :password))
 

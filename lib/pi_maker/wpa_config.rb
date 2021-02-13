@@ -21,7 +21,7 @@ module PiMaker
 
     # Parse the +yml+ string and create a new instance from it
     def self.from_yaml(yml, encrypted = nil)
-      yml_str = Psych.load(encrypted ? FileEncrypter.decrypt(yml, encrypted) : yml)
+      yml_str = Psych.load(FileEncrypter.call(yml, encrypted))
 
       new(yml_str)
     end
