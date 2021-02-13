@@ -21,7 +21,7 @@ module PiMaker
   # Failed system commands
   class SystemCommandError < StandardError; end
   # When an issue with encryption occurs
-  class SecurityError < StandardError; end
+  class PasskeyError < StandardError; end
 
   class << self
     # Returns a symbol corresponding to the operating system

@@ -22,6 +22,11 @@ module PiMaker
       pi0w
     ].freeze
 
+    # Parse the +yml+ string and create a new instance from it
+    def self.from_yaml(yml, encrypted = nil)
+      new(Psych.load(FileEncrypter.decrypt(yml, encrypted)))
+    end
+
     # Takes in +opts+ for the config and path
     def initialize(opts = {})
       @path = opts.fetch(:path) do
@@ -101,11 +106,11 @@ module PiMaker
       { ssh: ssh, config: deep_hashify }
     end
 
-    # Dump the hash representation
-    def to_yaml(opts = {})
+    # Dump the hash representation, taking in an optional +password+ to encrypt with
+    def to_yaml(password = nil)
       yml = Psych.dump(to_h)
 
-      opts[:encrypt] ? FileEncrypter.encrypt(yml, opts.fetch(:password)) : yml
+      FileEncrypter.encrypt(yml, password)
     end
 
     private

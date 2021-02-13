@@ -10,8 +10,13 @@ require 'factory_bot'
 require 'pry'
 require 'pi_maker'
 
-require_relative 'support/matchers'
-require_relative 'support/shared_contexts'
+SPEC_FOLDER = Pathname.new(File.expand_path(__dir__))
+
+%w[support shared].each do |dir|
+  Dir[SPEC_FOLDER.join(dir).join('*')].sort.each do |file|
+    load file if file =~ /\.rb$/
+  end
+end
 
 # Add a patch to pull fixtures in as well
 module FactoryBot

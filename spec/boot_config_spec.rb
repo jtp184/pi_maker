@@ -2,6 +2,10 @@ RSpec.describe PiMaker::BootConfig do
   let(:boot_config) { described_class.new }
   let(:test_value) { { 'testkey=testval' => 1 } }
 
+  include_examples 'yaml_exporting' do
+    let(:yamlable) { boot_config }
+  end
+
   it 'has default options' do
     expect(described_class.new.to_h.keys.count).not_to be(0)
   end

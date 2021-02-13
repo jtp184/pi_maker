@@ -21,9 +21,7 @@ module PiMaker
 
     # Parse the +yml+ string and create a new instance from it
     def self.from_yaml(yml, encrypted = nil)
-      yml_str = Psych.load(FileEncrypter.call(yml, encrypted))
-
-      new(yml_str)
+      new(Psych.load(FileEncrypter.decrypt(yml, encrypted)))
     end
 
     # Take in +opts+ for networks and country_code
@@ -62,10 +60,10 @@ module PiMaker
     end
 
     # Export a YAML representation of the class
-    def to_yaml
+    def to_yaml(password = nil)
       yml = Psych.dump(to_h)
 
-      opts[:encrypt] ? FileEncrypter.encrypt(yml, opts.fetch(:password)) : yml
+      FileEncrypter.encrypt(yml, password)
     end
 
     private

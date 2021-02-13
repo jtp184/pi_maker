@@ -7,9 +7,11 @@ module PiMaker
       # Regex for files encrypted with this method
       JOINER = "\nJ\nT\nP\n".freeze
 
-      # Given +opts+ for the :data to encrypt, and a :password to encrypt it with, returns an
-      # encoded string
-      def encrypt(str, passwd)
+      # Given the +str+ to encrypt, and an optional passwd to encrypt it with, returns an
+      # encoded string, or the string itself if no password is given
+      def encrypt(str, passwd = nil)
+        return str if passwd.nil?
+
         new_cipher.encrypt
 
         cipher.key = key_from_password(passwd)
@@ -20,9 +22,13 @@ module PiMaker
         [vector, JOINER, data].join
       end
 
-      # Given +opts+ for the :data to decrypt, and a :password to decrypt it with, returns the
-      # original string
-      def decrypt(str, passwd)
+      # Given the +str to decrypt, and a +passwd+ to decrypt it with, returns the
+      # original string. Raises a PasskeyError if a passwd is not provided, or the string
+      # if it doesn't need to be
+      def decrypt(str, passwd = nil)
+        return str unless encrypted?(str)
+        raise PasskeyError, 'No password provided' if passwd.nil?
+
         vector = str[0...16]
         data = str[(16 + JOINER.length)..-1]
 
@@ -34,16 +40,17 @@ module PiMaker
         cipher.update(data) + cipher.final
       end
 
-      # Given a +str+ and a +passwd+, decides whether to encrypt or decrypt based on matching the
-      # ENCRYPTED_FILE_MATCHER and then does so
-      def call(str, passwd = nil)
-        return str if passwd.nil? && str.is_utf8?
-        raise SecurityError, 'No password provided for encrypted data' unless passwd
-
-        str.is_utf8? ? encrypt(str, passwd) : decrypt(str, passwd)
+      # Given a +str+ and a +passwd+, decides whether to encrypt or decrypt based on utf8
+      def call(str, passwd)
+        encrypted?(str) ? decrypt(str, passwd) : encrypt(str, passwd)
       end
 
       alias [] call
+
+      # Returns true for strings that have the JOINER in the right location
+      def encrypted?(str)
+        str[16..(15 + JOINER.length)] == JOINER
+      end
 
       private
 
