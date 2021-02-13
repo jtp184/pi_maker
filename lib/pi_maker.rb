@@ -10,6 +10,7 @@ require 'pi_maker/remote_runner'
 require 'pi_maker/boot_config'
 require 'pi_maker/wpa_config'
 require 'pi_maker/recipe'
+require 'pi_maker/pantry'
 require 'pi_maker/file_encrypter'
 
 # Easy bake Raspberry Pi
