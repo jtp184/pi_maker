@@ -47,9 +47,6 @@ module PiMaker
           if FILTERS.include?(key.to_s) && value.is_a?(Hash)
             config[key] ||= OpenStruct.new
             value.each { |k, v| config[key][k] = v }
-          elsif value.is_a?(Hash)
-            config['all'] ||= OpenStruct.new
-            value.each { |k, v| config['all'][k] = v }
           else
             config['all'] ||= OpenStruct.new
             config['all'][key] = value

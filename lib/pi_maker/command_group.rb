@@ -27,9 +27,8 @@ module PiMaker
 
     # Generate commands from the different ingredients collections
     def commands
-      cmds = PiMaker::Ingredients::LISTS.reduce([]) do |acc, field|
+      cmds = PiMaker::Ingredients::LISTS.each_with_object([]) do |field, acc|
         acc << (ingredients.public_send(field[0]).nil? ? nil : send(field[0]))
-        acc
       end.compact
 
       cmds.unshift('mkdir -p ~/repos') if ingredients[:github_repos]
