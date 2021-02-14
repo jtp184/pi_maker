@@ -1,5 +1,5 @@
 RSpec.describe PiMaker::BootConfig do
-  let(:boot_config) { FactoryBot.build(:boot_config) }
+  subject(:boot_config) { FactoryBot.build(:boot_config) }
   let(:test_value) { { 'testkey=testval' => 1 } }
 
   it_behaves_like 'yaml_exporting' do
