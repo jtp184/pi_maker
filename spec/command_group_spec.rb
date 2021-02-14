@@ -1,5 +1,5 @@
 RSpec.describe PiMaker::CommandGroup do
-  let(:command_group) { FactoryBot.build(:command_group) }
+  subject(:command_group) { FactoryBot.build(:command_group) }
 
   describe '#commands' do
     subject { command_group.commands }

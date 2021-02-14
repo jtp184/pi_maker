@@ -1,11 +1,16 @@
+require 'forwardable'
+
 module PiMaker
   # Captures multiple wifi network setups and the country code, generates the
   # file via its to_s method
   class WpaConfig
+    extend Forwardable
     # The array of networks this config shares
     attr_accessor :networks
     # The country code provided by the user
     attr_accessor :country_code
+
+    def_delegators :@networks, :count
 
     # How to output a network into string format
     NETWORK_FORMATTER = <<~DOC.freeze
@@ -46,10 +51,7 @@ module PiMaker
       build
     end
 
-    # Implicitly act as a string
-    def to_str
-      build
-    end
+    alias to_str to_s
 
     # Returns a hash representation, optionally +with_passwords+
     def to_h(with_passwords = false)
