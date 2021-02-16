@@ -1,11 +1,6 @@
 FactoryBot.define do
   factory :wpa_config, class: PiMaker::WpaConfig do
-    sequence(:networks) do
-      {
-        "Network#{SecureRandom.hex}" => SecureRandom.hex,
-        "Network#{SecureRandom.hex}" => SecureRandom.hex
-      }
-    end
+    networks { generate(:wifi_networks) }
 
     initialize_with { PiMaker::WpaConfig.new(**attributes) }
   end

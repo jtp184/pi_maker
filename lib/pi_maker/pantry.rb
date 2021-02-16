@@ -24,6 +24,8 @@ module PiMaker
         fpath = base_path + "/#{PASSWORD_FILE_NAME}"
         File.exist?(fpath) ? File.read(fpath) : nil
       end
+      @recipes = opts.fetch(:recipes, [])
+      @wifi_networks = opts.fetch(:wifi_networks, {})
     end
 
     # Sets cached instance variables to nil and returns self
