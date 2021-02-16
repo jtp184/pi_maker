@@ -4,7 +4,7 @@ module PiMaker
   # Encrypt and decrypt files using openssl
   module FileEncrypter
     # Regex for files encrypted with this method
-    HEADER = "J\nT\nP\n".freeze
+    HEADER = "PIMAKER:ENCRYPTED\n".freeze
 
     class << self
       # Given the +str+ to encrypt, and an optional passwd to encrypt it with, returns an

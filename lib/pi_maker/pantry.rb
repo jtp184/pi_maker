@@ -53,16 +53,19 @@ module PiMaker
                          end
     end
 
-    def write(where_path = nil)
-      store_path = Pathname.new(where_path || base_path)
-      file_ext = password ? '.enc.yml' : '.yml'
+    # Given an optional +where_path+ to save to, saves out the recipes and wifi config
+    # to the folder
+    def write(opts = {})
+      store_path = Pathname.new(opts[:path] || base_path)
+      passwd = opts.fetch(:password, password)
+      file_ext = passwd ? '.enc.yml' : '.yml'
 
       Dir.mkdir(store_path) unless Dir.exist?(store_path)
       Dir.mkdir(store_path.join('recipes')) unless Dir.exist?(store_path.join('recipes'))
 
       unless wifi_networks.empty?
         File.open(store_path.join("wifi_config#{file_ext}"), 'w+b') do |f|
-          f << FileEncrypter.encrypt(Psych.dump(wifi_networks), password)
+          f << FileEncrypter.encrypt(Psych.dump(wifi_networks), passwd)
         end
       end
 
@@ -70,8 +73,12 @@ module PiMaker
         fname = "#{rec.hostname}_recipe#{file_ext}"
 
         File.open(store_path.join('recipes').join(fname), 'w+b') do |f|
-          f << rec.to_yaml(password)
+          f << rec.to_yaml(passwd)
         end
+      end
+
+      if opts.fetch(:password_file, true) && passwd
+        File.open(store_path.join('.pantry_password'), 'w+') { |f| f << passwd }
       end
 
       self
