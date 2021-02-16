@@ -6,9 +6,9 @@ module PiMaker
     # An optional password to encrypt files in the pantry
     attr_accessor :password
     # Add new recipes as a collection
-    attr_writer :recipes
+    attr_accessor :recipes
     # Add new wifi networks as a collection
-    attr_writer :wifi_networks
+    attr_accessor :wifi_networks
 
     # Matches encoded or unencoded yaml files
     FILE_EXT = 'enc|ya?ml$'.freeze
@@ -20,39 +20,15 @@ module PiMaker
     # Takes in +opts+ for the +base_path+ and an optional +password+
     def initialize(opts = {})
       @base_path = opts.fetch(:base_path)
+
       @password = opts.fetch(:password) do
         fpath = base_path + "/#{PASSWORD_FILE_NAME}"
         File.exist?(fpath) ? File.read(fpath) : nil
       end
-      @recipes = opts.fetch(:recipes, [])
-      @wifi_networks = opts.fetch(:wifi_networks, {})
-    end
 
-    # Sets cached instance variables to nil and returns self
-    def reload
-      @recipes = @wifi_networks = nil
-      self
-    end
+      @recipes = opts.fetch(:recipes, load_recipes)
 
-    # Memoizes delving into the recipes subdirectory and finding any yaml files, and converting
-    # them using Recipe.from_yaml
-    def recipes
-      @recipes ||= Dir["#{root_path('recipes')}/*"].map do |recipe|
-        next unless recipe =~ /#{FILE_EXT}/
-
-        Recipe.from_yaml(File.read(recipe), password)
-      end
-    end
-
-    # Guards against lack of wifi config, then memoizes loading the config file
-    def wifi_networks
-      @wifi_networks ||= if file_present?(/#{WIFI_CONFIG_FILENAME}/)
-                           fn = file_list.detect { |d| d.match?(/#{WIFI_CONFIG_FILENAME}/) }
-
-                           Psych.load(FileEncrypter.decrypt(File.read(fn), password))
-                         else
-                           []
-                         end
+      @wifi_networks = opts.fetch(:wifi_networks, load_wifi_networks)
     end
 
     # Given an optional +where_path+ to save to, saves out the recipes and wifi config
@@ -86,7 +62,38 @@ module PiMaker
       self
     end
 
+    def reload
+      @recipes = load_recipes
+      @wifi_networks = load_wifi_networks
+      self
+    end
+
+    def clear
+      @recipes = []
+      @wifi_networks = {}
+      self
+    end
+
     private
+
+    def load_wifi_networks
+      fi = Dir.exist?(root_path) &&
+           Dir["#{root_path}/*"].detect { |e| e.match?(WIFI_CONFIG_FILENAME) }
+
+      return {} unless fi
+
+      Psych.load(FileEncrypter.decrypt(File.read(fi), password))
+    end
+
+    def load_recipes
+      return [] unless Dir.exist?(root_path('recipes'))
+
+      Dir["#{root_path('recipes')}/*"].map do |recipe|
+        next unless recipe =~ /#{FILE_EXT}/
+
+        Recipe.from_yaml(File.read(recipe), password)
+      end
+    end
 
     # Returns a Pathname of the base path with optional subdirectories as +joins+
     def root_path(*joins)
