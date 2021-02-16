@@ -92,7 +92,6 @@ module PiMaker
     # Dumps the hash to YAML, taking in +opts+ to pass to to_h, and an optional encryption +passwd+
     def to_yaml(passwd = nil, opts = {})
       yml = Psych.dump(to_h(opts))
-
       FileEncrypter.encrypt(yml, passwd)
     end
 

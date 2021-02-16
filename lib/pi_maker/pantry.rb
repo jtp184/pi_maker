@@ -14,11 +14,16 @@ module PiMaker
     FILE_EXT = 'enc|ya?ml$'.freeze
     # Checks for a wifi config, encoded or not
     WIFI_CONFIG_FILENAME = '\bwifi_config\.(enc\.)?ya?ml$'.freeze
+    # What to call a password file stored locally
+    PASSWORD_FILE_NAME = '.pantry_password'.freeze
 
     # Takes in +opts+ for the +base_path+ and an optional +password+
     def initialize(opts = {})
       @base_path = opts.fetch(:base_path)
-      @password = opts.fetch(:password, nil)
+      @password = opts.fetch(:password) do
+        fpath = base_path + "/#{PASSWORD_FILE_NAME}"
+        File.exist?(fpath) ? File.read(fpath) : nil
+      end
     end
 
     # Sets cached instance variables to nil and returns self
@@ -42,10 +47,34 @@ module PiMaker
       @wifi_networks ||= if file_present?(/#{WIFI_CONFIG_FILENAME}/)
                            fn = file_list.detect { |d| d.match?(/#{WIFI_CONFIG_FILENAME}/) }
 
-                           Psych.load(FileEncrypter.call(File.read(fn)), password)
+                           Psych.load(FileEncrypter.decrypt(File.read(fn), password))
                          else
                            []
                          end
+    end
+
+    def write(where_path = nil)
+      store_path = Pathname.new(where_path || base_path)
+      file_ext = password ? '.enc.yml' : '.yml'
+
+      Dir.mkdir(store_path) unless Dir.exist?(store_path)
+      Dir.mkdir(store_path.join('recipes')) unless Dir.exist?(store_path.join('recipes'))
+
+      unless wifi_networks.empty?
+        File.open(store_path.join("wifi_config#{file_ext}"), 'w+b') do |f|
+          f << FileEncrypter.encrypt(Psych.dump(wifi_networks), password)
+        end
+      end
+
+      recipes.each do |rec|
+        fname = "#{rec.hostname}_recipe#{file_ext}"
+
+        File.open(store_path.join('recipes').join(fname), 'w+b') do |f|
+          f << rec.to_yaml(password)
+        end
+      end
+
+      self
     end
 
     private

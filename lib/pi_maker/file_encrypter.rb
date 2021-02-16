@@ -3,10 +3,10 @@ require 'openssl'
 module PiMaker
   # Encrypt and decrypt files using openssl
   module FileEncrypter
-    class << self
-      # Regex for files encrypted with this method
-      JOINER = "\nJ\nT\nP\n".freeze
+    # Regex for files encrypted with this method
+    HEADER = "J\nT\nP\n".freeze
 
+    class << self
       # Given the +str+ to encrypt, and an optional passwd to encrypt it with, returns an
       # encoded string, or the string itself if no password is given
       def encrypt(str, passwd = nil)
@@ -19,7 +19,7 @@ module PiMaker
 
         data = cipher.update(str) + cipher.final
 
-        [vector, JOINER, data].join
+        [HEADER, vector, data].join
       end
 
       # Given the +str to decrypt, and a +passwd+ to decrypt it with, returns the
@@ -29,8 +29,8 @@ module PiMaker
         return str unless encrypted?(str)
         raise PasskeyError, 'No password provided' if passwd.nil?
 
-        vector = str[0...16]
-        data = str[(16 + JOINER.length)..-1]
+        vector = str[HEADER.length...(HEADER.length + 16)]
+        data = str[(16 + HEADER.length)..-1]
 
         new_cipher.decrypt
 
@@ -47,9 +47,9 @@ module PiMaker
 
       alias [] call
 
-      # Returns true for strings that have the JOINER in the right location
+      # Returns true for strings that have the HEADER in the right location
       def encrypted?(str)
-        str[16..(15 + JOINER.length)] == JOINER
+        str[0...HEADER.length] == HEADER
       end
 
       private

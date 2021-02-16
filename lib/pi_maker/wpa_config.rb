@@ -10,7 +10,7 @@ module PiMaker
     # The country code provided by the user
     attr_accessor :country_code
 
-    def_delegators :@networks, :count
+    def_delegators :@networks, :count, :empty?
 
     # How to output a network into string format
     NETWORK_FORMATTER = <<~DOC.freeze
