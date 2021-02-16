@@ -7,7 +7,7 @@ module PiMaker
     class Linux < DiskProtocol
       class << self
         # Gets all attached disks, turns them into DiskProtocol::Disk objects, and returns
-        def list
+        def list_blocks
           cmd = PiMaker.system_cmd('lsblk -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM')
 
           JSON.parse(cmd)['blockdevices']

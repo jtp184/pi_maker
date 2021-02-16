@@ -9,27 +9,23 @@ module PiMaker
 
     # Uses +opts+ to set the config and command group
     def initialize(opts = {})
-      @config = {
-        user: 'pi',
-        hostname: 'raspberrypi.local',
-        password: 'raspberry'
-      }.merge(opts.fetch(:config, {}))
+      @config = PiMaker.default_login.merge(opts.fetch(:config, {}))
 
       @command_group = opts.fetch(:command_group, CommandGroup.new)
       @result = []
     end
 
     # Clears the result array, then runs run_commands and run_text_blocks
-    def call
+    def call(&watcher)
       @result = []
-      run_commands
-      run_text_blocks
+      run_commands(&watcher)
+      run_text_blocks(&watcher)
 
       result
     end
 
     # For each command in the CommandGroup, ssh into the remote and run the command
-    def run_commands
+    def run_commands(&watcher)
       return if command_group.commands.empty?
 
       Net::SSH.start(*ssh_options) do |connection|
@@ -45,6 +41,8 @@ module PiMaker
               tty.on_extended_data do |_c, _t, line|
                 @result.last.last << line
               end
+
+              watcher.call(@result.last.last.last) if block_given?
             end
           end.wait
 
@@ -55,7 +53,7 @@ module PiMaker
 
     # Creates a temp folder, then for each text_block in the CommandGroup, creates a tempfile
     # for it, then appends that tempfile to its target destination and destroys the folder
-    def run_text_blocks
+    def run_text_blocks(&watcher)
       return if command_group.text_blocks.empty?
 
       timestamp = Time.now.to_i
@@ -67,7 +65,7 @@ module PiMaker
 
       create_temp_folder(append_opts)
       create_temp_files(append_opts)
-      append_files(append_opts)
+      append_files(append_opts, &watcher)
       destroy_temp_folder(append_opts)
     end
 
@@ -91,7 +89,7 @@ module PiMaker
     end
 
     # Given a timestamp and tempname hash +append_opts+, appends the contents of the tempfiles
-    def append_files(append_opts)
+    def append_files(append_opts, &watcher)
       command_group.text_blocks.each do |filepath, _l|
         Net::SSH.start(*ssh_options) do |connection|
           connection.open_channel do |ssh|
@@ -100,6 +98,7 @@ module PiMaker
 
             ssh.exec(cmd)
             @result << [cmd, ['']]
+            watcher.call(@result.last.last.last) if block_given?
           end
         end
       end
@@ -117,7 +116,7 @@ module PiMaker
 
     # Arguments for an SSH invocation
     def ssh_options
-      opts = %i[hostname user].map { |i| config[i] }
+      opts = config.slice(:hostname, :user)
       opts << { password: config[:password] } if config[:password]
 
       opts
@@ -125,7 +124,7 @@ module PiMaker
 
     # Arguments for an SCP invocation
     def scp_options(local, remote)
-      opts = %i[hostname user].map { |i| config[i] }
+      opts = config.slice(:hostname, :user)
 
       opts << local
       opts << remote

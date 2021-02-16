@@ -5,8 +5,6 @@ module PiMaker
   class BootConfig
     # The config object where options are set
     attr_reader :config
-    # The path to save the file to
-    attr_reader :path
     # Enable ssh on the boot volume
     attr_reader :ssh
 
@@ -22,6 +20,9 @@ module PiMaker
       pi0w
     ].freeze
 
+    # Filename on disk
+    FILENAME = 'config.txt'.freeze
+
     # Parse the +yml+ string and create a new instance from it
     def self.from_yaml(yml, encrypted = nil)
       new(Psych.load(FileEncrypter.decrypt(yml, encrypted)))
@@ -29,20 +30,12 @@ module PiMaker
 
     # Takes in +opts+ for the config and path
     def initialize(opts = {})
-      @path = opts.fetch(:path) do
-        case PiMaker.host_os
-        when :mac
-          '/Volumes/boot/config.txt'
-        when :linux, :raspberrypi
-          '/mnt/boot/config.txt'
-        else
-          'E:/config.txt'
-        end
-      end
+      @config = OpenStruct.new(default_config)
+      @ssh = opts.key?(:ssh) ? opts.delete(:ssh) : true
 
-      @config = File.exist?(path) ? parse_file(File.read(path)) : OpenStruct.new(default_config)
-
-      if opts.key?(:config)
+      if opts.key?(:path)
+        parse_file(File.read(opts[:path]))
+      elsif opts.key?(:config) && !opts[:config].is_a?(OpenStruct)
         opts[:config].each do |key, value|
           if FILTERS.include?(key.to_s) && value.is_a?(Hash)
             config[key] ||= OpenStruct.new
@@ -53,8 +46,6 @@ module PiMaker
           end
         end
       end
-
-      @ssh = opts.fetch(:ssh, true)
     end
 
     # Pass arguments to config
@@ -145,14 +136,14 @@ module PiMaker
                                     .first
       end.compact
 
-      opts = { all: {} }
+      opts = { 'all' => {} }
       current_group = 'all'
 
       set_lines.each do |val|
         group_declare = val[1] == '['
 
         if group_declare
-          current_group = val[2].to_sym
+          current_group = val[2]
           opts[current_group] ||= {}
           next
         end

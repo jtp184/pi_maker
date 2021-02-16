@@ -31,8 +31,11 @@ module PiMaker
         acc << (ingredients.public_send(field[0]).nil? ? nil : send(field[0]))
       end.compact
 
-      cmds.unshift('mkdir -p ~/repos') if ingredients[:github_repos]
-      cmds.unshift('sudo apt-get update') if ingredients[:apt_packages] || ingredients[:gems]
+      cmds.unshift('mkdir -p ~/repos') unless ingredients[:github_repos].empty?
+
+      unless ingredients[:apt_packages].empty? || ingredients[:gems].empty?
+        cmds.unshift('sudo apt-get update')
+      end
 
       cmds.flatten
     end
@@ -40,12 +43,14 @@ module PiMaker
     # Build text blocks to be copied and appended to files
     def text_blocks
       PiMaker::Ingredients::TEXT_BLOCKS.map { |field, path| [path, ingredients.public_send(field)] }
-                                       .reject { |b| b[1].nil? }
+                                       .reject { |b| b[1].nil? || b[1].empty? }
                                        .to_h
     end
 
     # Construct an apt-get install string from the packages
     def apt_packages
+      return if ingredients.apt_packages.empty?
+
       ingredients.apt_packages.reduce('sudo apt-get install -y') { |str, pkg| [str, pkg].join(' ') }
     end
 
@@ -71,6 +76,8 @@ module PiMaker
 
     # Construct a gem install string from the gems
     def gems
+      return if ingredients.gems.empty?
+
       ingredients.gems.reduce('sudo gem install') { |str, gm| [str, gm].join(' ') }
     end
   end

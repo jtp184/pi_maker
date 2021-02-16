@@ -7,7 +7,7 @@ module PiMaker
     class MacOs < DiskProtocol
       class << self
         # Gets all attached disks, turns them into DiskProtocol::Disk objects
-        def list
+        def list_blocks
           dinfo = PiMaker.system_cmd('diskutil list -plist')
           drm = PiMaker.system_cmd('diskutil list').split("\n\n")
                        .map(&:lines)

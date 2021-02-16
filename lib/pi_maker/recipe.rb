@@ -17,7 +17,7 @@ module PiMaker
     # Takes in +opts+ for the attributes
     def initialize(opts = {})
       %i[hostname password wpa_config boot_config initial_setup].each do |key|
-        instance_variable_set("@#{key}", opts[key]) if opts.key?(key)
+        instance_variable_set("@#{key}", opts[key]) if opts[key]
       end
     end
 
@@ -41,13 +41,47 @@ module PiMaker
       inst
     end
 
+    # Writes the boot config, ssh touchfile, and wpa config
+    def write(write_path = PiMaker.sd_card_path)
+      base_path = write_path.respond_to?(:join) ? write_path : Pathname.new(write_path)
+
+      if boot_config
+        File.open(base_path.join(PiMaker::BootConfig::FILENAME), 'w+') do |f|
+          f << boot_config.to_s
+        end
+
+        File.write(base_path.join('ssh'), '1') if boot_config.ssh
+      end
+
+      if wpa_config
+        File.open(base_path.join(PiMaker::WpaConfig::FILENAME), 'w+') do |f|
+          f << wpa_config.to_s
+        end
+      end
+
+      self
+    end
+
+    def login_setup(old_password = PiMaker.default_login[:password])
+      Ingredients.define do |i|
+        i.raspi_config = { do_hostname: hostname }
+        i.shell = [
+          format(
+            %{(echo "%<old_pass>s" ; echo "%<new_pass>s" ; echo "%<new_pass>s") | passwd},
+            old_pass: old_password,
+            new_pass: password
+          )
+        ]
+      end
+    end
+
     # Takes in +opts+ for whether to export :with_passwords, and returns a hash representation
     def to_h(opts = {})
       data = {}
 
       %i[hostname password].each { |k| data[k] = send(k) if send(k) }
 
-      data[:wifi_config_options] = wpa_config.to_h(opts.fetch(:with_passwords, false)) if wpa_config
+      data[:wifi_config_options] = wpa_config.to_h(opts.fetch(:with_passwords, true)) if wpa_config
       data[:boot_config_options] = boot_config.to_h if boot_config
       data[:initial_setup_options] = initial_setup.to_h if initial_setup
 
@@ -75,11 +109,7 @@ module PiMaker
       def parse_boot_config_options(inst, opts)
         return unless opts.key?(:boot_config_options)
 
-        inst.boot_config ||= BootConfig.new
-
-        opts[:boot_config_options].each do |key, value|
-          inst.boot_config.public_send(:"#{key}=", value)
-        end
+        inst.boot_config ||= BootConfig.new(opts[:boot_config_options])
       end
 
       # Parses the wifi config options

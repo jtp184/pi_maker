@@ -23,11 +23,11 @@ module PiMaker
       opt_hash = opts.to_h
 
       LISTS.each do |c, t|
-        instance_variable_set(:"@#{c}", opt_hash.key?(c) ? opt_hash[c] : t.new)
+        instance_variable_set(:"@#{c}", opt_hash.key?(c.to_s) ? opt_hash[c.to_s] : t.new)
       end
 
       TEXT_BLOCKS.each_key do |c|
-        instance_variable_set(:"@#{c}", opt_hash.key?(c) ? opt_hash[c] : [])
+        instance_variable_set(:"@#{c}", opt_hash.key?(c.to_s) ? opt_hash[c.to_s] : [])
       end
 
       opts.to_h.each do |key, value|

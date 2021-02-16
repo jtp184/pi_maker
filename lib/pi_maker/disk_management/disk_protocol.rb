@@ -10,7 +10,11 @@ module PiMaker
       class << self
         # Converts listed disks into StorageDevice objects
         def list_devices
-          list.map { |dsk| DiskManagement::StorageDevice.new(disk: dsk) }
+          list_blocks.map { |dsk| DiskManagement::StorageDevice.new(disk: dsk) }
+        end
+
+        def sd_card_device
+          list_devices.detect { |dsk| dsk.first_mounted_path == PiMaker.sd_card_path }
         end
 
         # Gets the size of the entire directory using `du`
