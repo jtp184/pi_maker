@@ -4,8 +4,8 @@ module PiMaker
     # Defined attributes on the class which store collections
     LISTS = {
       apt_packages: Array,
-      github_repos: Hash,
       gems: Array,
+      github_repos: Hash,
       shell: Array,
       raspi_config: Hash
     }.freeze
