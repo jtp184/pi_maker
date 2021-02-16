@@ -62,6 +62,7 @@ module PiMaker
       self
     end
 
+    # Returns an Ingredients list to set the hostname and password on the pi
     def login_setup(old_password = PiMaker.default_login[:password])
       Ingredients.define do |i|
         i.raspi_config = { do_hostname: hostname }

@@ -42,28 +42,6 @@ RSpec.describe PiMaker::BootConfig do
     expect(boot_config).to respond_to(:pi3)
   end
 
-  describe 'default path by OS' do
-    subject { described_class.new.path }
-
-    context 'on mac' do
-      before { allow(PiMaker).to receive(:host_os).and_return(:mac) }
-
-      it { is_expected.to eq('/Volumes/boot/config.txt') }
-    end
-
-    context 'on linux' do
-      before { allow(PiMaker).to receive(:host_os).and_return(:linux) }
-
-      it { is_expected.to eq('/mnt/boot/config.txt') }
-    end
-
-    context 'on windows' do
-      before { allow(PiMaker).to receive(:host_os).and_return(:windows) }
-
-      it { is_expected.to eq('E:/config.txt') }
-    end
-  end
-
   describe 'reading files when path is passed' do
     before do
       allow(File).to receive(:read).and_return(

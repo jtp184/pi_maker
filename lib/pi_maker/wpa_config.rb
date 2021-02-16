@@ -24,6 +24,7 @@ module PiMaker
     # Two opening lines present in a wpa_config
     PREAMBLE = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\n".freeze
 
+    # The filename for the config file
     FILENAME = 'wpa_supplicant.conf'.freeze
 
     # Parse the +yml+ string and create a new instance from it

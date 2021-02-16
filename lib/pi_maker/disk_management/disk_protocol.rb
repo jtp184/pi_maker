@@ -13,6 +13,7 @@ module PiMaker
           list_blocks.map { |dsk| DiskManagement::StorageDevice.new(disk: dsk) }
         end
 
+        # Returns the device which matches the mount path defined in PiMaker.sd_card_path
         def sd_card_device
           list_devices.detect { |dsk| dsk.first_mounted_path == PiMaker.sd_card_path }
         end

@@ -34,7 +34,7 @@ module PiMaker
       @ssh = opts.key?(:ssh) ? opts.delete(:ssh) : true
 
       if opts.key?(:path)
-        parse_file(File.read(opts[:path]))
+        @config = parse_file(File.read(opts[:path]))
       elsif opts.key?(:config) && !opts[:config].is_a?(OpenStruct)
         opts[:config].each do |key, value|
           if FILTERS.include?(key.to_s) && value.is_a?(Hash)

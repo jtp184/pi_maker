@@ -37,6 +37,7 @@ module PiMaker
       end
     end
 
+    # The default login credentials
     def default_login
       {
         user: 'pi',
