@@ -62,12 +62,14 @@ module PiMaker
       self
     end
 
+    # Loads recipes and wifi networks from their paths
     def reload
       @recipes = load_recipes
       @wifi_networks = load_wifi_networks
       self
     end
 
+    # Empties recipes and wifi networks
     def clear
       @recipes = []
       @wifi_networks = {}
@@ -76,19 +78,20 @@ module PiMaker
 
     private
 
+    # Finds and interprets a wifi config file in the base path
     def load_wifi_networks
-      fi = Dir.exist?(root_path) &&
-           Dir["#{root_path}/*"].detect { |e| e.match?(WIFI_CONFIG_FILENAME) }
+      fi = Dir.exist?(root_path) && file_present?(WIFI_CONFIG_FILENAME)
 
       return {} unless fi
 
       Psych.load(FileEncrypter.decrypt(File.read(fi), password))
     end
 
+    # Finds and interprets and recipes files in the recipes subdirectory
     def load_recipes
       return [] unless Dir.exist?(root_path('recipes'))
 
-      Dir["#{root_path('recipes')}/*"].map do |recipe|
+      file_list(root_path('recipes')).map do |recipe|
         next unless recipe =~ /#{FILE_EXT}/
 
         Recipe.from_yaml(File.read(recipe), password)
@@ -104,7 +107,7 @@ module PiMaker
 
     # Checks the file_list with optional +path+ and checks if any matches regex +file+
     def file_present?(file, path = root_path)
-      file_list(path).any? { |f| f.match?(file) }
+      file_list(path).detect { |f| f.match?(file) }
     end
 
     # Returns Dir.[] for the +path+

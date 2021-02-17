@@ -77,9 +77,9 @@ RSpec.describe PiMaker::Pantry do
         Dir[@temp_path + '/recipes/*'].detect { |e| e.match?(/\.enc\.yml$/) }
       end
 
-      xit 'writes invalid YAML' do
-        expect { Psych.parse(File.read(wifi_config_path)) }.to raise_error
-        expect { Psych.parse(File.read(recipe_path)) }.not_to raise_error
+      it 'writes invalid YAML' do
+        expect { Psych.parse(File.read(wifi_config_path)) }.to raise_error(Psych::SyntaxError)
+        expect { Psych.parse(File.read(recipe_path)) }.to raise_error(Psych::SyntaxError)
       end
     end
   end
