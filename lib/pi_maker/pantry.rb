@@ -31,6 +31,11 @@ module PiMaker
       @wifi_networks = opts.fetch(:wifi_networks, load_wifi_networks)
     end
 
+    # If we can locate a global pantry, loads it
+    def self.global
+      new(base_path: locate_pantry) if locate_pantry
+    end
+
     # Given an optional +where_path+ to save to, saves out the recipes and wifi config
     # to the folder
     def write(opts = {})
@@ -77,6 +82,15 @@ module PiMaker
     end
 
     private
+
+    # Finds a dotfile for pi_maker
+    def locate_pantry
+      dot_loc = [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"].detect do |e|
+        Dir["#{e}/.pi_maker"]
+      end
+
+      File.read(dot_loc) if dot_loc
+    end
 
     # Finds and interprets a wifi config file in the base path
     def load_wifi_networks
