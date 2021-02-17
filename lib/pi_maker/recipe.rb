@@ -41,27 +41,6 @@ module PiMaker
       inst
     end
 
-    # Writes the boot config, ssh touchfile, and wpa config
-    def write(write_path = PiMaker.sd_card_path)
-      base_path = write_path.respond_to?(:join) ? write_path : Pathname.new(write_path)
-
-      if boot_config
-        File.open(base_path.join(PiMaker::BootConfig::FILENAME), 'w+') do |f|
-          f << boot_config.to_s
-        end
-
-        File.write(base_path.join('ssh'), '1') if boot_config.ssh
-      end
-
-      if wpa_config
-        File.open(base_path.join(PiMaker::WpaConfig::FILENAME), 'w+') do |f|
-          f << wpa_config.to_s
-        end
-      end
-
-      self
-    end
-
     # Returns an Ingredients list to set the hostname and password on the pi
     def login_setup(old_password = PiMaker.default_login[:password])
       Ingredients.define do |i|

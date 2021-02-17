@@ -15,7 +15,9 @@ module PiMaker
         new_cipher.encrypt
 
         cipher.key = key_from_password(passwd)
-        vector = cipher.random_iv
+
+        vector = SecureRandom.bytes(16)
+        cipher.iv = vector
 
         data = cipher.update(str) + cipher.final
 
@@ -29,8 +31,8 @@ module PiMaker
         return str unless encrypted?(str)
         raise PasskeyError, 'No password provided' if passwd.nil?
 
-        vector = str[HEADER.length...(HEADER.length + 16)]
-        data = str[(16 + HEADER.length)..-1]
+        vector = str[HEADER.length..-1].bytes.first(16).map(&:chr).join
+        data = str[HEADER.length..-1].bytes[16..-1].map(&:chr).join
 
         new_cipher.decrypt
 
