@@ -40,6 +40,28 @@ RSpec.describe 'Base Module' do
     end
   end
 
+  describe '.sd_card_path' do
+    subject { PiMaker.sd_card_path }
+
+    context 'on mac' do
+      before { allow(PiMaker).to receive(:host_os).and_return(:mac) }
+
+      it { is_expected.to eq('/Volumes/boot') }
+    end
+
+    context 'on linux' do
+      before { allow(PiMaker).to receive(:host_os).and_return(:linux) }
+
+      it { is_expected.to eq('/mnt/boot') }
+    end
+
+    context 'on windows' do
+      before { allow(PiMaker).to receive(:host_os).and_return(:windows) }
+
+      it { is_expected.to eq('E:') }
+    end
+  end
+
   describe '.system_cmd' do
     let(:cmd_opts) { 'echo hello' }
     let(:cmd_result) { TTY::Command::Result.new(0, '', '') }

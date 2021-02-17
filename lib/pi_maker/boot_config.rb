@@ -5,8 +5,8 @@ module PiMaker
   class BootConfig
     # The config object where options are set
     attr_reader :config
-    # The path to save the file to
-    attr_reader :path
+    # Enable ssh on the boot volume
+    attr_reader :ssh
 
     # The different groups a config option can belong to
     FILTERS = %w[
@@ -20,32 +20,42 @@ module PiMaker
       pi0w
     ].freeze
 
+    # Filename on disk
+    FILENAME = 'config.txt'.freeze
+
+    # Parse the +yml+ string and create a new instance from it
+    def self.from_yaml(yml, encrypted = nil)
+      new(Psych.load(FileEncrypter.decrypt(yml, encrypted)))
+    end
+
     # Takes in +opts+ for the config and path
     def initialize(opts = {})
-      @path = opts.fetch(:path) do
-        case PiMaker.host_os
-        when :mac
-          '/Volumes/boot/config.txt'
-        when :linux, :raspberrypi
-          '/mnt/boot/config.txt'
-        else
-          'E:/config.txt'
-        end
-      end
+      @config = OpenStruct.new(default_config)
+      @ssh = opts.key?(:ssh) ? opts.delete(:ssh) : true
 
-      @config = opts.fetch(:config) do
-        if File.exist?(path)
-          parse_file(File.read(path))
-        else
-          OpenStruct.new(default_config)
+      if opts.key?(:path)
+        @config = parse_file(File.read(opts[:path]))
+      elsif opts.key?(:config) && !opts[:config].is_a?(OpenStruct)
+        opts[:config].each do |key, value|
+          if FILTERS.include?(key.to_s) && value.is_a?(Hash)
+            config[key] ||= OpenStruct.new
+            value.each { |k, v| config[key][k] = v }
+          else
+            config['all'] ||= OpenStruct.new
+            config['all'][key] = value
+          end
         end
       end
     end
 
     # Pass arguments to config
     def method_missing(mtd_name, *args, &blk)
-      if FILTERS.include?(mtd_name.to_s)
-        config.public_send(mtd_name, *args, &blk)
+      if FILTERS.any? { |f| mtd_name =~ /^(#{f})=$/ } && args.one?
+        filter = Regexp.last_match[1].to_sym
+        config[filter] ||= OpenStruct.new
+        args.first.each { |k, v| config[filter][k] = v }
+      elsif FILTERS.include?(mtd_name.to_s)
+        config[mtd_name] ||= OpenStruct.new
       else
         config.public_send(:all)
               .public_send(mtd_name, *args, &blk)
@@ -79,7 +89,26 @@ module PiMaker
       s << "\n"
     end
 
+    # Return a hash representation
+    def to_h
+      { ssh: ssh, config: deep_hashify }
+    end
+
+    # Dump the hash representation, taking in an optional +password+ to encrypt with
+    def to_yaml(password = nil)
+      yml = Psych.dump(to_h)
+
+      FileEncrypter.encrypt(yml, password)
+    end
+
     private
+
+    # Given the starting +note+, recursively transforms the subvalues to hashes
+    def deep_hashify(node = config)
+      node.to_h.transform_values do |v|
+        v.respond_to?(:to_h) ? deep_hashify(v) : v
+      end
+    end
 
     # The default options
     def default_config
@@ -107,14 +136,14 @@ module PiMaker
                                     .first
       end.compact
 
-      opts = { all: {} }
-      current_group = :all
+      opts = { 'all' => {} }
+      current_group = 'all'
 
       set_lines.each do |val|
         group_declare = val[1] == '['
 
         if group_declare
-          current_group = val[2].to_sym
+          current_group = val[2]
           opts[current_group] ||= {}
           next
         end

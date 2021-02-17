@@ -1,25 +1,21 @@
 RSpec.describe PiMaker::Recipe do
-  let(:recipe) { FactoryBot.build(:recipe) }
-  let(:init_args) { FactoryBot.attributes_for(:recipe) }
+  subject(:recipe) { FactoryBot.build(:recipe) }
 
-  it 'Allows defining by hash' do
-    created = described_class.define(init_args)
-    expect(created).to be_a(described_class)
+  it_behaves_like 'yaml_exporting' do
+    let(:yamlable) { recipe }
   end
 
-  it 'Allows defining by block' do
-    created = described_class.define do |recipe|
-      init_args.each do |key, value|
-        recipe.send(:"#{key}=", value)
-      end
+  it_behaves_like 'block_definable'
+
+  describe '#login_setup' do
+    subject { recipe.login_setup }
+
+    it 'returns ingredients to set hostname and password' do
+      expect(subject).to be_a(PiMaker::Ingredients)
+      expect(subject.raspi_config).to have_key(:do_hostname)
+      expect(subject.shell.count).to eq(1)
+      expect(subject.shell.first).to be_a(String)
+      expect(subject.shell.first).to match(/passwd/)
     end
-
-    expect(created).to be_a(described_class)
-  end
-
-  it 'Whitelists attributes' do
-    created = described_class.new(init_args.merge(invalid: :argument))
-
-    expect(created.instance_variable_get(:"@invalid")).to be_nil
   end
 end

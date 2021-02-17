@@ -1,5 +1,10 @@
 RSpec.describe PiMaker::BootConfig do
-  let(:boot_config) { described_class.new }
+  subject(:boot_config) { FactoryBot.build(:boot_config) }
+  let(:test_value) { { 'testkey=testval' => 1 } }
+
+  it_behaves_like 'yaml_exporting' do
+    let(:yamlable) { boot_config }
+  end
 
   it 'has default options' do
     expect(described_class.new.to_h.keys.count).not_to be(0)
@@ -10,30 +15,31 @@ RSpec.describe PiMaker::BootConfig do
     expect(boot_config.to_s).to match(/ssh_enabled=/)
   end
 
-  it 'responds to filters' do
-    expect(boot_config).to respond_to(:pi3)
+  it 'can have options set directly and put them in \'all\'' do
+    boot_config.testexample = true
+    expect(boot_config.all.testexample).to eq(true)
   end
 
-  describe 'default path by OS' do
-    subject { described_class.new.path }
+  it 'can write a filter config directly' do
+    boot_config.pi0 = test_value
+    expect(boot_config.pi0).to be_a(OpenStruct)
+  end
 
-    context 'on mac' do
-      before { allow(PiMaker).to receive(:host_os).and_return(:mac) }
+  it 'can instantiate a filter config' do
+    fc = described_class.new(config: { pi0: test_value })
 
-      it { is_expected.to eq('/Volumes/boot/config.txt') }
-    end
+    expect(fc.pi0).to be_a(OpenStruct)
+    expect(fc['pi0']['testkey=testval']).to eq(1)
+  end
 
-    context 'on linux' do
-      before { allow(PiMaker).to receive(:host_os).and_return(:linux) }
+  it 'can instantiate a general config' do
+    fc = described_class.new(config: test_value)
 
-      it { is_expected.to eq('/mnt/boot/config.txt') }
-    end
+    expect(fc['all']['testkey=testval']).to eq(1)
+  end
 
-    context 'on windows' do
-      before { allow(PiMaker).to receive(:host_os).and_return(:windows) }
-
-      it { is_expected.to eq('E:/config.txt') }
-    end
+  it 'responds to filters' do
+    expect(boot_config).to respond_to(:pi3)
   end
 
   describe 'reading files when path is passed' do
@@ -73,7 +79,7 @@ RSpec.describe PiMaker::BootConfig do
     context 'key is one of the filters' do
       subject { boot_config['pi3'] }
 
-      it { is_expected.to be_a(Hash) }
+      it { is_expected.to be_a(OpenStruct) }
     end
 
     context 'key is not one of the filters' do

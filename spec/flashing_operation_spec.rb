@@ -1,7 +1,7 @@
 RSpec.describe PiMaker::DiskManagement::FlashingOperation do
   let(:pipe_double) { double('pipe', ready?: true) }
-  let(:flashing_operation) { FactoryBot.build(:flashing_operation) }
   let(:flashing_operation_attributes) { FactoryBot.attributes_for(:flashing_operation) }
+  subject(:flashing_operation) { FactoryBot.build(:flashing_operation) }
 
   before do
     allow(IO).to receive(:popen).and_return(pipe_double)

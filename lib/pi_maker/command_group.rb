@@ -1,58 +1,62 @@
 require 'tty-which'
 
 module PiMaker
-  # Generate the actual shell commands from a Recipe
+  # Generate the actual shell commands from a Ingredients
   class CommandGroup
     include Enumerable
 
-    # Recipe generates commands and text_blocks
-    attr_reader :recipe
+    # Ingredients generates commands and text_blocks
+    attr_reader :ingredients
 
-    # Take +opts+ in to capture the recipe
+    # Take +opts+ in to capture the ingredients
     def initialize(opts = {})
-      @recipe = opts.fetch(:recipe, Recipe.new)
+      @ingredients = opts.fetch(:ingredients, Ingredients.new)
     end
 
-    # Use the +method_name+ on the recipe
+    # Use the +method_name+ on the ingredients
     def method_missing(method_name, *args, &blk)
-      super unless recipe.respond_to?(method_name)
+      super unless ingredients.respond_to?(method_name)
 
-      recipe.public_send(method_name, *args, &blk)
+      ingredients.public_send(method_name, *args, &blk)
     end
 
-    # Respond to the +method_name+ on the recipe
+    # Respond to the +method_name+ on the ingredients
     def respond_to_missing?(method_name, priv)
-      recipe.respond_to?(method_name, priv) || super
+      ingredients.respond_to?(method_name, priv) || super
     end
 
-    # Generate commands from the different recipe collections
+    # Generate commands from the different ingredients collections
     def commands
-      cmds = PiMaker::Recipe::LISTS.reduce([]) do |acc, field|
-        acc << (recipe.public_send(field[0]).nil? ? nil : send(field[0]))
-        acc
+      cmds = PiMaker::Ingredients::LISTS.each_with_object([]) do |field, acc|
+        acc << (ingredients.public_send(field[0]).nil? ? nil : send(field[0]))
       end.compact
 
-      cmds.unshift('mkdir ~/repos') if recipe[:github_repos]
-      cmds.unshift('sudo apt-get update') if recipe[:apt_packages] || recipe[:gems]
+      cmds.unshift('mkdir -p ~/repos') unless ingredients[:github_repos].empty?
+
+      unless ingredients[:apt_packages].empty? || ingredients[:gems].empty?
+        cmds.unshift('sudo apt-get update')
+      end
 
       cmds.flatten
     end
 
     # Build text blocks to be copied and appended to files
     def text_blocks
-      PiMaker::Recipe::TEXT_BLOCKS.map { |field, path| [path, recipe.public_send(field)] }
-                                  .reject { |b| b[1].nil? }
-                                  .to_h
+      PiMaker::Ingredients::TEXT_BLOCKS.map { |field, path| [path, ingredients.public_send(field)] }
+                                       .reject { |b| b[1].nil? || b[1].empty? }
+                                       .to_h
     end
 
     # Construct an apt-get install string from the packages
     def apt_packages
-      recipe.apt_packages.reduce('sudo apt-get install -y') { |str, pkg| [str, pkg].join(' ') }
+      return if ingredients.apt_packages.empty?
+
+      ingredients.apt_packages.reduce('sudo apt-get install -y') { |str, pkg| [str, pkg].join(' ') }
     end
 
     # Construct an array of git clone strings from the repos
     def github_repos
-      recipe.github_repos.map do |ghr, post_install|
+      ingredients.github_repos.map do |ghr, post_install|
         repo_args = ghr.match(%r{(\w+)(?:/(\w+))?})
         url_str = "#{repo_args[1]}/#{repo_args[2] || repo_args[1]}"
 
@@ -65,14 +69,16 @@ module PiMaker
 
     # Use the raspi-config tool on the pi for these options
     def raspi_config
-      recipe.raspi_config.map do |k, v|
+      ingredients.raspi_config.map do |k, v|
         %(sudo raspi-config nonint #{k}#{v ? " #{v}" : ''})
       end
     end
 
     # Construct a gem install string from the gems
     def gems
-      recipe.gems.reduce('sudo gem install') { |str, gm| [str, gm].join(' ') }
+      return if ingredients.gems.empty?
+
+      ingredients.gems.reduce('sudo gem install') { |str, gm| [str, gm].join(' ') }
     end
   end
 end

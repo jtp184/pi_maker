@@ -1,30 +1,23 @@
+require 'psych'
+
 module PiMaker
-  # Definable inside a gem, passes options to it
+  # Define a pi and its dependencies and config options
   class Recipe
-    # Defined attributes on the class which store collections
-    LISTS = {
-      apt_packages: Array,
-      github_repos: Hash,
-      gems: Array,
-      shell: Array,
-      raspi_config: Hash
-    }.freeze
+    # A hostname to set instead of raspberrypi
+    attr_accessor :hostname
+    # A password to set instead of raspberry
+    attr_accessor :password
+    # A WifiConfig to install on the card
+    attr_accessor :wpa_config
+    # A BootConfig to install on the card
+    attr_accessor :boot_config
+    # An Ingredients to set install options
+    attr_accessor :initial_setup
 
-    # Defined attributes which are to be included into files
-    TEXT_BLOCKS = {
-      bashrc: '/home/pi/.bashrc'
-    }.freeze
-
-    # Generate accessors for the defined attributes
-    attr_accessor(*LISTS.keys, *TEXT_BLOCKS.keys)
-
-    # Use the +opts+ hash to populate instance vars
+    # Takes in +opts+ for the attributes
     def initialize(opts = {})
-      opts.to_h.each do |key, value|
-        next unless valid_attribute?(key)
-        next if LISTS.include?(key) && !value.is_a?(LISTS[key])
-
-        instance_variable_set(:"@#{key}", value)
+      %i[hostname password wpa_config boot_config initial_setup].each do |key|
+        instance_variable_set("@#{key}", opts[key]) if opts[key]
       end
     end
 
@@ -35,16 +28,83 @@ module PiMaker
       new(opts)
     end
 
-    # If the +field+ is valid, get its value
-    def [](field)
-      valid_attribute?(field) ? public_send(field) : nil
+    # Takes in the +yml+ string, loads the options from it and returns a new instance
+    def self.from_yaml(yml, encrypted = nil)
+      yaml = Psych.load(FileEncrypter.decrypt(yml, encrypted))
+
+      inst = new(yaml.slice(:hostname, :password))
+
+      parse_wifi_config_options(inst, yaml)
+      parse_boot_config_options(inst, yaml)
+      parse_initial_config_options(inst, yaml)
+
+      inst
     end
 
-    private
+    # Returns an Ingredients list to set the hostname and password on the pi
+    def login_setup(old_password = PiMaker.default_login[:password])
+      Ingredients.define do |i|
+        i.raspi_config = { do_hostname: hostname }
+        i.shell = [
+          format(
+            %{(echo "%<old_pass>s" ; echo "%<new_pass>s" ; echo "%<new_pass>s") | passwd},
+            old_pass: old_password,
+            new_pass: password
+          )
+        ]
+      end
+    end
 
-    # Returns true if the +key+ is one of the LISTS or TEXT_BLOCKS keys
-    def valid_attribute?(key)
-      LISTS.include?(key) || TEXT_BLOCKS.keys.include?(key)
+    # Takes in +opts+ for whether to export :with_passwords, and returns a hash representation
+    def to_h(opts = {})
+      data = {}
+
+      %i[hostname password].each { |k| data[k] = send(k) if send(k) }
+
+      data[:wifi_config_options] = wpa_config.to_h(opts.fetch(:with_passwords, true)) if wpa_config
+      data[:boot_config_options] = boot_config.to_h if boot_config
+      data[:initial_setup_options] = initial_setup.to_h if initial_setup
+
+      data
+    end
+
+    # Dumps the hash to YAML, taking in +opts+ to pass to to_h, and an optional encryption +passwd+
+    def to_yaml(passwd = nil, opts = {})
+      yml = Psych.dump(to_h(opts))
+      FileEncrypter.encrypt(yml, passwd)
+    end
+
+    class << self
+      private
+
+      # Parses the initial config options
+      def parse_initial_config_options(inst, opts)
+        return unless opts.key?(:initial_setup_options)
+
+        inst.initial_setup ||= Ingredients.new(opts[:initial_setup_options])
+      end
+
+      # Parses the boot config options
+      def parse_boot_config_options(inst, opts)
+        return unless opts.key?(:boot_config_options)
+
+        inst.boot_config ||= BootConfig.new(opts[:boot_config_options])
+      end
+
+      # Parses the wifi config options
+      def parse_wifi_config_options(inst, opts)
+        return unless opts.key?(:wifi_config_options)
+
+        conf = opts[:wifi_config_options]
+        inst.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
+
+        conf[:networks].each do |args|
+          next unless [Array, String].detect { |c| args.is_a?(c) }
+
+          # TODO: in place ssid
+          inst.wpa_config.append(*args) if args.respond_to?(:[])
+        end
+      end
     end
   end
 end
