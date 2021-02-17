@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>PiMaker::FileEncrypter</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+PiMaker::FileEncrypter
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../files/lib/pi_maker/file_encrypter_rb.html">lib/pi_maker/file_encrypter.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Encrypt and decrypt files using openssl</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-call">call</a></li>
+<li><a href="#method-c-decrypt">decrypt</a></li>
+<li><a href="#method-c-encrypt">encrypt</a></li>
+<li><a href="#method-c-encrypted-3F">encrypted?</a></li>
+</ol>
+<h3>Private Class</h3>
+<ol>
+<li><a href="#attribute-c-cipher">cipher</a></li>
+<li><a href="#method-c-key_from_password">key_from_password</a></li>
+<li><a href="#method-c-new_cipher">new_cipher</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>HEADER</td>
+<td>=</td>
+<td class='context-item-value'>"PIMAKER:ENCRYPTED\n".freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Regex for files encrypted with this method</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id='aliases-list'>
+<h2>Public Class Aliases</h2>
+<div class='name-list'>
+<table summary='Public Class Aliases'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>[]</td>
+<td>-&gt;</td>
+<td class='context-item-value'><a href="#method-c-call">call</a></td>
+</tr>
+</table>
+</div>
+</div>
+<div id='attribute-list'>
+<h2 class='section-bar'>Attributes</h2>
+<div class='name-list'>
+<table>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-c-cipher'>cipher</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'>
+<p>Reader for the cipher class</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-call'>
+<a name='method-c-call'></a>
+<div class='synopsis'>
+<span class='name'>call</span><span class='arguments'>(str, passwd)</span>
+
+</div>
+<div class='description'>
+
+<p>Given a <code>str</code> and a <code>passwd</code>, decides whether to encrypt or decrypt based on utf8</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-call-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-call-source'><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 46</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span>)&#x000A;  <span class="ruby-identifier">encrypted?</span>(<span class="ruby-identifier">str</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">decrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">encrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-decrypt'>
+<a name='method-c-decrypt'></a>
+<div class='synopsis'>
+<span class='name'>decrypt</span><span class='arguments'>(str, passwd = nil)</span>
+
+</div>
+<div class='description'>
+
+<p>Given the +str to decrypt, and a <code>passwd</code> to decrypt it with, returns the original string. Raises a <a href="PasskeyError.html"><code>PasskeyError</code></a> if a passwd is not provided, or the string if it doesn&#39;t need to be</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-decrypt-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-decrypt-source'><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 30</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">decrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span> = <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-identifier">str</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">encrypted?</span>(<span class="ruby-identifier">str</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">PasskeyError</span>, <span class="ruby-string">&#39;No password provided&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">passwd</span>.<span class="ruby-identifier">nil?</span>&#x000A;&#x000A;  <span class="ruby-identifier">vector</span> = <span class="ruby-identifier">str</span>[<span class="ruby-constant">HEADER</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">bytes</span>.<span class="ruby-identifier">first</span>(<span class="ruby-value">16</span>).<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:chr</span>).<span class="ruby-identifier">join</span>&#x000A;  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">str</span>[<span class="ruby-constant">HEADER</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">bytes</span>[<span class="ruby-value">16</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:chr</span>).<span class="ruby-identifier">join</span>&#x000A;&#x000A;  <span class="ruby-identifier">new_cipher</span>.<span class="ruby-identifier">decrypt</span>&#x000A;&#x000A;  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv</span> = <span class="ruby-identifier">vector</span>&#x000A;  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key</span> = <span class="ruby-identifier">key_from_password</span>(<span class="ruby-identifier">passwd</span>)&#x000A;&#x000A;  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">data</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">final</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-encrypt'>
+<a name='method-c-encrypt'></a>
+<div class='synopsis'>
+<span class='name'>encrypt</span><span class='arguments'>(str, passwd = nil)</span>
+
+</div>
+<div class='description'>
+
+<p>Given the <code>str</code> to encrypt, and an optional passwd to encrypt it with, returns an encoded string, or the string itself if no password is given</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-encrypt-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-encrypt-source'><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">encrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span> = <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-identifier">str</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">passwd</span>.<span class="ruby-identifier">nil?</span>&#x000A;&#x000A;  <span class="ruby-identifier">new_cipher</span>.<span class="ruby-identifier">encrypt</span>&#x000A;&#x000A;  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key</span> = <span class="ruby-identifier">key_from_password</span>(<span class="ruby-identifier">passwd</span>)&#x000A;&#x000A;  <span class="ruby-identifier">vector</span> = <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">bytes</span>(<span class="ruby-value">16</span>)&#x000A;  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv</span> = <span class="ruby-identifier">vector</span>&#x000A;&#x000A;  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">str</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">final</span>&#x000A;&#x000A;  [<span class="ruby-constant">HEADER</span>, <span class="ruby-identifier">vector</span>, <span class="ruby-identifier">data</span>].<span class="ruby-identifier">join</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-encrypted-3F'>
+<a name='method-c-encrypted-3F'></a>
+<div class='synopsis'>
+<span class='name'>encrypted?</span><span class='arguments'>(str)</span>
+
+</div>
+<div class='description'>
+
+<p>Returns true for strings that have the <a href="FileEncrypter.html#HEADER"><code>HEADER</code></a> in the right location</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-encrypted-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-encrypted-3F-source'><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">encrypted?</span>(<span class="ruby-identifier">str</span>)&#x000A;  <span class="ruby-identifier">str</span>[<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-constant">HEADER</span>.<span class="ruby-identifier">length</span>] <span class="ruby-operator">==</span> <span class="ruby-constant">HEADER</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Private Class methods</h2>
+<div class='method private-class' id='method-method-c-key_from_password'>
+<a name='method-c-key_from_password'></a>
+<div class='synopsis'>
+<span class='name'>key_from_password</span><span class='arguments'>(passwd)</span>
+
+</div>
+<div class='description'>
+
+<p>Given the <code>passwd</code>, converts it into a 16 byte key using OpenSSL::KDF.pbkdf2_hmac</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-key_from_password-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-key_from_password-source'><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 63</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">key_from_password</span>(<span class="ruby-identifier">passwd</span>)&#x000A;  <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">KDF</span>.<span class="ruby-identifier">pbkdf2_hmac</span>(&#x000A;    <span class="ruby-identifier">passwd</span>,&#x000A;    <span class="ruby-value">iterations:</span> <span class="ruby-value">16</span>,&#x000A;    <span class="ruby-value">length:</span> <span class="ruby-value">16</span>,&#x000A;    <span class="ruby-value">hash:</span> <span class="ruby-string">&#39;sha256&#39;</span>,&#x000A;    <span class="ruby-value">salt:</span> <span class="ruby-string">&#39;JTP184 / PIMAKER&#39;</span>&#x000A;  )&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method private-class' id='method-method-c-new_cipher'>
+<a name='method-c-new_cipher'></a>
+<div class='synopsis'>
+<span class='name'>new_cipher</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Set the instanced cipher to a new instance</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new_cipher-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new_cipher-source'><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 74</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">new_cipher</span>&#x000A;  <span class="ruby-ivar">@cipher</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;AES-128-CBC&#39;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

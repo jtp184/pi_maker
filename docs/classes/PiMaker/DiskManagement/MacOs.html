@@ -47,7 +47,7 @@ Superclass:
 <ol>
 <li><a href="#method-c-disk_info">disk_info</a></li>
 <li><a href="#method-c-eject_disk">eject_disk</a></li>
-<li><a href="#method-c-list">list</a></li>
+<li><a href="#method-c-list_blocks">list_blocks</a></li>
 <li><a href="#method-c-mount_disk">mount_disk</a></li>
 <li><a href="#method-c-raw_disk_path">raw_disk_path</a></li>
 <li><a href="#method-c-unmount_disk">unmount_disk</a></li>
@@ -102,10 +102,10 @@ Superclass:
 <pre id='method-c-eject_disk-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 41</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">eject_disk</span>(<span class="ruby-identifier">dsk</span>)&#x000A;  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;diskutil eject #{dsk}&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method public-class' id='method-method-c-list'>
-<a name='method-c-list'></a>
+<div class='method public-class' id='method-method-c-list_blocks'>
+<a name='method-c-list_blocks'></a>
 <div class='synopsis'>
-<span class='name'>list</span><span class='arguments'>()</span>
+<span class='name'>list_blocks</span><span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -114,10 +114,10 @@ Superclass:
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-list-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-list_blocks-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-list-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 10</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">list</span>&#x000A;  <span class="ruby-identifier">dinfo</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;diskutil list -plist&#39;</span>)&#x000A;  <span class="ruby-identifier">drm</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;diskutil list&#39;</span>).<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n\n&quot;</span>)&#x000A;               .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:lines</span>)&#x000A;               .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:first</span>)&#x000A;               .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39; (&#39;</span>) }&#x000A;               .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span>, <span class="ruby-identifier">b</span><span class="ruby-operator">|</span> [<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-identifier">a</span>)), <span class="ruby-identifier">b</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/external/</span>)] }&#x000A;&#x000A;  <span class="ruby-identifier">adp</span> = <span class="ruby-constant">Plist</span>.<span class="ruby-identifier">parse_xml</span>(<span class="ruby-identifier">dinfo</span>)[<span class="ruby-string">&#39;AllDisksAndPartitions&#39;</span>]&#x000A;  <span class="ruby-identifier">adp</span>.<span class="ruby-identifier">map!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">parse_disk_plist_entry</span>(<span class="ruby-identifier">x</span>) }&#x000A;&#x000A;  <span class="ruby-identifier">dstruct</span>(<span class="ruby-identifier">adp</span>, <span class="ruby-identifier">drm</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-list_blocks-source'><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 10</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">list_blocks</span>&#x000A;  <span class="ruby-identifier">dinfo</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;diskutil list -plist&#39;</span>)&#x000A;  <span class="ruby-identifier">drm</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;diskutil list&#39;</span>).<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n\n&quot;</span>)&#x000A;               .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:lines</span>)&#x000A;               .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:first</span>)&#x000A;               .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39; (&#39;</span>) }&#x000A;               .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span>, <span class="ruby-identifier">b</span><span class="ruby-operator">|</span> [<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-identifier">a</span>)), <span class="ruby-identifier">b</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/external/</span>)] }&#x000A;&#x000A;  <span class="ruby-identifier">adp</span> = <span class="ruby-constant">Plist</span>.<span class="ruby-identifier">parse_xml</span>(<span class="ruby-identifier">dinfo</span>)[<span class="ruby-string">&#39;AllDisksAndPartitions&#39;</span>]&#x000A;  <span class="ruby-identifier">adp</span>.<span class="ruby-identifier">map!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">parse_disk_plist_entry</span>(<span class="ruby-identifier">x</span>) }&#x000A;&#x000A;  <span class="ruby-identifier">dstruct</span>(<span class="ruby-identifier">adp</span>, <span class="ruby-identifier">drm</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-mount_disk'>
