@@ -11,6 +11,8 @@ module PiMaker
     # Error raised by this runner
     Error = Class.new(StandardError)
 
+    class_option :interactive, type: :boolean, default: false, desc: 'Run with prompting'
+
     desc 'version', 'pi_maker version'
     # Return version number
     def version
@@ -18,5 +20,17 @@ module PiMaker
       puts "v#{PiMaker::VERSION}"
     end
     map %w[--version -v] => :version
+
+    require_relative 'commands/wifi'
+    register PiMaker::Commands::Wifi, 'wifi', 'wifi [SUBCOMMAND]',
+             'Store and use wifi network credentials'
+
+    require_relative 'commands/recipe'
+    register PiMaker::Commands::Recipe, 'recipe', 'recipe [SUBCOMMAND]',
+             'Create and use recipes'
+
+    require_relative 'commands/pantry'
+    register PiMaker::Commands::Pantry, 'pantry', 'pantry [SUBCOMMAND]',
+             'Handle data in the persistant store'
   end
 end
