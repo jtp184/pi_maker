@@ -4,11 +4,10 @@ require_relative '../../command'
 
 module PiMaker
   module Commands
-    class Wifi
-      class Add < PiMaker::Command
-        def initialize(ssid, passwd, options)
-          @ssid = ssid
-          @passwd = passwd
+    class Recipe
+      class Delete < PiMaker::Command
+        def initialize(hostname, options)
+          @hostname = hostname
           @options = options
         end
 

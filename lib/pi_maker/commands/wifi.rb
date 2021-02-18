@@ -5,12 +5,13 @@ require 'thor'
 module PiMaker
   module Commands
     class Wifi < Thor
-
       namespace :wifi
 
       desc 'delete [SSID]', 'Deletes a stored network from persistance'
+
       method_option :help, aliases: '-h', type: :boolean,
                            desc: 'Display usage information'
+
       def delete(ssid = nil)
         if options[:help]
           invoke :help, ['delete']
@@ -21,8 +22,12 @@ module PiMaker
       end
 
       desc 'supplicant', 'Write a wpa_supplicant.conf file to copy manually'
+
       method_option :help, aliases: '-h', type: :boolean,
                            desc: 'Display usage information'
+      method_option :save, aliases: '-s', type: :string,
+                           desc: 'Where to save to, defaults to current directory'
+
       def supplicant(*)
         if options[:help]
           invoke :help, ['supplicant']
@@ -33,8 +38,13 @@ module PiMaker
       end
 
       desc 'list', 'Show stored wifi configs'
+
       method_option :help, aliases: '-h', type: :boolean,
                            desc: 'Display usage information'
+
+      method_option :passwords, aliases: '-p', type: :boolean,
+                                desc: 'Whether to show passwords for networks'
+
       def list(*)
         if options[:help]
           invoke :help, ['list']
@@ -44,15 +54,17 @@ module PiMaker
         end
       end
 
-      desc 'add', 'Adds a new wifi config to the persistant store'
+      desc 'add [SSID] [PASSWD]', 'Adds a new wifi config to the persistant store'
+
       method_option :help, aliases: '-h', type: :boolean,
                            desc: 'Display usage information'
-      def add(*)
+
+      def add(ssid = nil, passwd = nil)
         if options[:help]
           invoke :help, ['add']
         else
           require_relative 'wifi/add'
-          PiMaker::Commands::Wifi::Add.new(options).execute
+          PiMaker::Commands::Wifi::Add.new(ssid, passwd, options).execute
         end
       end
     end
