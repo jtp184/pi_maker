@@ -99,10 +99,11 @@ module PiMaker
         inst.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
 
         conf[:networks].each do |args|
-          next unless [Array, String].detect { |c| args.is_a?(c) }
-
-          # TODO: in place ssid
-          inst.wpa_config.append(*args) if args.respond_to?(:[])
+          if args.is_a?(Array)
+            inst.wpa_config.append(*args)
+          elsif args.is_a?(String)
+            Pantry.global.wifi_networks[args]
+          end
         end
       end
     end
