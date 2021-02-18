@@ -12,6 +12,7 @@ module PiMaker
     Error = Class.new(StandardError)
 
     class_option :interactive, type: :boolean, default: false, desc: 'Run with prompting'
+    class_option :help, aliases: '-h', type: :boolean, desc: 'Display usage information'
 
     desc 'version', 'pi_maker version'
     # Return version number
@@ -20,6 +21,9 @@ module PiMaker
       puts "v#{PiMaker::VERSION}"
     end
     map %w[--version -v] => :version
+
+    require_relative 'commands/boot'
+    register PiMaker::Commands::Boot, 'boot', 'boot [SUBCOMMAND]', 'Command description...'
 
     require_relative 'commands/wifi'
     register PiMaker::Commands::Wifi, 'wifi', 'wifi [SUBCOMMAND]',

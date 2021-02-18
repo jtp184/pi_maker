@@ -9,9 +9,6 @@ module PiMaker
 
       desc 'list', 'List records'
 
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
-
       def list(*)
         if options[:help]
           invoke :help, ['list']
@@ -22,9 +19,6 @@ module PiMaker
       end
 
       desc 'init [PATH]', 'Create a pantry folder'
-
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
 
       def init(path = nil)
         if options[:help]

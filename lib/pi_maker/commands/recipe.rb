@@ -9,9 +9,6 @@ module PiMaker
 
       desc 'delete [HOSTNAME]', 'Remove'
 
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
-
       def delete(hostname = nil)
         if options[:help]
           invoke :help, ['delete']
@@ -23,8 +20,6 @@ module PiMaker
 
       desc 'list', 'Show all recipes from a certain collection'
 
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
       def list(*)
         if options[:help]
           invoke :help, ['list']
@@ -35,8 +30,6 @@ module PiMaker
       end
 
       desc 'add', 'Add a new recipe'
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
 
       method_option :hostname, aliases: '-n', type: :string,
                                desc: 'Set the hostname'

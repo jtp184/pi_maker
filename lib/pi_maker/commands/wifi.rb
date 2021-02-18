@@ -9,9 +9,6 @@ module PiMaker
 
       desc 'delete [SSID]', 'Deletes a stored network from persistance'
 
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
-
       def delete(ssid = nil)
         if options[:help]
           invoke :help, ['delete']
@@ -23,10 +20,11 @@ module PiMaker
 
       desc 'supplicant', 'Write a wpa_supplicant.conf file to copy manually'
 
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
       method_option :save, aliases: '-s', type: :string,
                            desc: 'Where to save to, defaults to current directory'
+
+      method_option :credentials, aliases: '-c', type: :hash,
+                                  desc: 'Set a single credential as the file contents'
 
       def supplicant(*)
         if options[:help]
@@ -38,9 +36,6 @@ module PiMaker
       end
 
       desc 'list', 'Show stored wifi configs'
-
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
 
       method_option :passwords, aliases: '-p', type: :boolean,
                                 desc: 'Whether to show passwords for networks'
@@ -55,9 +50,6 @@ module PiMaker
       end
 
       desc 'add [SSID] [PASSWD]', 'Adds a new wifi config to the persistant store'
-
-      method_option :help, aliases: '-h', type: :boolean,
-                           desc: 'Display usage information'
 
       def add(ssid = nil, passwd = nil)
         if options[:help]
