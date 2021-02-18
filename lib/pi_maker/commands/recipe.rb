@@ -34,7 +34,7 @@ module PiMaker
         end
       end
 
-      desc 'create', 'Create a new recipe'
+      desc 'add', 'Add a new recipe'
       method_option :help, aliases: '-h', type: :boolean,
                            desc: 'Display usage information'
 
@@ -53,12 +53,12 @@ module PiMaker
       method_option :initial_options, aliases: '-t', type: :hash,
                                       desc: 'Set the hostname'
 
-      def create(*)
+      def add(*)
         if options[:help]
-          invoke :help, ['create']
+          invoke :help, ['add']
         else
-          require_relative 'recipe/create'
-          PiMaker::Commands::Recipe::Create.new(options).execute
+          require_relative 'recipe/add'
+          PiMaker::Commands::Recipe::Add.new(options).execute
         end
       end
     end

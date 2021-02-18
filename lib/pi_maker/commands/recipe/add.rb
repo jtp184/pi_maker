@@ -5,7 +5,7 @@ require_relative '../../command'
 module PiMaker
   module Commands
     class Recipe
-      class Create < PiMaker::Command
+      class Add < PiMaker::Command
         def initialize(options)
           @options = options
         end
