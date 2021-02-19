@@ -33,7 +33,14 @@ module PiMaker
 
     # If we can locate a global pantry, loads it
     def self.global
-      new(base_path: locate_pantry) if locate_pantry
+      check_in = [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"]
+      dotfile_loc = check_in.detect { |e| Dir.exist?("#{e}/.pi_maker") }
+
+      if dotfile_loc
+        new(base_path: File.read(dotfile_loc))
+      else
+        new(base_path: Dir.pwd)
+      end
     end
 
     # Given an optional +where_path+ to save to, saves out the recipes and wifi config
@@ -82,15 +89,6 @@ module PiMaker
     end
 
     private
-
-    # Finds a dotfile for pi_maker
-    def locate_pantry
-      dot_loc = [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"].detect do |e|
-        Dir["#{e}/.pi_maker"]
-      end
-
-      File.read(dot_loc) if dot_loc
-    end
 
     # Finds and interprets a wifi config file in the base path
     def load_wifi_networks

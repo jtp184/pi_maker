@@ -10,7 +10,12 @@ module PiMaker
           @options = options
         end
 
-        def execute(input: $stdin, output: $stdout)
+        def run(input: $stdin, output: $stdout)
+          # Command logic goes here ...
+          output.puts "OK"
+        end
+
+        def run_interactive(input: $stdin, output: $stdout)
           # Command logic goes here ...
           output.puts "OK"
         end

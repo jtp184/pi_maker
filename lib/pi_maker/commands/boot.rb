@@ -5,7 +5,6 @@ require 'thor'
 module PiMaker
   module Commands
     class Boot < Thor
-
       namespace :boot
 
       desc 'flash', 'Flash a card from an image'
@@ -27,7 +26,7 @@ module PiMaker
 
       desc 'config', 'Set values on the config file directly'
 
-      method_options :values, aliases: '-v', type: :hash,
+      method_option :values, aliases: '-v', type: :hash,
                               desc: 'Pass values to the config'
 
       def config(*)

@@ -37,7 +37,7 @@ module PiMaker
 
       desc 'list', 'Show stored wifi configs'
 
-      method_option :passwords, aliases: '-p', type: :boolean,
+      method_option :passwords, aliases: '-p', type: :boolean, default: false,
                                 desc: 'Whether to show passwords for networks'
 
       def list(*)

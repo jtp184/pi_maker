@@ -7,7 +7,7 @@ module PiMaker
     class Recipe < Thor
       namespace :recipe
 
-      desc 'delete [HOSTNAME]', 'Remove'
+      desc 'delete [HOSTNAME]', 'Remove a recipe'
 
       def delete(hostname = nil)
         if options[:help]
@@ -34,17 +34,26 @@ module PiMaker
       method_option :hostname, aliases: '-n', type: :string,
                                desc: 'Set the hostname'
 
-      method_option :password, aliases: '-p', type: :string,
+      method_option :password, aliases: '-w', type: :string,
                                desc: 'Set the password'
 
-      method_option :wifi_options, aliases: '-w', type: :hash,
+      method_option :wifi_options, aliases: '-f', type: :hash,
                                    desc: 'Set the hostname'
 
       method_option :boot_options, aliases: '-b', type: :hash,
                                    desc: 'Set the hostname'
 
-      method_option :initial_options, aliases: '-t', type: :hash,
+      method_option :initial_options, aliases: '-o', type: :hash,
                                       desc: 'Set the hostname'
+
+      method_option :export_format, aliases: '-e', type: :string, default: 'yaml',
+                                    desc: 'Export as ruby or yaml'
+
+      method_option :pantry, aliases: '-p', type: :boolean, default: true,
+                             desc: 'Save this recipe to the pantry as well'
+
+      method_option :local_file, aliases: '-l', type: :boolean, default: false,
+                                 desc: 'Whether to write out a local file with the contents'
 
       def add(*)
         if options[:help]

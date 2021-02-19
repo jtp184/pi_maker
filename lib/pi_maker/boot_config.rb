@@ -30,49 +30,50 @@ module PiMaker
 
     # Takes in +opts+ for the config and path
     def initialize(opts = {})
-      @config = OpenStruct.new(default_config)
       @ssh = opts.key?(:ssh) ? opts.delete(:ssh) : true
 
       if opts.key?(:path)
         @config = parse_file(File.read(opts[:path]))
-      elsif opts.key?(:config) && !opts[:config].is_a?(OpenStruct)
-        opts[:config].each do |key, value|
+      else
+        @config = OpenStruct.new
+
+        opts.fetch(:config, default_config).each do |key, value|
           if FILTERS.include?(key.to_s) && value.is_a?(Hash)
-            config[key] ||= OpenStruct.new
-            value.each { |k, v| config[key][k] = v }
+            @config[key] ||= OpenStruct.new
+            value.each { |k, v| @config[key][k] = v }
           else
-            config['all'] ||= OpenStruct.new
-            config['all'][key] = value
+            @config['all'] ||= OpenStruct.new
+            @config['all'][key] = value
           end
         end
       end
     end
 
-    # Pass arguments to config
-    def method_missing(mtd_name, *args, &blk)
-      if FILTERS.any? { |f| mtd_name =~ /^(#{f})=$/ } && args.one?
-        filter = Regexp.last_match[1].to_sym
-        config[filter] ||= OpenStruct.new
-        args.first.each { |k, v| config[filter][k] = v }
-      elsif FILTERS.include?(mtd_name.to_s)
-        config[mtd_name] ||= OpenStruct.new
-      else
-        config.public_send(:all)
-              .public_send(mtd_name, *args, &blk)
-      end || super
+    FILTERS.each do |fil|
+      next unless fil =~ /[a-z0-9_]/i
+
+      define_method(fil.to_sym) do
+        self[fil]
+      end
     end
 
-    # Respond to the config's messages
-    def respond_to_missing?(mtd_name, priv = false)
-      FILTERS.include?(mtd_name.to_s) || config.respond_to?(mtd_name, priv) || super
-    end
-
-    # Get the +key+ from the config
+    # Get the +key+ from the config, defaulting to all if it isn't a filter
     def [](key)
       if FILTERS.include?(key)
         config[key] ||= OpenStruct.new
       else
         config['all'][key]
+      end
+    end
+
+    # Set the +key+ to the +value+, defaulting to all if it isn't a filter
+    def []=(key, value)
+      if FILTERS.include?(key)
+        config[key] ||= OpenStruct.new
+        config[key] = value
+      else
+        config['all'][key] ||= OpenStruct.new
+        config['all'][key] = value
       end
     end
 
@@ -101,6 +102,18 @@ module PiMaker
       FileEncrypter.encrypt(yml, password)
     end
 
+    # Pass the +mtd_name+ as a subargument of all if missing
+    def method_missing(mtd_name, *args, &block)
+      self['all'].send(mtd_name, *args, &block)
+    rescue NoMethodError
+      super
+    end
+
+    # Responds to +mtd_name+ and returns whether we have a key already for all
+    def respond_to_missing?(mtd_name, priv = false)
+      self['all'].to_h.key?(mtd_name) || super
+    end
+
     private
 
     # Given the starting +note+, recursively transforms the subvalues to hashes
@@ -112,7 +125,7 @@ module PiMaker
 
     # The default options
     def default_config
-      conf = {
+      {
         'pi4' => {
           'dtparam=audio' => 'on',
           'max_framebuffers' => '2'
@@ -120,21 +133,12 @@ module PiMaker
         'all' => {
           'dtoverlay' => 'vc4-fkms-v3d'
         }
-      }.transform_values { |v| OpenStruct.new(v) }
-
-      OpenStruct.new(conf)
+      }
     end
 
     # Takes the +file_contents+ and interprets them
     def parse_file(file_contents)
-      set_lines = file_contents.split("\n").map do |line|
-        next if line =~ /^$/
-        next if line =~ /^#/
-
-        [/^(\[)(.*)\]/, /(.*)=(.*)/].map { |ma| ma.match(line) }
-                                    .compact
-                                    .first
-      end.compact
+      set_lines = extract_actionable_lines(file_contents)
 
       opts = { 'all' => {} }
       current_group = 'all'
@@ -152,6 +156,18 @@ module PiMaker
       end
 
       OpenStruct.new(opts.transform_values { |v| OpenStruct.new(v) })
+    end
+
+    # Extracts non empty and non comment lines from +file_contents+
+    def extract_actionable_lines(file_contents)
+      file_contents.split("\n").map do |line|
+        next if line =~ /^$/
+        next if line =~ /^#/
+
+        [/^(\[)(.*)\]/, /(.*)=(.*)/].map { |ma| ma.match(line) }
+                                    .compact
+                                    .first
+      end.compact
     end
   end
 end

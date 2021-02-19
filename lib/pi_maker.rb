@@ -1,3 +1,4 @@
+require 'pathname'
 require 'strings-case'
 require 'tty-command'
 
