@@ -80,21 +80,21 @@ module PiMaker
 
     # Parses the initial config options
     def parse_initial_config_options(opts)
-      return unless opts.key?(:initial_setup_options)
+      return unless opts.to_h.key?(:initial_setup_options)
 
       self.initial_setup ||= Ingredients.new(opts[:initial_setup_options])
     end
 
     # Parses the boot config options
     def parse_boot_config_options(opts)
-      return unless opts.key?(:boot_config_options)
+      return unless opts.to_h.key?(:boot_config_options)
 
       self.boot_config ||= BootConfig.new(opts[:boot_config_options])
     end
 
     # Parses the wifi config options
     def parse_wifi_config_options(opts)
-      return unless opts.key?(:wifi_config_options)
+      return unless opts.to_h.key?(:wifi_config_options)
 
       conf = opts[:wifi_config_options]
       self.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
