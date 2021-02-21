@@ -38,16 +38,16 @@ module PiMaker
                                desc: 'Set the password'
 
       method_option :wifi_options, aliases: '-f', type: :hash,
-                                   desc: 'Set the hostname'
+                                   desc: 'Set the wifi options'
 
       method_option :boot_options, aliases: '-b', type: :hash,
-                                   desc: 'Set the hostname'
+                                   desc: 'Set the boot options'
 
       method_option :initial_options, aliases: '-o', type: :hash,
-                                      desc: 'Set the hostname'
+                                      desc: 'Set the initial setup options'
 
       method_option :export_format, aliases: '-e', type: :string, default: 'yaml',
-                                    desc: 'Export as ruby or yaml'
+                                    desc: 'Output as ruby or yaml'
 
       method_option :pantry, aliases: '-p', type: :boolean, default: true,
                              desc: 'Save this recipe to the pantry as well'
