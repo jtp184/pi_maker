@@ -34,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'activesupport', '~> 6.1'
   spec.add_runtime_dependency 'net-scp', '~> 3.0.0'
   spec.add_runtime_dependency 'net-ssh', '~> 6.1.0'
+  spec.add_runtime_dependency 'pastel', '~> 0.8.0'
   spec.add_runtime_dependency 'strings-case', '~> 0.3.0'
   spec.add_runtime_dependency 'tty-box', '~> 0.7.0'
   spec.add_runtime_dependency 'tty-command', '~> 0.10.0'

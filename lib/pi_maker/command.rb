@@ -50,6 +50,12 @@ module PiMaker
       TTY::Pager.new(options)
     end
 
+    # Colorization for output
+    def pastel(options = {})
+      require 'pastel'
+      Pastel.new(options)
+    end
+
     # The interactive prompt
     def prompt(options = {})
       require 'tty-prompt'
