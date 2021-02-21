@@ -70,7 +70,15 @@ module PiMaker
     # Use the raspi-config tool on the pi for these options
     def raspi_config
       ingredients.raspi_config.map do |k, v|
-        %(sudo raspi-config nonint #{k}#{v ? " #{v}" : ''})
+        value = if v.nil?
+                  ''
+                elsif v.is_a?(String)
+                  " #{v}"
+                elsif v.is_a?(Array)
+                  " #{v.one? ? v.first : v.join(' ')}"
+                end
+
+        %(sudo raspi-config nonint #{k}#{value})
       end
     end
 
