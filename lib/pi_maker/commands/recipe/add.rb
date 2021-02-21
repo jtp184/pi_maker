@@ -31,8 +31,7 @@ module PiMaker
             password: prompt.mask('Password: '),
             wpa_config: collect_wifi_networks,
             boot_config: collect_boot_options,
-            # TODO: add these
-            # initial_options: collect_initial_options,
+            initial_setup: collect_ingredients
           )
 
           if @options[:pantry]
