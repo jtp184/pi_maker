@@ -34,7 +34,7 @@ module PiMaker
     # If we can locate a global pantry, loads it
     def self.global
       check_in = [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"]
-      dotfile_loc = check_in.detect { |e| Dir.exist?("#{e}/.pi_maker") }
+      dotfile_loc = check_in.detect { |e| File.exist?("#{e}/.pi_maker") } + '/.pi_maker'
 
       if dotfile_loc
         new(base_path: File.read(dotfile_loc))

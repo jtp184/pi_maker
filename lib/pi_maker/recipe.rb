@@ -19,6 +19,10 @@ module PiMaker
       %i[hostname password wpa_config boot_config initial_setup].each do |key|
         instance_variable_set("@#{key}", opts[key]) if opts[key]
       end
+
+      parse_wifi_config_options(opts)
+      parse_boot_config_options(opts)
+      parse_initial_config_options(opts)
     end
 
     # Yield to a block, or directly use the +hsh+ to create a new instance
@@ -34,9 +38,9 @@ module PiMaker
 
       inst = new(yaml.slice(:hostname, :password))
 
-      parse_wifi_config_options(inst, yaml)
-      parse_boot_config_options(inst, yaml)
-      parse_initial_config_options(inst, yaml)
+      inst.parse_wifi_config_options(yaml)
+      inst.parse_boot_config_options(yaml)
+      inst.parse_initial_config_options(yaml)
 
       inst
     end
@@ -74,36 +78,32 @@ module PiMaker
       FileEncrypter.encrypt(yml, passwd)
     end
 
-    class << self
-      private
+    # Parses the initial config options
+    def parse_initial_config_options(opts)
+      return unless opts.key?(:initial_setup_options)
 
-      # Parses the initial config options
-      def parse_initial_config_options(inst, opts)
-        return unless opts.key?(:initial_setup_options)
+      self.initial_setup ||= Ingredients.new(opts[:initial_setup_options])
+    end
 
-        inst.initial_setup ||= Ingredients.new(opts[:initial_setup_options])
-      end
+    # Parses the boot config options
+    def parse_boot_config_options(opts)
+      return unless opts.key?(:boot_config_options)
 
-      # Parses the boot config options
-      def parse_boot_config_options(inst, opts)
-        return unless opts.key?(:boot_config_options)
+      self.boot_config ||= BootConfig.new(opts[:boot_config_options])
+    end
 
-        inst.boot_config ||= BootConfig.new(opts[:boot_config_options])
-      end
+    # Parses the wifi config options
+    def parse_wifi_config_options(opts)
+      return unless opts.key?(:wifi_config_options)
 
-      # Parses the wifi config options
-      def parse_wifi_config_options(inst, opts)
-        return unless opts.key?(:wifi_config_options)
+      conf = opts[:wifi_config_options]
+      self.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
 
-        conf = opts[:wifi_config_options]
-        inst.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
-
-        conf[:networks].each do |args|
-          if args.is_a?(Array)
-            inst.wpa_config.append(*args)
-          elsif args.is_a?(String)
-            Pantry.global.wifi_networks[args]
-          end
+      conf[:networks].each do |args|
+        if args.is_a?(Array)
+          self.wpa_config.append(*args)
+        elsif args.is_a?(String)
+          Pantry.global.wifi_networks[args]
         end
       end
     end
