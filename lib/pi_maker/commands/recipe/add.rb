@@ -56,8 +56,21 @@ module PiMaker
           when 'yaml'
             @recipe.to_yaml
           when 'ruby'
-            # TODO: Add exporter for define formatting
+            ruby_block
           end
+        end
+
+        def ruby_block
+          <<~DOC
+            PiMaker::Recipe.define do |re|
+              re.hostname = '#{@recipe.hostname}'
+              re.password = '#{@recipe.password}'
+
+              re.wifi_config_options = #{@recipe.wpa_config.to_h}
+
+              re.boot_config_options = #{@recipe.boot_config.to_h}
+            end
+          DOC
         end
       end
     end
