@@ -35,10 +35,21 @@ module PiMaker
             # initial_options: collect_initial_options,
           )
 
+          if @options[:pantry]
+            save_to_pantry
+            prompt.ok('Saved to pantry')
+          end
+
           prompt.say("\n#{output_format}")
         end
 
         private
+
+        def save_to_pantry
+          pantry = PiMaker::Pantry.global
+          pantry.recipes << @recipe
+          pantry.write
+        end
 
         def output_format
           case @options[:export_format]
