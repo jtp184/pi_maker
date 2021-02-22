@@ -41,6 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'tty-config', '~> 0.4.0'
   spec.add_runtime_dependency 'tty-editor', '~> 0.6.0'
   spec.add_runtime_dependency 'tty-exit', '~> 0.1.0'
+  spec.add_runtime_dependency 'tty-file', '~> 0.10.0'
   spec.add_runtime_dependency 'tty-logger', '~> 0.6.0'
   spec.add_runtime_dependency 'tty-pager', '~> 0.14.0'
   spec.add_runtime_dependency 'tty-progressbar', '~> 0.18.0'
