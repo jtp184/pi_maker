@@ -12,8 +12,14 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
+          raise CLI::Error 'No hostname' unless @hostname
+
+          pantry = PiMaker::Pantry.global
+
+          recipe = pantry.recipes.find { |r| r.hostname == @hostname }
+          file_path = pantry.file_paths[recipe]
+
+          generator.remove_file(file_path)
         end
 
         def run_interactive(input: $stdin, output: $stdout)
