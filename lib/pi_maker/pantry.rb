@@ -9,6 +9,8 @@ module PiMaker
     attr_accessor :recipes
     # Add new wifi networks as a collection
     attr_accessor :wifi_networks
+    # Paths where files are stored at
+    attr_accessor :file_paths
 
     # Matches encoded or unencoded yaml files
     FILE_EXT = 'enc|ya?ml$'.freeze
@@ -20,6 +22,7 @@ module PiMaker
     # Takes in +opts+ for the +base_path+ and an optional +password+
     def initialize(opts = {})
       @base_path = opts.fetch(:base_path)
+      @file_paths = {}
 
       @password = opts.fetch(:password) do
         fpath = base_path + "/#{PASSWORD_FILE_NAME}"
@@ -96,7 +99,9 @@ module PiMaker
 
       return {} unless fi
 
-      Psych.load(FileEncrypter.decrypt(File.read(fi), password))
+      inst = Psych.load(FileEncrypter.decrypt(File.read(fi), password))
+      file_paths[inst] = fi
+      inst
     end
 
     # Finds and interprets and recipes files in the recipes subdirectory
@@ -106,7 +111,9 @@ module PiMaker
       file_list(root_path('recipes')).map do |recipe|
         next unless recipe =~ /#{FILE_EXT}/
 
-        Recipe.from_yaml(File.read(recipe), password)
+        inst = Recipe.from_yaml(File.read(recipe), password)
+        file_paths[inst] = recipe
+        inst
       end
     end
 
