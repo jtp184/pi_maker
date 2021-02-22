@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require_relative '../../command'
+require_relative '../helpers/collectors'
 
 module PiMaker
   module Commands
     class Wifi
       class Add < PiMaker::Command
+        include Helpers::Collectors
+
         def initialize(ssid, passwd, options)
           @ssid = ssid
           @passwd = passwd
@@ -13,13 +16,21 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
+          append_globally(@ssid, @passwd)
+          prompt.ok('Saved to pantry')
         end
-        
+
         def run_interactive(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
+          collect_wifi_networks.networks.each { |k, v| append_globally(k, v) }
+          prompt.ok('Saved to pantry')
+        end
+
+        private
+
+        def append_globally(ssid, passwd)
+          global = PiMaker::Pantry.global
+          global.wifi_networks.merge!(ssid => passwd)
+          global.write
         end
       end
     end
