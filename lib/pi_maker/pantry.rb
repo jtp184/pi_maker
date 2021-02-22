@@ -79,6 +79,7 @@ module PiMaker
 
     # Loads recipes and wifi networks from their paths
     def reload
+      @file_paths = {}
       @recipes = load_recipes
       @wifi_networks = load_wifi_networks
       self
