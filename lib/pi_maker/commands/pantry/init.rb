@@ -12,14 +12,30 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts 'OK'
+          [@path, "#{Dir.home}/.config", Dir.home, Dir.pwd].compact.detect do |loc|
+            dpath = "#{loc}/.pi_maker"
+
+            next unless Dir.exist?(loc)
+
+            if Dir.exist?("#{dpath}/recipes")
+              write_over = @options[:overwrite] ||
+                           (@options[:interactive] && prompt.yes?("Overwrite pantry in #{dpath}"))
+
+              raise CLI::Error 'Pantry already exists' unless write_over
+
+              FileUtils.rm_rf(dpath)
+            end
+
+            PiMaker::Pantry.new(base_path: dpath).write
+            File.open("#{Dir.home}/.pi_maker", 'w+') { |f| f << dpath }
+
+            prompt.ok("Wrote pantry to #{dpath}")
+
+            true
+          end || prompt.error('No viable location found, provide a path and try again')
         end
 
-        def run_interactive(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts 'OK'
-        end
+        alias run_interactive run
       end
     end
   end

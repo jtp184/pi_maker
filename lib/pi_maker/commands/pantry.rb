@@ -9,6 +9,9 @@ module PiMaker
 
       desc 'init [PATH]', 'Create a pantry folder'
 
+      method_option :overwrite, aliases: '-o', type: :boolean,
+                                desc: 'Overwrite existing pantry'
+
       def init(path = nil)
         if options[:help]
           invoke :help, ['init']
