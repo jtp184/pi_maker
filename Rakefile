@@ -2,16 +2,17 @@ require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 
 RDOC_EXCLUDE = %w[
-  bin/setup
   bin/console
+  bin/setup
   coverage
-  pkg
+  docs
   Gemfile
   Gemfile.lock
+  lib/pi_maker/commands
+  pkg
   Rakefile
-  tmp
-  docs
   spec
+  tmp
   wpa_supplicant.conf
 ].map { |r| "--exclude=#{r}" }.join(' ').freeze
 

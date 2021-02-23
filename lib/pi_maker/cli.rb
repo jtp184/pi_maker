@@ -31,6 +31,7 @@ module PiMaker
 
     method_option :program, aliases: '-p', default: :arp, desc: 'What program to run with'
 
+    # Identify pis on the network
     def identify(*)
       if options[:help]
         invoke :help, ['identify']
