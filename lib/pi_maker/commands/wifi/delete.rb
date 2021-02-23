@@ -12,13 +12,28 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
+          raise CLI::Error 'No ssid' unless @ssid
+
+          pantry = PiMaker::Pantry.global
+
+          pantry.wifi_networks.delete(@ssid)
+          prompt.say("Removed #{pastel.red(@ssid)}")
+
+          pantry.write
         end
 
         def run_interactive(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
+          pantry = PiMaker::Pantry.global
+          recipes = pantry.wifi_networks.keys
+
+          remove = @ssid ? [@ssid] : prompt.multi_select('Delete which recipe(s)?', recipes)
+
+          remove.each do |rm|
+            pantry.wifi_networks.delete(rm)
+            prompt.say("Removed #{pastel.red(rm)}")
+          end
+
+          pantry.write
         end
       end
     end

@@ -11,14 +11,12 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
+          PiMaker::Pantry.global.wifi_networks.each do |ssid, passwd|
+            prompt.say("#{ssid}#{@options[:passwords] ? %(: #{passwd}) : ''}")
+          end
         end
 
-        def run_interactive(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
-        end
+        alias run_interactive run
       end
     end
   end
