@@ -37,7 +37,7 @@ module PiMaker
       else
         @config = OpenStruct.new
 
-        opts.fetch(:config, default_config).each do |key, value|
+        opts.fetch(:config, {}).merge(default_config).each do |key, value|
           if FILTERS.include?(key.to_s) && value.is_a?(Hash)
             @config[key] ||= OpenStruct.new
             value.each { |k, v| @config[key][k] = v }
