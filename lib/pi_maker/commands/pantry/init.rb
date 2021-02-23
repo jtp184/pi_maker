@@ -27,7 +27,7 @@ module PiMaker
             end
 
             PiMaker::Pantry.new(base_path: dpath).write
-            File.open("#{Dir.home}/.pi_maker", 'w+') { |f| f << dpath }
+            File.open("#{Dir.home}/.pi_maker", 'w+') { |f| f << Dir.absolute_path(dpath) }
 
             prompt.ok("Wrote pantry to #{dpath}")
 
