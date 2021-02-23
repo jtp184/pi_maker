@@ -26,11 +26,7 @@ module PiMaker
           pantry = PiMaker::Pantry.global
           recipes = pantry.recipes.map(&:hostname)
 
-          remove = if @hostname
-                     [@hostname]
-                   else
-                     prompt.multi_select('Delete which recipe(s)?', recipes)
-                   end
+          remove = @hostname ? [@hostname] : prompt.multi_select('Delete which recipe(s)?', recipes)
 
           remove.map! { |hn| pantry.recipes.find { |r| r.hostname == hn } }
 

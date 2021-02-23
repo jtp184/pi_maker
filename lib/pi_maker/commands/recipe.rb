@@ -25,7 +25,7 @@ module PiMaker
           invoke :help, ['list']
         else
           require_relative 'recipe/list'
-          PiMaker::Commands::Recipe::List.new(item, options).execute
+          PiMaker::Commands::Recipe::List.new(options).execute
         end
       end
 

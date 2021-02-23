@@ -11,14 +11,10 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
+          PiMaker::Pantry.global.recipes.each { |re| prompt.say(re.hostname) }
         end
 
-        def run_interactive(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
-        end
+        alias run_interactive run
       end
     end
   end
