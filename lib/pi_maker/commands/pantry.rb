@@ -7,17 +7,6 @@ module PiMaker
     class Pantry < Thor
       namespace :pantry
 
-      desc 'list', 'List records'
-
-      def list(*)
-        if options[:help]
-          invoke :help, ['list']
-        else
-          require_relative 'pantry/list'
-          PiMaker::Commands::Pantry::List.new(options).execute
-        end
-      end
-
       desc 'init [PATH]', 'Create a pantry folder'
 
       def init(path = nil)
