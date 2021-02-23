@@ -27,7 +27,7 @@ module PiMaker
       desc 'config', 'Set values on the config file directly'
 
       method_option :values, aliases: '-v', type: :hash,
-                              desc: 'Pass values to the config'
+                             desc: 'Pass values to the config'
 
       def config(*)
         if options[:help]

@@ -13,12 +13,12 @@ module PiMaker
 
         def run(input: $stdin, output: $stdout)
           # Command logic goes here ...
-          output.puts "OK"
+          output.puts 'OK'
         end
 
         def run_interactive(input: $stdin, output: $stdout)
           # Command logic goes here ...
-          output.puts "OK"
+          output.puts 'OK'
         end
       end
     end

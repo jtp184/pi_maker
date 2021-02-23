@@ -44,7 +44,7 @@ module PiMaker
                                    desc: 'Set the boot options'
 
       method_option :initial_setup, aliases: '-o', type: :hash,
-                                      desc: 'Set the initial setup options'
+                                    desc: 'Set the initial setup options'
 
       method_option :export_format, aliases: '-e', type: :string, default: 'yaml',
                                     desc: 'Output as ruby or yaml'
@@ -80,7 +80,6 @@ module PiMaker
           PiMaker::Commands::Recipe::WriteBoot.new(hostname, options).execute
         end
       end
-
     end
   end
 end
