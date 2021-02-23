@@ -66,6 +66,21 @@ module PiMaker
           PiMaker::Commands::Recipe::Add.new(options).execute
         end
       end
+
+      desc 'write_boot', "Write a recipe's boot config to the SD card"
+
+      method_option :path, aliases: '-p', type: :string,
+                           desc: 'Save to a specific path'
+
+      def write_boot(hostname = nil)
+        if options[:help]
+          invoke :help, ['write_boot']
+        else
+          require_relative 'recipe/write_boot'
+          PiMaker::Commands::Recipe::WriteBoot.new(hostname, options).execute
+        end
+      end
+
     end
   end
 end
