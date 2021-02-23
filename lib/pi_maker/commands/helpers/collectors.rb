@@ -25,7 +25,9 @@ module PiMaker
         def collect_boot_options
           prompt.warn('Collecting boot options')
 
-          boot = PiMaker::BootConfig.new(ssh: prompt.yes?('Enable SSH at boot? '))
+          boot = PiMaker::BootConfig.new(
+            ssh: @ssh || prompt.yes?('Enable SSH at boot? ')
+          )
 
           PiMaker::BootConfig::FILTERS.each do |bf|
             prompt.say("Group [#{bf}]\n")

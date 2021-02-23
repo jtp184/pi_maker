@@ -17,12 +17,17 @@ module PiMaker
           @recipe = PiMaker::Recipe.new(
             hostname: @options.fetch(:hostname),
             password: @options.fetch(:password),
-            wpa_config: PiMaker::WpaConfig.new(@options.fetch(:wifi_options)),
-            boot_config: PiMaker::BootConfig.new(@options.fetch(:boot_options)),
-            initial_options: PiMaker::Ingredients.new(@options.fetch(:initial_options))
+            wpa_config: PiMaker::WpaConfig.new(networks: @options.fetch(:wifi_options)),
+            boot_config: PiMaker::BootConfig.new(
+              config: @options.fetch(:boot_options),
+              ssh: @options.fetch(:ssh)
+            ),
+            initial_setup: PiMaker::Ingredients.new(
+              @options.fetch(:initial_setup).transform_values { |v| v.split(',') }
+            )
           )
 
-          prompt.say("\n#{output_format}")
+          save_and_output
         end
 
         def run_interactive(input: $stdin, output: $stdout)
@@ -34,15 +39,29 @@ module PiMaker
             initial_setup: collect_ingredients
           )
 
+          save_and_output
+        end
+
+        private
+
+        def save_and_output
           if @options[:pantry]
             save_to_pantry
             prompt.ok('Saved to pantry')
           end
 
+          if @options[:local_file]
+            filename = "./#{@recipe.hostname}_recipe.yml"
+
+            File.open(filename, 'w+') do |f|
+              f << @recipe.to_yaml
+            end
+
+            prompt.ok("Saved to #{filename}")
+          end
+
           prompt.say("\n#{output_format}")
         end
-
-        private
 
         def save_to_pantry
           pantry = PiMaker::Pantry.global
@@ -68,6 +87,8 @@ module PiMaker
               re.wifi_config_options = #{@recipe.wpa_config.to_h}
 
               re.boot_config_options = #{@recipe.boot_config.to_h}
+
+              re.initial_setup_options = #{@recipe.initial_setup.to_h}
             end
           DOC
         end

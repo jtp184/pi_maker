@@ -43,7 +43,7 @@ module PiMaker
       method_option :boot_options, aliases: '-b', type: :hash,
                                    desc: 'Set the boot options'
 
-      method_option :initial_options, aliases: '-o', type: :hash,
+      method_option :initial_setup, aliases: '-o', type: :hash,
                                       desc: 'Set the initial setup options'
 
       method_option :export_format, aliases: '-e', type: :string, default: 'yaml',
@@ -54,6 +54,9 @@ module PiMaker
 
       method_option :local_file, aliases: '-l', type: :boolean, default: false,
                                  desc: 'Whether to write out a local file with the contents'
+
+      method_option :ssh, aliases: '-s', type: :boolean, default: true,
+                          desc: 'Enable ssh on boot'
 
       def add(*)
         if options[:help]
