@@ -96,6 +96,7 @@ module PiMaker
       self
     end
 
+    # Checks that this has been written to by checking the recipes subfolder
     def exists?
       Dir.exist?(root_path('recipes'))
     end
