@@ -11,14 +11,7 @@ RSpec.describe PiMaker::NetworkIdentifier do
     end
 
     context 'with no provided scan_with program' do
-      let(:program) do
-        case PiMaker.host_os
-        when :macos
-          :arp
-        when :linux, :raspberrypi
-          :nmap
-        end
-      end
+      let(:program) { PiMaker::NetworkIdentifier::DEFAULT_PROGRAM }
 
       context 'with a program installed' do
         it 'runs the command' do
