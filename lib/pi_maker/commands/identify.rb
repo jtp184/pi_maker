@@ -10,13 +10,24 @@ module PiMaker
       end
 
       def run(input: $stdin, output: $stdout)
-        # Command logic goes here ...
-        output.puts 'OK'
+        res = PiMaker::NetworkIdentifier.call(args)
+        res.empty? ? abort : res.each { |r| prompt.say(r) }
       end
 
-      def run_interactive(input: $stdin, output: $stdout)
-        # Command logic goes here ...
-        output.puts 'OK'
+      alias run_interactive run
+
+      private
+
+      def args
+        pr = @program || (@options[:interactive] && prompt.ask('Use which program: ', default: :arp))
+        ip = @range || (@options[:interactive] && prompt.ask('IP Range: ', default: '192.168.1.0/24'))
+
+        ret = {}
+
+        ret[:scan_with] = pr if pr
+        ret[:ip_range] = ip if ip
+
+        ret
       end
     end
   end

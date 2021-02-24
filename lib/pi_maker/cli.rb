@@ -30,6 +30,7 @@ module PiMaker
     desc 'identify', 'Find Raspberry Pi devices on the local network'
 
     method_option :program, aliases: '-p', default: :arp, desc: 'What program to run with'
+    method_option :range, aliases: '-r', default: '192.168.1.0/24', desc: 'Which ip range to target'
 
     # Identify pis on the network
     def identify(*)

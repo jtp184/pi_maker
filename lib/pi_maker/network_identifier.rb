@@ -10,13 +10,18 @@ module PiMaker
       %w[E4 5F 01]
     ].freeze
 
+    DEFAULT_PROGRAM = case PiMaker.host_os
+                      when :macos
+                        :arp
+                      when :linux, :raspberrypi
+                        :nmap
+                      end
+
     class << self
-      # Takes in +opts+ for :scan_with program, and optional overrides for run, parse, and filter with.
+      # Takes in +opts+ for :scan_with, and optional overrides for run, parse, and filter with.
       # returns an array of ips
       def call(opts = {})
-        prog = opts.fetch(:scan_with) do
-          %i[arp nmap].detect { |r| TTY::Which.which(r.to_s) }
-        end
+        prog = opts.fetch(:scan_with, DEFAULT_PROGRAM)
 
         raise ArgumentError, "#{prog} is not installed" unless TTY::Which.which(prog.to_s)
 
