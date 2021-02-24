@@ -41,6 +41,8 @@ module PiMaker
       else
         new({ base_path: Dir.pwd }.merge(opts))
       end
+    rescue PasskeyError
+      new({ base_path: Dir.pwd }.merge(opts))
     end
 
     # Return nil if we can't find a dotfile, or the containing directory

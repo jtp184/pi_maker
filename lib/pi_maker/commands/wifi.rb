@@ -21,7 +21,7 @@ module PiMaker
       desc 'supplicant', 'Write a wpa_supplicant.conf file to copy manually'
 
       method_option :save, aliases: '-s', type: :string,
-                           desc: 'Where to save to, defaults to current directory'
+                           desc: 'Where to save to, defaults to the sd card, or current directory'
 
       method_option :credentials, aliases: '-c', type: :hash,
                                   desc: 'Set a single credential as the file contents'
