@@ -16,7 +16,7 @@ module PiMaker
           FileUtils.rm_rf(@pantry.base_path)
 
           @pantry.password = @password ||
-                             (prompt.ask('Password: ') if @options[:interactive])
+                             (prompt.mask('Password: ') if @options[:interactive])
 
           @pantry.write
           prompt.ok("Wrote to #{@pantry.base_path}")

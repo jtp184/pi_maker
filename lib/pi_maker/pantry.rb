@@ -13,7 +13,7 @@ module PiMaker
     attr_accessor :file_paths
 
     # Matches encoded or unencoded yaml files
-    FILE_EXT = 'enc|ya?ml$'.freeze
+    FILE_EXT = '(?:\.enc)?\.ya?ml$'.freeze
     # Checks for a wifi config, encoded or not
     WIFI_CONFIG_FILENAME = '\bwifi_config\.(enc\.)?ya?ml$'.freeze
     # What to call a password file stored locally
@@ -34,15 +34,19 @@ module PiMaker
       @wifi_networks = opts.fetch(:wifi_networks, load_wifi_networks)
     end
 
-    # If we can locate a global pantry, loads it
-    def self.global
-      check_in = [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"]
-      dotfile_loc = check_in.detect { |e| File.exist?("#{e}/.pi_maker") } + '/.pi_maker'
-
-      if dotfile_loc
-        new(base_path: File.read(dotfile_loc))
+    # If we can locate a global pantry, loads it. Override with +opts+
+    def self.global(opts = {})
+      if global_exists? && !opts.key(:base_path)
+        new({ base_path: File.read("#{global_exists?}/.pi_maker") }.merge(opts))
       else
-        new(base_path: Dir.pwd)
+        new({ base_path: Dir.pwd }.merge(opts))
+      end
+    end
+
+    # Return nil if we can't find a dotfile, or the containing directory
+    def self.global_exists?
+      [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"].detect do |pth|
+        File.exist?("#{pth}/.pi_maker")
       end
     end
 
@@ -90,6 +94,10 @@ module PiMaker
       @recipes = []
       @wifi_networks = {}
       self
+    end
+
+    def exists?
+      Dir.exist?(root_path('recipes'))
     end
 
     private
