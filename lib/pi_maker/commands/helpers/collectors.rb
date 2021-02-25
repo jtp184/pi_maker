@@ -77,6 +77,24 @@ module PiMaker
           PiMaker::Ingredients.new(list_args.merge(text_args))
         end
 
+        def choose_disk
+          prompt.warn('Choosing disk')
+
+          if PiMaker::DiskManagement.sd_card_device
+            d_prompt = "Use #{pastel.cyan(PiMaker::DiskManagement.sd_card_device.inspect)}?"
+            default = prompt.yes?(d_prompt)
+
+            return PiMaker::DiskManagement.sd_card_device if default
+          end
+
+          choices = PiMaker::DiskManagement.list_devices.map do |d|
+            [d.inspect, d]
+          end.to_h
+
+          disk_choice = prompt.select('Use which disk?', choices.keys.map { |c| pastel.cyan(c) })
+          choices[pastel.strip(disk_choice)]
+        end
+
         def boot_option_prompt
           prompt.expand(
             'Modify?',
