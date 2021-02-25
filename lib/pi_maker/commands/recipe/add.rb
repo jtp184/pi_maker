@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require_relative '../../command'
-require_relative '../helpers/collectors'
+require_relative '../helpers'
 
 module PiMaker
   module Commands
     class Recipe
       class Add < PiMaker::Command
-        include Helpers::Collectors
+        include Helpers
 
         def initialize(options)
           @options = options
