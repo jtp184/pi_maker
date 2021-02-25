@@ -18,12 +18,14 @@ module PiMaker
 
       # Takes in +opts+ for image_path and disk
       def initialize(opts = {})
-        @image_path = opts.fetch(:image_path)
+        @image_path = File.absolute_path(opts.fetch(:image_path))
         @disk = opts.fetch(:disk)
       end
 
       # Creates pipe running dd and returns the instance with the pipe running
       def call
+        raise LoadError 'Image does not exist' unless File.exist?(image_path)
+
         @pipe = IO.popen(
           "sudo dd bs=1m if=#{image_path} of=#{disk.raw_disk_path}",
           err: %i[child out]
