@@ -16,7 +16,13 @@ module PiMaker
             fi << boot_config.to_s
           end
 
-          prompt.ok("Saved to #{config_path}")
+          prompt.ok("Wrote #{config_path}")
+
+          return unless boot_config.ssh
+
+          File.open(config_path.split('/')[0..-2].join('/') + '/ssh', 'w+') { |f| f << '' }
+
+          prompt.ok('Wrote ssh file')
         end
 
         alias run_interactive run
