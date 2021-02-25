@@ -56,10 +56,22 @@ module PiMaker
       Pastel.new(options)
     end
 
+    # Linear progress bars
+    def progressbar(*args)
+      require 'tty-progressbar'
+      TTY::ProgressBar.new(*args)
+    end
+
     # The interactive prompt
     def prompt(options = {})
       require 'tty-prompt'
       TTY::Prompt.new(options)
+    end
+
+    # Non-deterministic waiting prompt
+    def spinner(*args)
+      require 'tty-spinner'
+      TTY::Spinner.new(*args)
     end
 
     # The unix which utility
