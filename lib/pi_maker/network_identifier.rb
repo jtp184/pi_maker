@@ -11,7 +11,7 @@ module PiMaker
     ].freeze
 
     DEFAULT_PROGRAM = case PiMaker.host_os
-                      when :macos
+                      when :mac
                         :arp
                       when :linux, :raspberrypi
                         :nmap
