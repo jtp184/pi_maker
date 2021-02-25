@@ -65,7 +65,15 @@ module PiMaker
     # The interactive prompt
     def prompt(options = {})
       require 'tty-prompt'
-      TTY::Prompt.new(options)
+      TTY::Prompt.new(
+        {
+          interrupt: proc do
+            puts
+            puts 'Exiting...'
+            abort
+          end
+        }.merge(options)
+      )
     end
 
     # Non-deterministic waiting prompt
