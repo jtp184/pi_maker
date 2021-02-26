@@ -24,7 +24,8 @@ module PiMaker
         end
 
         def run_interactive(input: $stdin, output: $stdout)
-          @wpa_config = @options[:credentials] || collect_wifi_networks
+          @wpa_config = PiMaker::WpaConfig.new(networks: @options[:credentials]) ||
+                        collect_wifi_networks
 
           save_file
         end
@@ -33,7 +34,7 @@ module PiMaker
 
         def save_file
           File.open(default_file_path, 'w+') { |f| f << @wpa_config.to_s }
-          prompt.ok("Saved to #{default_file_path}")
+          prompt.ok("Saved to #{default_file_path}") if @options[:interactive]
         end
 
         def default_file_path

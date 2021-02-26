@@ -26,6 +26,9 @@ module PiMaker
 
       desc 'config', 'Set values on the config file directly'
 
+      method_option :save, aliases: '-s', type: :string,
+                           desc: 'Where to save to, defaults to the sd card, or current directory'
+
       method_option :values, aliases: '-v', type: :hash,
                              desc: 'Pass values to the config'
 
