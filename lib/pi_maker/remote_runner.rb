@@ -31,6 +31,7 @@ module PiMaker
       Net::SSH.start(*ssh_options) do |connection|
         command_group.commands.each do |cmd|
           @result << [cmd, []]
+          watcher.call(cmd) if block_given?
 
           connection.open_channel do |ssh|
             ssh.exec(cmd) do |tty, _ret|

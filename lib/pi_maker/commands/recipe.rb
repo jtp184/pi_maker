@@ -80,6 +80,38 @@ module PiMaker
           PiMaker::Commands::Recipe::WriteBoot.new(hostname, options).execute
         end
       end
+
+      desc 'initial', 'Perform the initial setup commands from the recipe'
+
+      method_option :path, aliases: '-p', type: :string,
+                           desc: 'Save to a specific path'
+
+      method_option :verbose, aliases: '-v', type: :boolean,
+                              desc: 'Whether to print command output'
+
+      method_option :reboot, aliases: '-r', type: :boolean,
+                             desc: 'Reboot after running commands'
+
+      method_option :login, aliases: '-l', type: :boolean, default: true,
+                            desc: 'Set the hostname and password'
+
+      method_option :credentials, aliases: '-c', type: :hash,
+                                  desc: 'Pass in login details directly'
+
+      method_option :scan, aliases: '-s', type: :boolean, default: true,
+                           desc: 'Use the network identifier to pick a pi'
+
+      method_option :scan_with, aliases: '-w', type: :string,
+                                desc: 'Use a different program to scan with'
+
+      def initial(hostname = nil)
+        if options[:help]
+          invoke :help, ['initial']
+        else
+          require_relative 'recipe/initial'
+          PiMaker::Commands::Recipe::Initial.new(hostname, options).execute
+        end
+      end
     end
   end
 end
