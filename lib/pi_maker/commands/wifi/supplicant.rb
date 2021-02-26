@@ -15,10 +15,9 @@ module PiMaker
 
         def run(input: $stdin, output: $stdout)
           raise CLI::Error, 'No credentials' unless @options[:credentials]
+          raise CLI::Error, 'No valid default path' unless valid_default_path
 
           @wpa_config = PiMaker::WpaConfig.new(networks: @options[:credentials])
-
-          raise CLI::Error, 'No valid default path' unless valid_default_path
 
           save_file
         end
