@@ -22,8 +22,8 @@ module PiMaker
                                    end
 
           perform_basic
-          perform_login if @options[:login]
-          perform_reboot if @options[:reboot]
+          perform_login
+          perform_reboot
 
           prompt.ok('Commands run')
         end
@@ -41,14 +41,28 @@ module PiMaker
           return nil if results.empty?
           return results.first if results.one?
 
-          if @options[:interactive]
-            prompt.select('Which IP?', results)
-          else
+          unless @options[:interactive]
             raise CLI::Error "Multiple ips, please pass one as an argument:\n#{results.join("\n")}"
+          end
+
+          prompt.select('Which IP?', results)
+        end
+
+        def perform_reboot
+          return unless @options[:reboot]
+
+          if @options[:verbose]
+            runner({ shell: ['sudo reboot now'] }).call do |l|
+              prompt.say(pastel.light_black(l))
+            end
+          else
+            runner({ shell: ['sudo reboot now'] }).call
           end
         end
 
         def perform_login
+          return unless @options[:login]
+
           if @options[:verbose]
             runner(recipe.login_setup).call do |l|
               prompt.say(pastel.light_black(l))
