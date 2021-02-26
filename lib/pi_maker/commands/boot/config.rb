@@ -16,7 +16,7 @@ module PiMaker
         def run(input: $stdin, output: $stdout)
           raise CLI::Error, 'No values given' unless @options[:values] || @options[:interactive]
 
-          @boot_config = from_args || (@options[:interactive] && collect_boot_options)
+          @boot_config = interpret_boot_args || (@options[:interactive] && collect_boot_options)
 
           save_file
         end
@@ -25,7 +25,7 @@ module PiMaker
 
         private
 
-        def from_args
+        def interpret_boot_args
           return unless @options[:values]
 
           PiMaker::BootConfig.new(config: @options[:values])

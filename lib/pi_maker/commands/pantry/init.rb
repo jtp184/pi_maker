@@ -34,7 +34,7 @@ module PiMaker
             prompt.ok("Wrote pantry to #{dpath}")
 
             true
-          end || prompt.error('No viable location found, provide a path and try again')
+          end || (prompt.error('No viable location found, provide a path and try again') && abort)
         end
 
         alias run_interactive run

@@ -19,8 +19,11 @@ module PiMaker
       private
 
       def args
-        pr = @program || (@options[:interactive] && prompt.ask('Use which program: ', default: :arp))
-        ip = @range || (@options[:interactive] && prompt.ask('IP Range: ', default: '192.168.1.0/24'))
+        pr = @options[:program] ||
+             (@options[:interactive] && prompt.ask('Use which program: ', default: :arp))
+
+        ip = @options[:range] ||
+             (@options[:interactive] && prompt.ask('IP Range: ', default: '192.168.1.0/24'))
 
         ret = {}
 
