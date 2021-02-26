@@ -44,7 +44,7 @@ module PiMaker
           if @options[:interactive]
             prompt.select('Which IP?', results)
           else
-            results.first
+            raise CLI::Error "Multiple ips, please pass one as an argument:\n#{results.join("\n")}"
           end
         end
 
