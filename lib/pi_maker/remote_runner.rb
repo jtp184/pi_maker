@@ -70,37 +70,44 @@ module PiMaker
       destroy_temp_folder(append_opts)
     end
 
+    # Passed a list of +files+ tuples, copies the sources to destination paths
+    def copy_files(*files)
+      Net::SCP.start(*scp_options) do |scp|
+        files.each do |local_file, remote_path|
+          scp.upload! local_file, remote_path
+        end
+      end
+    end
+
     private
 
     # Given a timestamp and tempname hash +append_opts+, writes the text_block lines out to it
     def create_temp_files(append_opts)
-      command_group.text_blocks.each do |filepath, lines|
-        contents = StringIO.new(lines.join("\n") << "\n")
-        remote = "/tmp/pi_maker_#{append_opts[0]}/#{append_opts[1][filepath]}"
+      Net::SCP.start(*ssh_options) do |scp|
+        command_group.text_blocks.each do |filepath, lines|
+          contents = StringIO.new(lines.join("\n") << "\n")
+          remote = "/tmp/pi_maker_#{append_opts[0]}/#{append_opts[1][filepath]}"
 
-        Net::SCP.upload!(
-          *scp_options(
-            contents,
-            remote
-          )
-        )
+          scp.upload!(contents, remote)
 
-        @result << ["scp #{remote}", ['']]
+          @result << ["scp #{remote}", ['']]
+        end
       end
     end
 
     # Given a timestamp and tempname hash +append_opts+, appends the contents of the tempfiles
     def append_files(append_opts, &watcher)
-      command_group.text_blocks.each do |filepath, _l|
-        Net::SSH.start(*ssh_options) do |connection|
+      Net::SSH.start(*ssh_options) do |connection|
+        command_group.text_blocks.each do |filepath, _l|
           connection.open_channel do |ssh|
             src_path = "/tmp/pi_maker_#{append_opts[0]}/#{append_opts[1][filepath]}"
             cmd = "cat #{src_path} >> #{filepath}"
 
             ssh.exec(cmd)
+
             @result << [cmd, ['']]
             watcher.call(@result.last.last.last) if block_given?
-          end
+          end.wait
         end
       end
     end

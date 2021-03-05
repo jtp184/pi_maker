@@ -5,12 +5,12 @@ module PiMaker
   class CommandGroup
     include Enumerable
 
-    # Instructions generates commands and text_blocks
+    # Instructions to generate commands and text blocks
     attr_reader :instructions
 
-    # Take +opts+ in to capture the instructions
-    def initialize(opts = {})
-      @instructions = opts.fetch(:instructions, Instructions.new)
+    # Take +inst+ in to capture the instructions
+    def initialize(inst)
+      @instructions = inst
     end
 
     # Use the +method_name+ on the instructions
