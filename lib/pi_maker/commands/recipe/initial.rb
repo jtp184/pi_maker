@@ -85,7 +85,7 @@ module PiMaker
         def runner(cmds = initial_config)
           @runner = PiMaker::RemoteRunner.new(
             config: credentials || {},
-            command_group: PiMaker::CommandGroup.new(ingredients: cmds)
+            command_group: PiMaker::CommandGroup.new(instructions: cmds)
           )
         end
 

@@ -4,7 +4,7 @@ FactoryBot.define do
     password { SecureRandom.hex }
     wpa_config
     boot_config
-    association :initial_setup, factory: :ingredients
+    association :initial_setup, factory: :instructions
 
     initialize_with { PiMaker::Recipe.new(**attributes) }
   end

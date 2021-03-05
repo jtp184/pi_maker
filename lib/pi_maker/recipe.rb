@@ -11,7 +11,7 @@ module PiMaker
     attr_accessor :wpa_config
     # A BootConfig to install on the card
     attr_accessor :boot_config
-    # An Ingredients to set install options
+    # An Instructions to set install options
     attr_accessor :initial_setup
 
     # Takes in +opts+ for the attributes
@@ -45,9 +45,9 @@ module PiMaker
       inst
     end
 
-    # Returns an Ingredients list to set the hostname and password on the pi
+    # Returns an Instructions list to set the hostname and password on the pi
     def login_setup(old_password = PiMaker.default_login[:password])
-      Ingredients.define do |i|
+      Instructions.define do |i|
         i.raspi_config = { do_hostname: hostname }
         i.shell = [
           format(
@@ -82,7 +82,7 @@ module PiMaker
     def parse_initial_config_options(opts)
       return unless opts.to_h.key?(:initial_setup_options)
 
-      self.initial_setup ||= Ingredients.new(opts[:initial_setup_options])
+      self.initial_setup ||= Instructions.new(opts[:initial_setup_options])
     end
 
     # Parses the boot config options

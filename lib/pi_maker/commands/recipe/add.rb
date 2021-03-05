@@ -22,7 +22,7 @@ module PiMaker
               config: @options.fetch(:boot_options),
               ssh: @options.fetch(:ssh)
             ),
-            initial_setup: PiMaker::Ingredients.new(
+            initial_setup: PiMaker::Instructions.new(
               @options.fetch(:initial_setup).transform_values { |v| v.split(',') }
             )
           )
@@ -36,7 +36,7 @@ module PiMaker
             password: prompt.mask('Password: '),
             wpa_config: collect_wifi_networks,
             boot_config: collect_boot_options,
-            initial_setup: collect_ingredients
+            initial_setup: collect_instructions
           )
 
           save_and_output

@@ -52,33 +52,33 @@ module PiMaker
         boot
       end
 
-      def collect_ingredients
-        prompt.warn('Collecting ingredients')
+      def collect_instructions
+        prompt.warn('Collecting instructions')
 
         list_args = {}
         text_args = {}
 
         catch :user_finish do
-          PiMaker::Ingredients::LISTS.each do |list_inputs|
+          PiMaker::Instructions::LISTS.each do |list_inputs|
             list_name, list_type = list_inputs
             list_args[list_name] = if list_type == Array
-                                     ingredient_option_prompt(list_name)
+                                     instruction_option_prompt(list_name)
                                    elsif list_type == Hash
-                                     keys = ingredient_option_prompt(list_name)
+                                     keys = instruction_option_prompt(list_name)
                                      vals = keys.map do |ky|
-                                       ingredient_option_prompt("#{list_name}[#{ky}]")
+                                       instruction_option_prompt("#{list_name}[#{ky}]")
                                      end
 
                                      keys.zip(vals).to_h
                                    end
           end
 
-          PiMaker::Ingredients::TEXT_BLOCKS.each do |block_name, block_path|
-            text_args[block_name] = ingredient_option_prompt(block_path)
+          PiMaker::Instructions::TEXT_BLOCKS.each do |block_name, block_path|
+            text_args[block_name] = instruction_option_prompt(block_path)
           end
         end
 
-        PiMaker::Ingredients.new(list_args.merge(text_args))
+        PiMaker::Instructions.new(list_args.merge(text_args))
       end
 
       def choose_disk
@@ -110,7 +110,7 @@ module PiMaker
         )
       end
 
-      def ingredient_option_prompt(title)
+      def instruction_option_prompt(title)
         action = prompt.expand(
           "Modify options for #{pastel.blue(title)}?",
           { key: 'y', name: 'enter on one line', value: :one },

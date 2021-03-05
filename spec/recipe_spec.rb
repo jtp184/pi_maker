@@ -10,8 +10,8 @@ RSpec.describe PiMaker::Recipe do
   describe '#login_setup' do
     subject { recipe.login_setup }
 
-    it 'returns ingredients to set hostname and password' do
-      expect(subject).to be_a(PiMaker::Ingredients)
+    it 'returns instructions to set hostname and password' do
+      expect(subject).to be_a(PiMaker::Instructions)
       expect(subject.raspi_config).to have_key(:do_hostname)
       expect(subject.shell.count).to eq(1)
       expect(subject.shell.first).to be_a(String)

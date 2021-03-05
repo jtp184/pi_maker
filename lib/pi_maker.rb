@@ -71,7 +71,7 @@ module PiMaker
 end
 
 require 'pi_maker/version'
-require 'pi_maker/ingredients'
+require 'pi_maker/instructions'
 require 'pi_maker/disk_management'
 require 'pi_maker/command_group'
 require 'pi_maker/network_identifier'
