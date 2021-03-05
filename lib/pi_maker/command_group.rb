@@ -42,9 +42,7 @@ module PiMaker
 
     # Build text blocks to be copied and appended to files
     def text_blocks
-      PiMaker::Instructions::TEXT_BLOCKS.map do |field, path|
-        [path, instructions.public_send(field)]
-      end
+      PiMaker::Instructions::TEXT_BLOCKS.map { |blk, path| [path, instructions.public_send(blk)] }
                                         .reject { |b| b[1].nil? || b[1].empty? }
                                         .to_h
     end
