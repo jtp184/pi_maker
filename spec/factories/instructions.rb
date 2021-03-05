@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :instructions, class: OpenStruct do
+  factory :instructions, class: PiMaker::Instructions do
     apt_packages { %w[kitty] }
 
     github_repos do
