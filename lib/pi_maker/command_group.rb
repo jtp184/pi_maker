@@ -42,16 +42,20 @@ module PiMaker
 
     # Build text blocks to be copied and appended to files
     def text_blocks
-      PiMaker::Instructions::TEXT_BLOCKS.map { |field, path| [path, instructions.public_send(field)] }
-                                       .reject { |b| b[1].nil? || b[1].empty? }
-                                       .to_h
+      PiMaker::Instructions::TEXT_BLOCKS.map do |field, path|
+        [path, instructions.public_send(field)]
+      end
+                                        .reject { |b| b[1].nil? || b[1].empty? }
+                                        .to_h
     end
 
     # Construct an apt-get install string from the packages
     def apt_packages
       return if instructions.apt_packages.empty?
 
-      instructions.apt_packages.reduce('sudo apt-get install -y') { |str, pkg| [str, pkg].join(' ') }
+      instructions.apt_packages.reduce('sudo apt-get install -y') do |str, pkg|
+        [str, pkg].join(' ')
+      end
     end
 
     # Construct an array of git clone strings from the repos

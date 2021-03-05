@@ -33,7 +33,7 @@ module PiMaker
       tf.write(txt)
       tf.rewind
 
-      system("#{(preferred || present)} #{tf.path}")
+      system("#{preferred || present} #{tf.path}")
 
       File.read(tf.path)
     end

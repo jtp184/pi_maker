@@ -9,6 +9,7 @@ module PiMaker
 
   # Failed system commands
   class SystemCommandError < StandardError; end
+
   # When an issue with encryption occurs
   class PasskeyError < StandardError; end
 

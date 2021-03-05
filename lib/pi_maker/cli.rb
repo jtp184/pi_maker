@@ -16,7 +16,8 @@ module PiMaker
       true
     end
 
-    class_option :interactive, aliases: '-i', type: :boolean, default: false, desc: 'Run with prompting'
+    class_option :interactive, aliases: '-i', type: :boolean, default: false,
+                               desc: 'Run with prompting'
     class_option :help, aliases: '-h', type: :boolean, desc: 'Display usage information'
 
     desc 'version', 'pi_maker version'
