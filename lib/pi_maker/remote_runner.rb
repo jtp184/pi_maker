@@ -4,14 +4,21 @@ require 'net/scp'
 module PiMaker
   # Runs commands on a remote device
   class RemoteRunner
-    # ssh config, the CommandGroup to run, and the result after commands have been run
-    attr_reader :config, :command_group, :result
+    # The SSH options
+    attr_reader :config
+    # The commands to run, as a CommandGroup
+    attr_reader :command_group
+    # An array which is populated by the command output after running
+    attr_reader :result
+    # Tuples of files to copy
+    attr_reader :scp_files
 
     # Uses +opts+ to set the config and command group
     def initialize(opts = {})
       @config = PiMaker.default_login.merge(opts.fetch(:config, {}))
 
-      @command_group = opts.fetch(:command_group, CommandGroup.new)
+      @command_group = opts[:command_group]
+      @scp_files = opts.fetch(:scp_files, [])
       @result = []
     end
 
@@ -20,12 +27,14 @@ module PiMaker
       @result = []
       run_commands(&watcher)
       run_text_blocks(&watcher)
+      copy_files(&watcher)
 
       result
     end
 
     # For each command in the CommandGroup, ssh into the remote and run the command
     def run_commands(&watcher)
+      return unless command_group
       return if command_group.commands.empty?
 
       Net::SSH.start(*ssh_options) do |connection|
@@ -55,6 +64,7 @@ module PiMaker
     # Creates a temp folder, then for each text_block in the CommandGroup, creates a tempfile
     # for it, then appends that tempfile to its target destination and destroys the folder
     def run_text_blocks(&watcher)
+      return unless command_group
       return if command_group.text_blocks.empty?
 
       timestamp = Time.now.to_i
@@ -70,11 +80,16 @@ module PiMaker
       destroy_temp_folder(append_opts)
     end
 
-    # Passed a list of +files+ tuples, copies the sources to destination paths
-    def copy_files(*files)
+    # Vopies the sources from copy_files to destination paths
+    def copy_files(&watcher)
+      return nil if scp_files.empty?
+
       Net::SCP.start(*scp_options) do |scp|
-        files.each do |local_file, remote_path|
+        scp_files.each do |local_file, remote_path|
           scp.upload! local_file, remote_path
+
+          @result << ["scp #{local_file} #{remote_path}", ['']]
+          watcher.call(@result.last.first) if block_given?
         end
       end
     end
@@ -130,7 +145,7 @@ module PiMaker
       opts
     end
 
-    # Arguments for an SCP invocation
+    # Arguments for a single-line SCP invocation
     def scp_options(local, remote)
       opts = config.slice(:hostname, :user)
 
