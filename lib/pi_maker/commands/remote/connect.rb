@@ -15,17 +15,16 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          conf = parse_connection_reference || (@options[:interactve] && collect_connection_options)
+          conf = parse_connection_reference || (@options[:interactive] && collect_connection_options)
 
-          raise CLI::Error 'No connection options given' unless conf
+          raise CLI::Error, 'No connection options given' unless conf
 
           conf = PiMaker.default_login.merge(conf)
 
-          puts("ssh #{conf[:user]}@#{conf[:hostname]}")
+          exec("ssh #{conf[:user]}@#{conf[:hostname]}")
         end
 
-        def run_interactive(input: $stdin, output: $stdout)
-        end
+        alias run_interactive run
       end
     end
   end

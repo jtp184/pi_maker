@@ -33,14 +33,17 @@ module PiMaker
         PiMaker.system_cmd('sudo echo')
       end
 
-      def collect_connection_options
+      def collect_connection_options(password = false)
         prompt.warn('Collecting connection config')
 
-        {
-          user: prompt.ask('user', default: 'pi'),
-          hostname: prompt.ask('hostname', default: 'raspberrypi.local'),
-          password: prompt.ask('password', default: 'raspberry')
+        co = {
+          user: prompt.ask('User: ', default: 'pi'),
+          hostname: prompt.ask('Hostname: ', default: 'raspberrypi.local')
         }
+
+        co[:password] = prompt.ask('Password: ', default: 'raspberry') if password
+
+        co
       end
 
       def collect_wifi_networks
