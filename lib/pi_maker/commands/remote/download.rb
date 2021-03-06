@@ -5,7 +5,7 @@ require_relative '../../command'
 module PiMaker
   module Commands
     class Remote
-      class Download
+      class Download < PiMaker::Command
         def initialize(local_file, remote_file, options)
           @local_file = local_file
           @remote_file = remote_file

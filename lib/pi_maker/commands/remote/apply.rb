@@ -5,7 +5,7 @@ require_relative '../../command'
 module PiMaker
   module Commands
     class Remote
-      class Download
+      class Apply < PiMaker::Command
         def initialize(reference, options)
           @reference = reference
           @options = options

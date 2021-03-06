@@ -57,5 +57,9 @@ module PiMaker
     require_relative 'commands/pantry'
     register PiMaker::Commands::Pantry, 'pantry', 'pantry [SUBCOMMAND]',
              'Handle data in the persistant store'
+
+    require_relative 'commands/remote'
+    register PiMaker::Commands::Remote, 'remote', 'remote [SUBCOMMAND]',
+             'Control the pi remotely'
   end
 end
