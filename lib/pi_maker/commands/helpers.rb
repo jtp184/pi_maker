@@ -6,9 +6,41 @@ module PiMaker
     module Helpers
       private
 
+      def parse_connection_reference
+        return nil unless @reference
+
+        str_conf = [
+          /(?<user>\w+)@(?<hostname>[\d.]+)\[(?<password>[^\s]+)\]/,
+          /(?<user>\w+)@(?<hostname>[\d.]+)/,
+          /(?<hostname>[\d.]+)/
+        ].detect { |r| r =~ @reference }
+
+        if str_conf
+          str_conf.match(@reference).named_captures.transform_keys(&:to_sym)
+        else
+          rc = PiMaker::Pantry.global.recipes.detect { |r| r.hostname == @reference }
+          return nil unless rc
+
+          rc.to_h
+            .slice(:hostname, :password)
+            .map { |k, v| k == :hostname ? [k, "#{v}.local"] : [k, v] }
+            .to_h
+        end
+      end
+
       def sudo_request
         prompt.error('Acquiring sudo') if @options[:interactive]
         PiMaker.system_cmd('sudo echo')
+      end
+
+      def collect_connection_options
+        prompt.warn('Collecting connection config')
+
+        {
+          user: prompt.ask('user', default: 'pi'),
+          hostname: prompt.ask('hostname', default: 'raspberrypi.local'),
+          password: prompt.ask('password', default: 'raspberry')
+        }
       end
 
       def collect_wifi_networks
