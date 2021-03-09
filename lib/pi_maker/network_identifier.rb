@@ -10,86 +10,102 @@ module PiMaker
       %w[E4 5F 01]
     ].freeze
 
+    # Parses output from arp to get the hostname, IP, and MAC addresses
+    ARP_PARSER = %r{
+      (?<hostname>\?|[\w.-]+)\s
+      \((?<ip_address>[[:xdigit:].:]+)\)
+      \sat\s
+      (?<mac_address>(?:[[:xdigit:]]{1,2}:?){6})
+    }x.freeze
+
+    # Parses the IP address line from nmap to return the hostname and ip_address
+    NMAP_IP_PARSER = %r{
+      for\s
+      (?:
+        (?:(?<hostname>[\w.-]+)\s\((?<ip_address>[\d.]+)\))
+        |
+        (?<ip_address>[\d.]+)
+      )
+    }x.freeze
+
+    # Parses the MAC address line from nmap to return the MAC address and manufacturer name
+    NMAP_MAC_PARSER = %r{
+      MAC\sAddress:\s
+      (?<mac_address>(?:[[:xdigit:]]{2}:?){6})
+      \s
+      \((?<manufacturer>.*)\)
+    }x.freeze
+
+    # Default program to run on mac and linux machines
     DEFAULT_PROGRAM = case PiMaker.host_os
-                      when :mac
-                        :arp
-                      when :linux, :raspberrypi
-                        :nmap
+                      when :mac then :arp
+                      when :linux, :raspberrypi then :nmap
                       end
+
+    # Structured result from running a scan program
+    ScanResult = Struct.new(:hostname, :ip_address, :mac_address, :manufacturer)
 
     class << self
       # Takes in +opts+ for :scan_with, and optional overrides for run, parse, and filter with.
-      # returns an array of ips
+      # returns an array of ScanResult objects
       def call(opts = {})
         prog = opts.fetch(:scan_with, DEFAULT_PROGRAM)
 
         raise ArgumentError, "#{prog} is not installed" unless TTY::Which.which(prog.to_s)
 
-        hosts = opts.fetch(:run_with) do
-          method(:"run_#{prog}")
-        end.call(opts)
+        output = opts.fetch(:run_with) do
+          case prog
+          when :arp
+            -> { PiMaker.system_cmd('arp -a') }
+          when :nmap
+            -> { PiMaker.system_cmd("sudo nmap -sn #{opts.fetch(:ip_address, '192.168.1.0/24')}") }
+          else
+            -> { PiMaker.system_cmd(prog.to_s) }
+          end
+        end.call
 
-        hosts = opts.fetch(:parse_with) do
-          method(:"parse_#{prog}")
-        end.call(hosts)
+        results = opts.fetch(:parse_with) { method(:"parse_#{prog}") }.call(output)
 
         opts.fetch(:filter_with) do
-          method(:"filter_#{prog}")
-        end.call(hosts)
+          proc do |hosts|
+            hosts.select do |host|
+              host.manufacturer =~ /Raspberry Pi/ || MAC_RANGES.include?(host.mac_address&.[](0..2))
+            end
+          end
+        end.call(results)
       end
 
       private
 
       # Converts a mac address into an array of hex couplets
-      def convert_mac_address(arp)
-        arp.split(':')
-           .map { |addr| addr.to_i(16) }
-           .map { |addr| format('%02X', addr) }
+      def convert_mac_address(mac_addr)
+        mac_addr.split(':')
+                .map { |addr| addr.to_i(16) }
+                .map { |addr| format('%02X', addr) }
       end
 
-      # Takes the +hosts+ and returns only those whose MAC begins with one of the constants
-      def filter_arp(hosts)
-        hosts.select do |_ipaddr, mac_address|
-          MAC_RANGES.include?(mac_address[0..2])
-        end.map(&:first)
-      end
-
-      # Takes the +hosts+ and returns only the ones which have raspi as manufacturer
-      def filter_nmap(hosts)
-        hosts.select do |_ipaddr, manufacturer|
-          manufacturer =~ /Raspberry Pi/
-        end.map(&:first)
-      end
-
-      # Parses the +hosts+ from arp
+      # Parses the +hosts+ from arp into ScanResult objects
       def parse_arp(hosts)
         hosts.split("\n")
-             .map { |l| l.match(/\(((?:\d+\.?){4})\) at ([a-f0-9:]+) on/) }
+             .map { |l| l.match(ARP_PARSER) }
              .compact
-             .map(&:captures)
-             .to_h
-             .transform_values { |l| convert_mac_address(l) }
+             .map(&:named_captures)
+             .map { |nc| ScanResult.new(*nc.values) }
+             .map { |sr| sr.tap { |r| r.mac_address = convert_mac_address(sr.mac_address) } }
       end
 
-      # Takes in a string result from +nmap+, and converts it into a tuple of ip address
-      # and the manufacturer
+      # Parses the text from +nmap+ into ScanResult objects
       def parse_nmap(nmap)
         nmap.split("\n")[1..-2].each_slice(3).map do |ip_str, _up_str, mf_str|
-          [
-            ip_str.match(/((\d+\.?){4})/)[1],
-            mf_str ? mf_str.match(/\((.*)\)/)[1] : 'Unknown'
-          ]
+          ip_cap = ip_str.match(NMAP_IP_PARSER).named_captures
+          mac_cap = mf_str ? mf_str.match(NMAP_MAC_PARSER).named_captures : {}
+
+          if mac_cap['mac_address']
+            mac_cap['mac_address'] = convert_mac_address(mac_cap['mac_address'])
+          end
+
+          ScanResult.new(*ip_cap.merge(mac_cap).values)
         end
-      end
-
-      # Performs the nmap command
-      def run_nmap(opts = {})
-        PiMaker.system_cmd("sudo nmap -sn #{opts.fetch(:ip_address, '192.168.1.0/24')}")
-      end
-
-      # Performs the arp command
-      def run_arp(_opts = {})
-        PiMaker.system_cmd('arp -a')
       end
     end
   end

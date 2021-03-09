@@ -18,7 +18,9 @@ RSpec.describe PiMaker::NetworkIdentifier do
           expect { subject }.not_to raise_error
         end
 
-        it { is_expected.to eq(['192.168.1.187']) }
+        it 'ignores non-pi hosts' do
+          expect(subject.map(&:ip_address)).to eq(['192.168.1.187'])
+        end
       end
     end
 
@@ -28,24 +30,24 @@ RSpec.describe PiMaker::NetworkIdentifier do
       context 'using nmap' do
         let(:program) { :nmap }
 
-        it 'returns a list of ips' do
-          expect(subject).to all(be_a(String))
+        it 'returns a list of results' do
+          expect(subject).to all(be_a(PiMaker::NetworkIdentifier::ScanResult))
         end
 
         it 'ignores non-pi hosts' do
-          expect(subject).to eq(['192.168.1.187'])
+          expect(subject.map(&:ip_address)).to eq(['192.168.1.187'])
         end
       end
 
       context 'using arp' do
         let(:program) { :arp }
 
-        it 'returns a list of ips' do
-          expect(subject).to all(be_a(String))
+        it 'returns a list of results' do
+          expect(subject).to all(be_a(PiMaker::NetworkIdentifier::ScanResult))
         end
 
         it 'ignores non-pi hosts' do
-          expect(subject).to eq(['192.168.1.187'])
+          expect(subject.map(&:ip_address)).to eq(['192.168.1.187'])
         end
       end
 
@@ -58,7 +60,7 @@ RSpec.describe PiMaker::NetworkIdentifier do
 
         context 'providing procs to use the program' do
           let(:program) { :echo }
-          let(:run_with_proc) { ->(i) { i } }
+          let(:run_with_proc) { -> {} }
           let(:parse_with_proc) { ->(i) { i } }
           let(:filter_with_proc) { ->(i) { i } }
 
