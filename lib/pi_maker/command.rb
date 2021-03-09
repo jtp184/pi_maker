@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'forwardable'
+require 'abbrev'
 
 module PiMaker
   # CLI Command runner
@@ -14,6 +15,12 @@ module PiMaker
       return run_interactive if @options[:interactive]
 
       run
+    end
+
+    # Unambiguously abbreviate values
+    def abbrev(val, key = nil)
+      abr = Abbrev.abbrev(val)
+      key ? abr[key] : abr
     end
 
     # The external commands runner
