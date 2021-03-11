@@ -40,7 +40,11 @@ module PiMaker
         end
       end
 
-      desc 'connect', ''
+      desc 'connect', 'Connect to a pi over SSH'
+      method_option :scan, aliases: '-s', type: :boolean, default: false,
+                           desc: 'Perform a network scan to find hosts'
+      method_option :connect_with, aliases: '-c', type: :string, default: 'i',
+                                   desc: 'Whether to use scanned [i]p_address or [h]ostname to connect'
 
       def connect(reference = nil)
         if options[:help]

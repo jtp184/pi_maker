@@ -33,6 +33,21 @@ module PiMaker
         PiMaker.system_cmd('sudo echo')
       end
 
+      def choose_identified_network(scan_results)
+        return scan_results.first if scan_results.one?
+
+        prompt.warn('Collecting networks')
+        choices = scan_results.map { |s| ["#{s.hostname} (#{s.ip_address})", s] }.to_h
+
+        unless choices.any?
+          prompt.error('No networks found')
+          return nil
+        end
+
+        choice = prompt.select('Which network?', choices.keys)
+        choices[choice]
+      end
+
       def collect_connection_options(password = false)
         prompt.warn('Collecting connection config')
 
