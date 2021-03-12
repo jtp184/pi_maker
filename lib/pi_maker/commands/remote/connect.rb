@@ -9,13 +9,12 @@ module PiMaker
       class Connect < PiMaker::Command
         include Helpers
 
-        def initialize(reference, options)
-          @reference = reference
+        def initialize(options)
           @options = options
         end
 
         def run(input: $stdin, output: $stdout)
-          conf = parse_connection_reference ||
+          conf = parse_connection_config ||
                  (@options[:scan] && scan_for_host) ||
                  (@options[:interactive] && collect_connection_options)
 

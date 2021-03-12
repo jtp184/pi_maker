@@ -6,19 +6,19 @@ module PiMaker
     module Helpers
       private
 
-      def parse_connection_reference
-        return nil unless @reference
+      def parse_connection_config
+        return nil unless @config
 
         str_conf = [
           /(?<user>\w+)@(?<hostname>[\d.]+)\[(?<password>[^\s]+)\]/,
           /(?<user>\w+)@(?<hostname>[\d.]+)/,
           /(?<hostname>[\d.]+)/
-        ].detect { |r| r =~ @reference }
+        ].detect { |r| r =~ @config }
 
         if str_conf
-          str_conf.match(@reference).named_captures.transform_keys(&:to_sym)
+          str_conf.match(@config).named_captures.transform_keys(&:to_sym)
         else
-          rc = PiMaker::Pantry.global.recipes.detect { |r| r.hostname == @reference }
+          rc = PiMaker::Pantry.global.recipes.detect { |r| r.hostname == @config }
           return nil unless rc
 
           rc.to_h
