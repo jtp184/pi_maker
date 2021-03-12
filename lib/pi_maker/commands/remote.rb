@@ -18,7 +18,7 @@ module PiMaker
         end
       end
 
-      desc 'upload', ''
+      desc 'upload', 'Transfer a local file to the remote'
 
       def upload(local_file = nil, remote_file = nil)
         if options[:help]
@@ -29,7 +29,7 @@ module PiMaker
         end
       end
 
-      desc 'download', ''
+      desc 'download', 'Copy a remote file'
 
       def download(remote_file = nil, local_file = nil)
         if options[:help]

@@ -10,15 +10,18 @@ module PiMaker
     attr_reader :command_group
     # An array which is populated by the command output after running
     attr_reader :result
-    # Tuples of files to copy
-    attr_reader :scp_files
+    # Tuples of files to copy from local to remote
+    attr_reader :upload_files
+    # Tuples of files to copy from remote to local
+    attr_reader :download_files
 
     # Uses +opts+ to set the config and command group
     def initialize(opts = {})
       @config = PiMaker.default_login.merge(opts.fetch(:config, {}))
 
       @command_group = opts[:command_group]
-      @scp_files = opts.fetch(:scp_files, [])
+      @upload_files = opts.fetch(:upload_files, [])
+      @download_files = opts.fetch(:download_files, [])
       @result = []
     end
 
@@ -82,13 +85,20 @@ module PiMaker
 
     # Vopies the sources from copy_files to destination paths
     def copy_files(&watcher)
-      return nil if scp_files.empty?
+      return nil if upload_files.empty? && download_files.empty?
 
       Net::SCP.start(*scp_options) do |scp|
-        scp_files.each do |local_file, remote_path|
+        upload_files.each do |local_file, remote_path|
           scp.upload! local_file, remote_path
 
           @result << ["scp #{local_file} #{remote_path}", ['']]
+          watcher.call(@result.last.first) if block_given?
+        end
+
+        download_files.each do |remote_path, local_file|
+          scp.download! remote_path, local_file
+
+          @result << ["scp #{remote_path} #{local_file}", ['']]
           watcher.call(@result.last.first) if block_given?
         end
       end
