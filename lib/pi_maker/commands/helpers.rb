@@ -33,6 +33,21 @@ module PiMaker
         PiMaker.system_cmd('sudo echo')
       end
 
+      def scan_for_host
+        hosts = PiMaker::NetworkIdentifier.call
+
+        network = (@options[:interactive] && choose_identified_network(hosts)) || hosts.first
+
+        return unless network
+
+        case abbrev(%i[hostname ip_address], @options.fetch(:connect_with, 'i'))
+        when :hostname
+          { hostname: network.hostname }
+        when :ip_address
+          { hostname: network.ip_address }
+        end
+      end
+
       def choose_identified_network(scan_results)
         return scan_results.first if scan_results.one?
 

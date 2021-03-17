@@ -149,20 +149,13 @@ module PiMaker
 
     # Arguments for an SSH invocation
     def ssh_options
-      opts = config.slice(:hostname, :user)
-      opts << { password: config[:password] } if config[:password]
-
-      opts
+      config.slice(:hostname, :user, :password)
     end
 
     # Arguments for a single-line SCP invocation
-    def scp_options(local, remote)
-      opts = config.slice(:hostname, :user)
-
-      opts << local
-      opts << remote
-
-      opts << { ssh: { password: config[:password] } } if config[:password]
+    def scp_options
+      opts = config.slice(:hostname, :user).values
+      opts << { password: config[:password] } if config[:password]
 
       opts
     end

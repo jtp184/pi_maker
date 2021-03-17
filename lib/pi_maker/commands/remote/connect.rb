@@ -26,23 +26,6 @@ module PiMaker
         end
 
         alias run_interactive run
-
-        private
-
-        def scan_for_host
-          hosts = PiMaker::NetworkIdentifier.call
-
-          network = (@options[:interactive] && choose_identified_network(hosts)) || hosts.first
-
-          return unless network
-
-          case abbrev(%i[hostname ip_address], @options[:connect_with])
-          when :hostname
-            { hostname: network.hostname }
-          when :ip_address
-            { hostname: network.ip_address }
-          end
-        end
       end
     end
   end
