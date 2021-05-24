@@ -1,6 +1,6 @@
 module PiMaker
   # Set options for what to install / run
-  class Ingredients
+  class Instructions
     # Defined attributes on the class which store collections
     LISTS = {
       apt_packages: Array,

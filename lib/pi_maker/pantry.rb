@@ -9,9 +9,11 @@ module PiMaker
     attr_accessor :recipes
     # Add new wifi networks as a collection
     attr_accessor :wifi_networks
+    # Paths where files are stored at
+    attr_accessor :file_paths
 
     # Matches encoded or unencoded yaml files
-    FILE_EXT = 'enc|ya?ml$'.freeze
+    FILE_EXT = '(?:\.enc)?\.ya?ml$'.freeze
     # Checks for a wifi config, encoded or not
     WIFI_CONFIG_FILENAME = '\bwifi_config\.(enc\.)?ya?ml$'.freeze
     # What to call a password file stored locally
@@ -20,6 +22,7 @@ module PiMaker
     # Takes in +opts+ for the +base_path+ and an optional +password+
     def initialize(opts = {})
       @base_path = opts.fetch(:base_path)
+      @file_paths = {}
 
       @password = opts.fetch(:password) do
         fpath = base_path + "/#{PASSWORD_FILE_NAME}"
@@ -31,9 +34,22 @@ module PiMaker
       @wifi_networks = opts.fetch(:wifi_networks, load_wifi_networks)
     end
 
-    # If we can locate a global pantry, loads it
-    def self.global
-      new(base_path: locate_pantry) if locate_pantry
+    # If we can locate a global pantry, loads it. Override with +opts+
+    def self.global(opts = {})
+      if global_exists? && !opts.key(:base_path)
+        new({ base_path: File.read("#{global_exists?}/.pi_maker") }.merge(opts))
+      else
+        new({ base_path: Dir.pwd }.merge(opts))
+      end
+    rescue PasskeyError
+      new({ base_path: Dir.pwd }.merge(opts))
+    end
+
+    # Return nil if we can't find a dotfile, or the containing directory
+    def self.global_exists?
+      [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"].detect do |pth|
+        File.exist?("#{pth}/.pi_maker")
+      end
     end
 
     # Given an optional +where_path+ to save to, saves out the recipes and wifi config
@@ -69,6 +85,7 @@ module PiMaker
 
     # Loads recipes and wifi networks from their paths
     def reload
+      @file_paths = {}
       @recipes = load_recipes
       @wifi_networks = load_wifi_networks
       self
@@ -81,16 +98,12 @@ module PiMaker
       self
     end
 
-    private
-
-    # Finds a dotfile for pi_maker
-    def locate_pantry
-      dot_loc = [Dir.pwd, Dir.home, "#{Dir.home}/.config/pi_maker"].detect do |e|
-        Dir["#{e}/.pi_maker"]
-      end
-
-      File.read(dot_loc) if dot_loc
+    # Checks that this has been written to by checking the recipes subfolder
+    def exists?
+      Dir.exist?(root_path('recipes'))
     end
+
+    private
 
     # Finds and interprets a wifi config file in the base path
     def load_wifi_networks
@@ -98,7 +111,9 @@ module PiMaker
 
       return {} unless fi
 
-      Psych.load(FileEncrypter.decrypt(File.read(fi), password))
+      inst = Psych.load(FileEncrypter.decrypt(File.read(fi), password))
+      file_paths[inst] = fi
+      inst
     end
 
     # Finds and interprets and recipes files in the recipes subdirectory
@@ -108,7 +123,9 @@ module PiMaker
       file_list(root_path('recipes')).map do |recipe|
         next unless recipe =~ /#{FILE_EXT}/
 
-        Recipe.from_yaml(File.read(recipe), password)
+        inst = Recipe.from_yaml(File.read(recipe), password)
+        file_paths[inst] = recipe
+        inst
       end
     end
 

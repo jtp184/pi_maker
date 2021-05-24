@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'forwardable'
+require 'abbrev'
 
 module PiMaker
   # CLI Command runner
@@ -11,28 +12,37 @@ module PiMaker
 
     # Execute this command
     def execute(*)
-      raise(
-        NotImplementedError,
-        "#{self.class}##{__method__} must be implemented"
-      )
+      return run_interactive if @options[:interactive]
+
+      run
+    end
+
+    # Unambiguously abbreviate values
+    def abbrev(val, key = nil)
+      abr = Abbrev.abbrev(val)
+      key ? abr[key] : abr
     end
 
     # The external commands runner
-    def command(**options)
+    def command(options = {})
       require 'tty-command'
       TTY::Command.new(options)
     end
 
-    # The cursor movement
-    def cursor
-      require 'tty-cursor'
-      TTY::Cursor
-    end
-
     # Open a file or text in the user's preferred editor
-    def editor
+    def editor_text(txt = '')
       require 'tty-editor'
-      TTY::Editor
+
+      preferred = ENV['EDITOR']
+      present = first_exec(*TTY::Editor::EXECUTABLES.map { |e| e.split(' ').first })
+
+      tf = Tempfile.create
+      tf.write(txt)
+      tf.rewind
+
+      system("#{preferred || present} #{tf.path}")
+
+      File.read(tf.path)
     end
 
     # File manipulation utility methods
@@ -42,27 +52,41 @@ module PiMaker
     end
 
     # Terminal output paging
-    def pager(**options)
+    def pager(options = {})
       require 'tty-pager'
       TTY::Pager.new(options)
     end
 
-    # Terminal platform and OS properties
-    def platform
-      require 'tty-platform'
-      TTY::Platform.new
+    # Colorization for output
+    def pastel(options = {})
+      require 'pastel'
+      Pastel.new(options)
+    end
+
+    # Linear progress bars
+    def progressbar(*args)
+      require 'tty-progressbar'
+      TTY::ProgressBar.new(*args)
     end
 
     # The interactive prompt
-    def prompt(**options)
+    def prompt(options = {})
       require 'tty-prompt'
-      TTY::Prompt.new(options)
+      TTY::Prompt.new(
+        {
+          interrupt: proc do
+            puts
+            puts 'Exiting...'
+            abort
+          end
+        }.merge(options)
+      )
     end
 
-    # Get terminal screen properties
-    def screen
-      require 'tty-screen'
-      TTY::Screen
+    # Non-deterministic waiting prompt
+    def spinner(*args)
+      require 'tty-spinner'
+      TTY::Spinner.new(*args)
     end
 
     # The unix which utility
@@ -74,7 +98,13 @@ module PiMaker
     # Check if executable exists
     def exec_exist?(*args)
       require 'tty-which'
-      TTY::Which.exist?(*args)
+      args.any? { |a| TTY::Which.exist?(a) }
+    end
+
+    # Detect if any of these executables exist
+    def first_exec(*args)
+      require 'tty-which'
+      args.detect { |a| TTY::Which.exist?(a.split(' ').first) }
     end
   end
 end

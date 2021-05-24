@@ -1,6 +1,6 @@
-RSpec.describe PiMaker::Ingredients do
-  subject(:ingredients) { FactoryBot.build(:ingredients) }
-  let(:init_args) { FactoryBot.attributes_for(:ingredients) }
+RSpec.describe PiMaker::Instructions do
+  subject(:instructions) { FactoryBot.build(:instructions) }
+  let(:init_args) { FactoryBot.attributes_for(:instructions) }
 
   it_behaves_like 'block_definable'
 
@@ -11,10 +11,10 @@ RSpec.describe PiMaker::Ingredients do
   end
 
   it 'can be accessed with []' do
-    expect(ingredients[:gems]).to include('colorize')
+    expect(instructions[:gems]).to include('colorize')
   end
 
   it 'can convert to a hash' do
-    expect(ingredients.to_h[:gems]).to include('colorize')
+    expect(instructions.to_h[:gems]).to include('colorize')
   end
 end

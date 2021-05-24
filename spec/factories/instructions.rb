@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :ingredients, class: OpenStruct do
+  factory :instructions, class: PiMaker::Instructions do
     apt_packages { %w[kitty] }
 
     github_repos do
@@ -28,6 +28,6 @@ FactoryBot.define do
       }
     end
 
-    initialize_with { PiMaker::Ingredients.new(**attributes) }
+    initialize_with { PiMaker::Instructions.new(**attributes) }
   end
 end

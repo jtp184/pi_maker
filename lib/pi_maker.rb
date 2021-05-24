@@ -1,3 +1,4 @@
+require 'pathname'
 require 'strings-case'
 require 'tty-command'
 
@@ -8,6 +9,7 @@ module PiMaker
 
   # Failed system commands
   class SystemCommandError < StandardError; end
+
   # When an issue with encryption occurs
   class PasskeyError < StandardError; end
 
@@ -70,7 +72,7 @@ module PiMaker
 end
 
 require 'pi_maker/version'
-require 'pi_maker/ingredients'
+require 'pi_maker/instructions'
 require 'pi_maker/disk_management'
 require 'pi_maker/command_group'
 require 'pi_maker/network_identifier'

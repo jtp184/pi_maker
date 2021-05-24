@@ -11,14 +11,21 @@ module PiMaker
     attr_accessor :wpa_config
     # A BootConfig to install on the card
     attr_accessor :boot_config
-    # An Ingredients to set install options
+    # An Instructions to set install options
     attr_accessor :initial_setup
+    # Other Instructions sets to apply
+    attr_accessor :additional_setup
 
     # Takes in +opts+ for the attributes
     def initialize(opts = {})
-      %i[hostname password wpa_config boot_config initial_setup].each do |key|
+      %i[hostname password wpa_config boot_config initial_setup additional_setup].each do |key|
         instance_variable_set("@#{key}", opts[key]) if opts[key]
       end
+
+      parse_wifi_config_options(opts)
+      parse_boot_config_options(opts)
+      parse_initial_config_options(opts)
+      parse_additional_setups(opts)
     end
 
     # Yield to a block, or directly use the +hsh+ to create a new instance
@@ -34,16 +41,16 @@ module PiMaker
 
       inst = new(yaml.slice(:hostname, :password))
 
-      parse_wifi_config_options(inst, yaml)
-      parse_boot_config_options(inst, yaml)
-      parse_initial_config_options(inst, yaml)
+      inst.parse_wifi_config_options(yaml)
+      inst.parse_boot_config_options(yaml)
+      inst.parse_initial_config_options(yaml)
 
       inst
     end
 
-    # Returns an Ingredients list to set the hostname and password on the pi
+    # Returns an Instructions list to set the hostname and password on the pi
     def login_setup(old_password = PiMaker.default_login[:password])
-      Ingredients.define do |i|
+      Instructions.define do |i|
         i.raspi_config = { do_hostname: hostname }
         i.shell = [
           format(
@@ -65,6 +72,10 @@ module PiMaker
       data[:boot_config_options] = boot_config.to_h if boot_config
       data[:initial_setup_options] = initial_setup.to_h if initial_setup
 
+      if additional_setup
+        data[:additional_setup_options] = additional_setup.transform_values(&:to_h)
+      end
+
       data
     end
 
@@ -74,35 +85,41 @@ module PiMaker
       FileEncrypter.encrypt(yml, passwd)
     end
 
-    class << self
-      private
+    # Parses the initial config options
+    def parse_initial_config_options(opts)
+      return unless opts.to_h.key?(:initial_setup_options)
 
-      # Parses the initial config options
-      def parse_initial_config_options(inst, opts)
-        return unless opts.key?(:initial_setup_options)
+      self.initial_setup ||= Instructions.new(opts[:initial_setup_options])
+    end
 
-        inst.initial_setup ||= Ingredients.new(opts[:initial_setup_options])
+    # Parses any additional setup options provided
+    def parse_additional_setups(opts)
+      return unless opts.to_h.key?(:additional_setup_options)
+
+      self.additional_setup ||= opts[:additional_setup_options].transform_values do |ins|
+        Instructions.new(ins)
       end
+    end
 
-      # Parses the boot config options
-      def parse_boot_config_options(inst, opts)
-        return unless opts.key?(:boot_config_options)
+    # Parses the boot config options
+    def parse_boot_config_options(opts)
+      return unless opts.to_h.key?(:boot_config_options)
 
-        inst.boot_config ||= BootConfig.new(opts[:boot_config_options])
-      end
+      self.boot_config ||= BootConfig.new(opts[:boot_config_options])
+    end
 
-      # Parses the wifi config options
-      def parse_wifi_config_options(inst, opts)
-        return unless opts.key?(:wifi_config_options)
+    # Parses the wifi config options
+    def parse_wifi_config_options(opts)
+      return unless opts.to_h.key?(:wifi_config_options)
 
-        conf = opts[:wifi_config_options]
-        inst.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
+      conf = opts[:wifi_config_options]
+      self.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
 
-        conf[:networks].each do |args|
-          next unless [Array, String].detect { |c| args.is_a?(c) }
-
-          # TODO: in place ssid
-          inst.wpa_config.append(*args) if args.respond_to?(:[])
+      conf[:networks].each do |args|
+        if args.is_a?(Array)
+          self.wpa_config.append(*args)
+        elsif args.is_a?(String)
+          Pantry.global.wifi_networks[args]
         end
       end
     end

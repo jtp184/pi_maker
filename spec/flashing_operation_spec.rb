@@ -5,6 +5,7 @@ RSpec.describe PiMaker::DiskManagement::FlashingOperation do
 
   before do
     allow(IO).to receive(:popen).and_return(pipe_double)
+    allow(File).to receive(:exist?).and_return(true)
   end
 
   describe '.new' do
@@ -12,7 +13,7 @@ RSpec.describe PiMaker::DiskManagement::FlashingOperation do
 
     it 'takes options for :image_path and :disk' do
       expect(subject).to be_a(described_class)
-      expect(subject.image_path).to eq(flashing_operation_attributes[:image_path])
+      expect(subject.image_path).to match(/#{flashing_operation_attributes[:image_path]}/)
       expect(subject.disk.dev_path).to eq(flashing_operation_attributes[:disk].dev_path)
     end
 
