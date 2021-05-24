@@ -87,7 +87,7 @@ module PiMaker
     def copy_files(&watcher)
       return nil if upload_files.empty? && download_files.empty?
 
-      Net::SCP.start(*scp_options) do |scp|
+      Net::SCP.start(*ssh_options) do |scp|
         upload_files.each do |local_file, remote_path|
           scp.upload! local_file, remote_path
 
@@ -149,11 +149,6 @@ module PiMaker
 
     # Arguments for an SSH invocation
     def ssh_options
-      config.slice(:hostname, :user, :password)
-    end
-
-    # Arguments for a single-line SCP invocation
-    def scp_options
       opts = config.slice(:hostname, :user).values
       opts << { password: config[:password] } if config[:password]
 

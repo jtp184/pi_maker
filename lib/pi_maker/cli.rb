@@ -46,7 +46,8 @@ module PiMaker
     end
 
     require_relative 'commands/boot'
-    register PiMaker::Commands::Boot, 'boot', 'boot [SUBCOMMAND]', 'Command description...'
+    register PiMaker::Commands::Boot, 'boot', 'boot [SUBCOMMAND]',
+             'Flash an SD card, or directly write to a config file'
 
     require_relative 'commands/wifi'
     register PiMaker::Commands::Wifi, 'wifi', 'wifi [SUBCOMMAND]',
