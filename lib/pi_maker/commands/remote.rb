@@ -16,7 +16,9 @@ module PiMaker
       class_option :connect_with, aliases: '-k', type: :string, default: 'i',
                                   desc: 'Whether to use [i]p_address or [h]ostname to connect'
 
-      desc 'apply', ''
+      desc 'apply', 'Apply a recipe from the pantry'
+      method_option :verbose, aliases: '-v', type: :boolean,
+                    desc: 'Whether to print command output'
 
       def apply(reference = nil)
         if options[:help]

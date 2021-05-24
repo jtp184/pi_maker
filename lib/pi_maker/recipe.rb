@@ -13,16 +13,19 @@ module PiMaker
     attr_accessor :boot_config
     # An Instructions to set install options
     attr_accessor :initial_setup
+    # Other Instructions sets to apply
+    attr_accessor :additional_setup
 
     # Takes in +opts+ for the attributes
     def initialize(opts = {})
-      %i[hostname password wpa_config boot_config initial_setup].each do |key|
+      %i[hostname password wpa_config boot_config initial_setup additional_setup].each do |key|
         instance_variable_set("@#{key}", opts[key]) if opts[key]
       end
 
       parse_wifi_config_options(opts)
       parse_boot_config_options(opts)
       parse_initial_config_options(opts)
+      parse_additional_setups(opts)
     end
 
     # Yield to a block, or directly use the +hsh+ to create a new instance
@@ -69,6 +72,10 @@ module PiMaker
       data[:boot_config_options] = boot_config.to_h if boot_config
       data[:initial_setup_options] = initial_setup.to_h if initial_setup
 
+      if additional_setup
+        data[:additional_setup_options] = additional_setup.transform_values(&:to_h)
+      end
+
       data
     end
 
@@ -83,6 +90,15 @@ module PiMaker
       return unless opts.to_h.key?(:initial_setup_options)
 
       self.initial_setup ||= Instructions.new(opts[:initial_setup_options])
+    end
+
+    # Parses any additional setup options provided
+    def parse_additional_setups(opts)
+      return unless opts.to_h.key?(:additional_setup_options)
+
+      self.additional_setup ||= opts[:additional_setup_options].transform_values do |ins|
+        Instructions.new(ins)
+      end
     end
 
     # Parses the boot config options
