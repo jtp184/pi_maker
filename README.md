@@ -31,7 +31,43 @@ All methods and classes are RDoc documented at https://jtp184.github.io/pi_maker
 ### PiMaker
 
 ### Instructions
+
+The `Instructions` class holds data for what should be installed or configured on the Pi.
+
+```ruby
+# Basic initialization with all options
+instructions = PiMaker::Instructions.new(
+  # Array of packages to install using apt-get install
+  apt_packages: %w(neofetch kitty),
+  # Array of gems to install to system using sudo gem install
+  gems: %w(tty-config tty-prompt),
+  # Hash, with keys of github repos to clone to ~/repos, values of an array of post-clone commands
+  github_repos: {
+    'jtp184/arch_dotfiles' => [
+      'mkdir -p ~/.config',
+      'cp -R ~/repos/arch_dotfiles/config ~/.config'
+    ]
+  },
+  # Run any raw shell commands
+  shell: ['touch ~/.hushlogin'],
+  # Runs the raspi-config nongui version, allowing argument passing
+  raspi_config: {
+    'do_spi' => 0,
+    'do_expand_rootfs' => nil
+  },
+)
+
+# Also available through block syntax using .define
+further_instructions = PiMaker::Instructions.define do |i|
+  i.apt_packages = %w[wget]
+  i.gems =  Time.now.friday? ? %w[colorize] : %w[pastel]
+end
+```
+
 ### BootConfig
+
+Altering options on the SD Card's `config.txt` file is achieved with the `BootConfig` class, which can both read and write a config.
+
 ### Recipe
 ### Pantry
 ### FileEncrypter
