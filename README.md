@@ -55,6 +55,8 @@ instructions = PiMaker::Instructions.new(
     'do_spi' => 0,
     'do_expand_rootfs' => nil
   },
+  # Chunks of text to append to bashrc
+  bashrc: ["export PIMAKER_ID=#{SecureRandom.uuid}"]
 )
 
 # Also available through block syntax using .define
@@ -66,10 +68,78 @@ end
 
 ### BootConfig
 
-Altering options on the SD Card's `config.txt` file is achieved with the `BootConfig` class, which can both read and write a config.
+Altering options on the SD Card's [`config.txt`](https://www.raspberrypi.org/documentation/configuration/config-txt/) file is achieved with the `BootConfig` class, which can both read and write a config.
+
+```ruby
+# Enable SSH at boot
+boot_config = PiMaker::BootConfig.new(ssh: true)
+
+boot_config['pi4'] = {
+  'dtparam=audio' => 'on',
+  'max_framebuffers' => '2',
+}
+
+# You can also read an existing config
+card_config = PiMaker::BootConfig.new(path: '/mnt/boot/config.txt')
+
+card_config['all'] # => { 'dtoverlay' => 'vc4-fkms-v3d' }
+```
+
+### WpaConfig
+
+Wifi credentials can be entered using a `WpaConfig`, which carries a number of networks and can be written to the boot config to preset the wifi network before boot.
+
+```ruby
+wpa_config = PiMaker::WpaConfig.new(networks: { 'WorldOfWifi' => 'passw0rd' })
+
+# Append new credentials to the config
+wpa_config.append('WifiAtWork', 'b3tt3rp@assw0rd')
+
+# Redacts passwords by default
+wpa_config.to_h # => { country_code: 'US', networks: ['WorldOfWifi', 'WifiAtWork']}
+# Override by passing true
+wpa_config.to_h(true) # => { networks: { 'WorldOfWifi' => 'passw0rd, ... 
+```
 
 ### Recipe
+
+Binding together initialization and configuration options is the `Recipe` class, which is used to define a particular named setup of pi
+
+```ruby
+PiMaker::Recipe.define do |r|
+  # Set a hostname and password to be applied
+  r.hostname = 'PiMaker-ExamplePi'
+  r.password = SecureRandom.hex
+
+  # Pass in currently defined wifi options, or new ones
+  r.wifi_config_options = { networks: ['WorldOfWifi', { 'NewConnection' => 'B33SW@X' }] }
+
+  # Pass a boot config constructor
+  r.boot_config_options = { ssh: true, config: { 'all' => { 'dtparam=spi' => 'on' } } }
+
+  # Handle initial configuration with an Instructions object
+  r.initial_setup_options = {
+    apt_packages: %w[imagemagick nodejs npm],
+    bashrc: 'export NJS_ROOT=/home/pi/npm'
+  }
+
+  # Other optional named Instructions sets to execute
+  r.additional_setup_options = {
+    use_kitty: { apt_packages: %w[kitty] },
+    add_tty_gems: { gem: %w[tty-prompt tty-cursor] }
+  }
+end
+```
+
 ### Pantry
+
+The `Pantry` is where `Recipe` objects are stored. The class has functionality for saving and loading collections to YAML files, handling encryption of files on disk, and locating and loading from a global and persistant pantry.
+
+```ruby
+
+
+```
+
 ### FileEncrypter
 ### DiskManagement
 #### DiskProtocol

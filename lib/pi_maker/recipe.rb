@@ -44,6 +44,7 @@ module PiMaker
       inst.parse_wifi_config_options(yaml)
       inst.parse_boot_config_options(yaml)
       inst.parse_initial_config_options(yaml)
+      inst.parse_additional_setups(yaml)
 
       inst
     end
