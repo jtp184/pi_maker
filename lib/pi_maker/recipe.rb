@@ -120,7 +120,10 @@ module PiMaker
         if args.is_a?(Array)
           self.wpa_config.append(*args)
         elsif args.is_a?(String)
-          Pantry.global.wifi_networks[args]
+          passwd = Pantry.global.wifi_networks[args]
+          next unless passwd
+
+          self.wpa_config.append(args, passwd)
         end
       end
     end

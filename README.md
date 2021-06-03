@@ -83,6 +83,8 @@ boot_config['pi4'] = {
 card_config = PiMaker::BootConfig.new(path: '/mnt/boot/config.txt')
 
 card_config['all'] # => { 'dtoverlay' => 'vc4-fkms-v3d' }
+
+card_config.to_s # => "[pi4]\ndtparam=audio=on..."
 ```
 
 ### WpaConfig
@@ -99,6 +101,9 @@ wpa_config.append('WifiAtWork', 'b3tt3rp@assw0rd')
 wpa_config.to_h # => { country_code: 'US', networks: ['WorldOfWifi', 'WifiAtWork']}
 # Override by passing true
 wpa_config.to_h(true) # => { networks: { 'WorldOfWifi' => 'passw0rd, ... 
+
+# Export proper format to a file
+wpa_config.to_s # => "ctrl_interface=DIR=/var..."
 ```
 
 ### Recipe
@@ -136,11 +141,50 @@ end
 The `Pantry` is where `Recipe` objects are stored. The class has functionality for saving and loading collections to YAML files, handling encryption of files on disk, and locating and loading from a global and persistant pantry.
 
 ```ruby
+# Checks for existing config file in current directory, home directory, and ~/.config/pi_maker
+# Returns the directory a pantry was found in, or nil
+PiMaker::Pantry.global_exists? # => '/home/pi'
 
+# Can load the file that exists
+PiMaker::Pantry.global # => #<PiMaker::Pantry...>
 
+# And accept options for password
+PiMaker::Pantry.global(password: 'SN3AKY')
+
+# If the global pantry doesn't exist, the returned instance can create it by calling #write
+PiMaker::Pantry.global.write
+# You can also write with encryption, or to a specific path
+PiMaker::Pantry.global.write(password: 'badpassword12345', path: './')
+```
+
+A Pantry carries recipes and wifi networks, which are accessible within the recipes without reiterating their passwords
+
+```ruby
+pantry = PiMaker::Pantry.global
+
+# Networks within the pantry can be passed as string instead of as hash
+pantry.wifi_networks # => { 'AccessPoint' => 'AP101' }
+
+pantry.recipes.first.wpa_config.networks['AccessPoint'] # => 'AP101'
 ```
 
 ### FileEncrypter
+
+The `FileEncrypter` handles converting plaintext to encrypted text, keeping credentials within recipes safe.
+
+```ruby
+PiMaker::FileEncrypter.encrypt('SuperSecretText', 'SecretPassword')
+# => "PIMAKER:ENCRYPTED\n\x97c\xCC\xB8z\xCE7\xDCwY:\x01\"\xC2\xF2l\xC6\xC11F\x8Blh \xCA\x89#8\xB4\xF7\x12u"
+
+# Various classes within the gem include exporting which optionally passes through the FileEncrypter
+
+# Export to an encrypted file which decrypts to a yaml file
+enc = PiMaker::Recipe.new.to_yaml('UtterlyUnhackable')
+
+# Decrypt it by providing the original password
+dec = PiMaker::Recipe.from_yaml(enc, 'UtterlyUnhackable') == enc # => true
+```
+
 ### DiskManagement
 #### DiskProtocol
 ##### Linux
