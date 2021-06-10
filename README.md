@@ -186,9 +186,49 @@ dec = PiMaker::Recipe.from_yaml(enc, 'UtterlyUnhackable') == enc # => true
 ```
 
 ### DiskManagement
+
+The DiskManagement module houses functions surrounding reading the state of the filesystem and flashing of SD cards. The module itself is a shortcut for these functions, automatically picking a disk protocol and passing method calls to it.
+
+```ruby
+# Automatically decides based on OS
+PiMaker::DiskManagement.protocol # => PiMaker::DiskManagement::MacOs
+
+# Passes messages to protocol when applicable
+PiMaker::DiskManagement.list_devices 
+# => [/dev/disk2: /Volumes/boot | 2 partitions (63.8646 gigabytes)]
+```
+
 #### DiskProtocol
-##### Linux
-##### MacOs
+
+The Disk protocols read filesystem data from different operating systems, and handle formatting and writing to disks. The base class provides functionality common to both, and child classes provide duck typed methods to interact with the underlying system. The `Linux` disk protocol uses `lsblk` to get disk info and `mount` / `umount` to control them, while the `MacOs` disk protocol uses `diskutil` for all of its functions.
+
+```ruby
+protocol = PiMaker::DiskManagement.protocol
+
+# Find an attached SD card, when one exists, based on OS defaults
+protocol.sd_card_device # => /dev/disk2: /Volumes/boot | 2 partitions (63.8646 gigabytes)
+
+# Many disk functions can be called directly if desired, but are better called on the resulting device
+protocol.mounted?('/dev/disk2') # => true
+protocol.mount_point_for('/dev/disk2') # => '/Volumes/boot'
+```
+#### StorageDevice
+
+`StorageDevice` represents a connected disk. It wraps the data extracted from the `DiskProtocol`, and includes methods to query status and information, as well as initiating a `FlashingOperation` on itself.
+
+```ruby
+sd_card = PiMaker::DiskManagement.sd_card_device
+
+sd_card.capacity # => 127259789970
+sd_card.size # => "127.2597 gigabytes"
+sd_card.mounted? # => true
+sd_card.dev_path # => '/dev/disk2'
+
+sd_card.unmount && sd_card.mounted? # => false
+
+sd_card.write_image('~/Downloads/raspios.img') # => #<PiMaker::FlashingOperation>
+```
+
 #### FlashingOperation
 ### NetworkIdentifier
 ### CommandGroup
