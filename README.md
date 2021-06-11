@@ -1,6 +1,7 @@
 # PiMaker
 
-Easy bake for Raspberry Pi
+PiMaker is a CLI configurator for Raspberry Pi devices. I created this gem to rapidly prototype on and work with Raspberry Pi devices and Ruby code, with the goal of abstracting away setup for my Pi hardware gems. It allows the storage and definition of recipes, which define configurations of installed programs,  downloaded git repos, and more. PiMaker provides a sensible interface to setting up Raspberry Pi for use with hardware and software, with a particular mission to provide the ability for Ruby gems to define Pi configurations without needing to worry about how to apply them.
+
 
 ## Installation
 
