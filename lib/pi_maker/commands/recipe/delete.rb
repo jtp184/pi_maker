@@ -12,7 +12,7 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          raise CLI::Error 'No hostname' unless @hostname
+          raise CLI::Error, 'No hostname' unless @hostname
 
           pantry = PiMaker::Pantry.global
 
