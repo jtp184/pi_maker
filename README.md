@@ -24,11 +24,48 @@ Software images can be downloaded from [raspberrypi.org](https://www.raspberrypi
 
 ## Usage
 
+### Quickstart
+
+```bash
+# Create a repository of pi configurations
+$ pi_maker pantry init
+# Configure options for your pi interactively
+$ pi_maker recipe add --interactive
+# Insert SD card, then flash
+$ pi_maker boot flash --image=/path/to/image.img --interactive
+$ pi_maker recipe write_boot --interactive
+# Eject SD card, insert into pi, and power on
+# Locate pi on network and apply your config to it
+$ pi_maker recipe initial --interactive
+
+```
+
 ### Documentation
 
 All methods and classes are RDoc documented at https://jtp184.github.io/pi_maker/
 
 ### PiMaker
+
+The base module has a couple of methods on it for determining top level os-based info, storing defaults, and running system commands.
+
+```ruby
+# Returns a different symbol based on OS
+PiMaker.host_os # => :mac / :raspberrypi / :linux
+
+# Sensible default for the mounted volume
+PiMaker.sd_card_path # => /Volumes/boot
+
+# Store default login info
+PiMaker.default_login 
+# => {
+#   user: 'pi',
+#   hostname: 'raspberrypi.local',
+#   password: 'raspberry' 
+# }
+
+# Run command with some more sensible parsing than simple backticks
+PiMaker.system_cmd('echo hello')
+```
 
 ### Instructions
 
