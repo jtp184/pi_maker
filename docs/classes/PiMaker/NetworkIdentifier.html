@@ -46,12 +46,8 @@ PiMaker::NetworkIdentifier
 <h3>Private Class</h3>
 <ol>
 <li><a href="#method-c-convert_mac_address">convert_mac_address</a></li>
-<li><a href="#method-c-filter_arp">filter_arp</a></li>
-<li><a href="#method-c-filter_nmap">filter_nmap</a></li>
 <li><a href="#method-c-parse_arp">parse_arp</a></li>
 <li><a href="#method-c-parse_nmap">parse_nmap</a></li>
-<li><a href="#method-c-run_arp">run_arp</a></li>
-<li><a href="#method-c-run_nmap">run_nmap</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -61,6 +57,32 @@ PiMaker::NetworkIdentifier
 <h2>Constants</h2>
 <div class='name-list'>
 <table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>ARP_PARSER</td>
+<td>=</td>
+<td class='context-item-value'>%r{
+(?<hostname>\?|[\w.-]+)\s
+\((?<ip_address>[[:xdigit:].:]+)\)
+\sat\s
+(?<mac_address>(?:[[:xdigit:]]{1,2}:?){6})
+}x.freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Parses output from arp to get the hostname, IP, and MAC addresses</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>DEFAULT_PROGRAM</td>
+<td>=</td>
+<td class='context-item-value'>case PiMaker.host_os
+when :mac then :arp
+when :linux, :raspberrypi then :nmap
+end</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Default program to run on mac and linux machines</p>
+</td>
+</tr>
 <tr class='top-aligned-row context-row'>
 <td class='context-item-name'>MAC_RANGES</td>
 <td>=</td>
@@ -74,6 +96,49 @@ PiMaker::NetworkIdentifier
 <p>Registered Raspi MAC addresses</p>
 </td>
 </tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>NMAP_IP_PARSER</td>
+<td>=</td>
+<td class='context-item-value'>%r{
+for\s
+(?:
+(?:(?<hostname>[\w.-]+)\s\((?<ip_address>[\d.]+)\))
+|
+(?<ip_address>[\d.]+)
+)
+}x.freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Parses the IP address line from nmap to return the hostname and ip_address</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>NMAP_MAC_PARSER</td>
+<td>=</td>
+<td class='context-item-value'>%r{
+MAC\sAddress:\s
+(?<mac_address>(?:[[:xdigit:]]{2}:?){6})
+\s
+\((?<manufacturer>.*)\)
+}x.freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Parses the MAC address line from nmap to return the MAC address and manufacturer name</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>ScanResult</td>
+<td>=</td>
+<td class='context-item-value'>Struct.new(:hostname, :ip_address, :mac_address, :manufacturer) do
+def to_str
+ip_address
+end
+end</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Structured result from running a scan program</p>
+</td>
+</tr>
 </table>
 </div>
 </div>
@@ -82,26 +147,28 @@ PiMaker::NetworkIdentifier
 <div class='method public-class' id='method-method-c-call'>
 <a name='method-c-call'></a>
 <div class='synopsis'>
-<span class='name'>call</span><span class='arguments'>(opts = {})</span>
+<span class='name'>call</span>
+<span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
 
-<p>Takes in <code>opts</code> for :scan_with program, and optional overrides for run, parse, and filter with. returns an array of ips</p>
+<p>Takes in <code>opts</code> for :scan_with, and optional overrides for run, parse, and filter with. returns an array of <a href="NetworkIdentifier.html#ScanResult"><code>ScanResult</code></a> objects</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-call-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">prog</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:scan_with</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-node">%i[arp nmap]</span>.<span class="ruby-identifier">detect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">which</span>(<span class="ruby-identifier">r</span>.<span class="ruby-identifier">to_s</span>) }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;#{prog} is not installed&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">which</span>(<span class="ruby-identifier">prog</span>.<span class="ruby-identifier">to_s</span>)&#x000A;&#x000A;  <span class="ruby-identifier">hosts</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:run_with</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;run_#{prog}&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">opts</span>)&#x000A;&#x000A;  <span class="ruby-identifier">hosts</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:parse_with</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;parse_#{prog}&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">hosts</span>)&#x000A;&#x000A;  <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:filter_with</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;filter_#{prog}&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">hosts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-call-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 55</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">prog</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:scan_with</span>, <span class="ruby-constant">DEFAULT_PROGRAM</span>)&#x000A;&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;#{prog} is not installed&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">which</span>(<span class="ruby-identifier">prog</span>.<span class="ruby-identifier">to_s</span>)&#x000A;&#x000A;  <span class="ruby-identifier">output</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:run_with</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">case</span> <span class="ruby-identifier">prog</span>&#x000A;    <span class="ruby-keyword">when</span> <span class="ruby-value">:arp</span>&#x000A;      <span class="ruby-operator">-&gt;</span> { <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;arp -a&#39;</span>) }&#x000A;    <span class="ruby-keyword">when</span> <span class="ruby-value">:nmap</span>&#x000A;      <span class="ruby-operator">-&gt;</span> { <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;sudo nmap -sn #{opts.fetch(:ip_address, &#39;192.168.1.0/24&#39;)}&quot;</span>) }&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-operator">-&gt;</span> { <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-identifier">prog</span>.<span class="ruby-identifier">to_s</span>) }&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">call</span>&#x000A;&#x000A;  <span class="ruby-identifier">results</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:parse_with</span>) { <span class="ruby-identifier">method</span>(<span class="ruby-value">:&quot;parse_#{prog}&quot;</span>) }.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">output</span>)&#x000A;&#x000A;  <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:filter_with</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">proc</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hosts</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">hosts</span>.<span class="ruby-identifier">select</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">host</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">host</span>.<span class="ruby-identifier">manufacturer</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Raspberry Pi/</span> <span class="ruby-operator">||</span> <span class="ruby-constant">MAC_RANGES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">host</span>.<span class="ruby-identifier">mac_address</span>&amp;.<span class="ruby-identifier">[]</span>(<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">2</span>))&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">results</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Private Class methods</h2>
 <div class='method private-class' id='method-method-c-convert_mac_address'>
 <a name='method-c-convert_mac_address'></a>
 <div class='synopsis'>
-<span class='name'>convert_mac_address</span><span class='arguments'>(arp)</span>
+<span class='name'>convert_mac_address</span>
+<span class='arguments'>(mac_addr)</span>
 
 </div>
 <div class='description'>
@@ -113,115 +180,45 @@ PiMaker::NetworkIdentifier
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-convert_mac_address-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-convert_mac_address-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 39</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">convert_mac_address</span>(<span class="ruby-identifier">arp</span>)&#x000A;  <span class="ruby-identifier">arp</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39;:&#39;</span>)&#x000A;     .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">addr</span><span class="ruby-operator">|</span> <span class="ruby-identifier">addr</span>.<span class="ruby-identifier">to_i</span>(<span class="ruby-value">16</span>) }&#x000A;     .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">addr</span><span class="ruby-operator">|</span> <span class="ruby-identifier">format</span>(<span class="ruby-string">&#39;%02X&#39;</span>, <span class="ruby-identifier">addr</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-class' id='method-method-c-filter_arp'>
-<a name='method-c-filter_arp'></a>
-<div class='synopsis'>
-<span class='name'>filter_arp</span><span class='arguments'>(hosts)</span>
-
-</div>
-<div class='description'>
-
-<p>Takes the <code>hosts</code> and returns only those whose MAC begins with one of the constants</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-filter_arp-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-c-filter_arp-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 46</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">filter_arp</span>(<span class="ruby-identifier">hosts</span>)&#x000A;  <span class="ruby-identifier">hosts</span>.<span class="ruby-identifier">select</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_ipaddr</span>, <span class="ruby-identifier">mac_address</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">MAC_RANGES</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">mac_address</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">2</span>])&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:first</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-class' id='method-method-c-filter_nmap'>
-<a name='method-c-filter_nmap'></a>
-<div class='synopsis'>
-<span class='name'>filter_nmap</span><span class='arguments'>(hosts)</span>
-
-</div>
-<div class='description'>
-
-<p>Takes the <code>hosts</code> and returns only the ones which have raspi as manufacturer</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-filter_nmap-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-c-filter_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">filter_nmap</span>(<span class="ruby-identifier">hosts</span>)&#x000A;  <span class="ruby-identifier">hosts</span>.<span class="ruby-identifier">select</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_ipaddr</span>, <span class="ruby-identifier">manufacturer</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">manufacturer</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Raspberry Pi/</span>&#x000A;  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:first</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-convert_mac_address-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 85</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">convert_mac_address</span>(<span class="ruby-identifier">mac_addr</span>)&#x000A;  <span class="ruby-identifier">mac_addr</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39;:&#39;</span>)&#x000A;          .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">addr</span><span class="ruby-operator">|</span> <span class="ruby-identifier">addr</span>.<span class="ruby-identifier">to_i</span>(<span class="ruby-value">16</span>) }&#x000A;          .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">addr</span><span class="ruby-operator">|</span> <span class="ruby-identifier">format</span>(<span class="ruby-string">&#39;%02X&#39;</span>, <span class="ruby-identifier">addr</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-class' id='method-method-c-parse_arp'>
 <a name='method-c-parse_arp'></a>
 <div class='synopsis'>
-<span class='name'>parse_arp</span><span class='arguments'>(hosts)</span>
+<span class='name'>parse_arp</span>
+<span class='arguments'>(hosts)</span>
 
 </div>
 <div class='description'>
 
-<p>Parses the <code>hosts</code> from arp</p>
+<p>Parses the <code>hosts</code> from arp into <a href="NetworkIdentifier.html#ScanResult"><code>ScanResult</code></a> objects</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-parse_arp-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-parse_arp-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 60</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_arp</span>(<span class="ruby-identifier">hosts</span>)&#x000A;  <span class="ruby-identifier">hosts</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)&#x000A;       .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span> <span class="ruby-identifier">l</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/\(((?:\d+\.?){4})\) at ([a-f0-9:]+) on/</span>) }&#x000A;       .<span class="ruby-identifier">compact</span>&#x000A;       .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:captures</span>)&#x000A;       .<span class="ruby-identifier">to_h</span>&#x000A;       .<span class="ruby-identifier">transform_values</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span> <span class="ruby-identifier">convert_mac_address</span>(<span class="ruby-identifier">l</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-parse_arp-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 92</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_arp</span>(<span class="ruby-identifier">hosts</span>)&#x000A;  <span class="ruby-identifier">hosts</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)&#x000A;       .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span> <span class="ruby-identifier">l</span>.<span class="ruby-identifier">match</span>(<span class="ruby-constant">ARP_PARSER</span>) }&#x000A;       .<span class="ruby-identifier">compact</span>&#x000A;       .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:named_captures</span>)&#x000A;       .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">nc</span><span class="ruby-operator">|</span> <span class="ruby-constant">ScanResult</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">nc</span>.<span class="ruby-identifier">values</span>) }&#x000A;       .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">sr</span><span class="ruby-operator">|</span> <span class="ruby-identifier">sr</span>.<span class="ruby-identifier">tap</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span> <span class="ruby-identifier">r</span>.<span class="ruby-identifier">mac_address</span> = <span class="ruby-identifier">convert_mac_address</span>(<span class="ruby-identifier">sr</span>.<span class="ruby-identifier">mac_address</span>) } }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-class' id='method-method-c-parse_nmap'>
 <a name='method-c-parse_nmap'></a>
 <div class='synopsis'>
-<span class='name'>parse_nmap</span><span class='arguments'>(nmap)</span>
+<span class='name'>parse_nmap</span>
+<span class='arguments'>(nmap)</span>
 
 </div>
 <div class='description'>
 
-<p>Takes in a string result from <code>nmap</code>, and converts it into a tuple of ip address and the manufacturer</p>
+<p>Parses the text from <code>nmap</code> into <a href="NetworkIdentifier.html#ScanResult"><code>ScanResult</code></a> objects</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-parse_nmap-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-parse_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_nmap</span>(<span class="ruby-identifier">nmap</span>)&#x000A;  <span class="ruby-identifier">nmap</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-2</span>].<span class="ruby-identifier">each_slice</span>(<span class="ruby-value">3</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ip_str</span>, <span class="ruby-identifier">_up_str</span>, <span class="ruby-identifier">mf_str</span><span class="ruby-operator">|</span>&#x000A;    [&#x000A;      <span class="ruby-identifier">ip_str</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/((\d+\.?){4})/</span>)[<span class="ruby-value">1</span>],&#x000A;      <span class="ruby-identifier">mf_str</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">mf_str</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/\((.*)\)/</span>)[<span class="ruby-value">1</span>] <span class="ruby-operator">:</span> <span class="ruby-string">&#39;Unknown&#39;</span>&#x000A;    ]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-class' id='method-method-c-run_arp'>
-<a name='method-c-run_arp'></a>
-<div class='synopsis'>
-<span class='name'>run_arp</span><span class='arguments'>(_opts = {})</span>
-
-</div>
-<div class='description'>
-
-<p>Performs the arp command</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-run_arp-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-c-run_arp-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 86</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_arp</span>(<span class="ruby-identifier">_opts</span> = {})&#x000A;  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;arp -a&#39;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-class' id='method-method-c-run_nmap'>
-<a name='method-c-run_nmap'></a>
-<div class='synopsis'>
-<span class='name'>run_nmap</span><span class='arguments'>(opts = {})</span>
-
-</div>
-<div class='description'>
-
-<p>Performs the nmap command</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-run_nmap-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-c-run_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 81</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_nmap</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;sudo nmap -sn #{opts.fetch(:ip_address, &#39;192.168.1.0/24&#39;)}&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-parse_nmap-source'><span class="ruby-comment"># File lib/pi_maker/network_identifier.rb, line 102</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_nmap</span>(<span class="ruby-identifier">nmap</span>)&#x000A;  <span class="ruby-identifier">nmap</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-2</span>].<span class="ruby-identifier">each_slice</span>(<span class="ruby-value">3</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ip_str</span>, <span class="ruby-identifier">_up_str</span>, <span class="ruby-identifier">mf_str</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">ip_cap</span> = <span class="ruby-identifier">ip_str</span>.<span class="ruby-identifier">match</span>(<span class="ruby-constant">NMAP_IP_PARSER</span>).<span class="ruby-identifier">named_captures</span>&#x000A;    <span class="ruby-identifier">mac_cap</span> = <span class="ruby-identifier">mf_str</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">mf_str</span>.<span class="ruby-identifier">match</span>(<span class="ruby-constant">NMAP_MAC_PARSER</span>).<span class="ruby-identifier">named_captures</span> <span class="ruby-operator">:</span> {}&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">mac_cap</span>[<span class="ruby-string">&#39;mac_address&#39;</span>]&#x000A;      <span class="ruby-identifier">mac_cap</span>[<span class="ruby-string">&#39;mac_address&#39;</span>] = <span class="ruby-identifier">convert_mac_address</span>(<span class="ruby-identifier">mac_cap</span>[<span class="ruby-string">&#39;mac_address&#39;</span>])&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-constant">ScanResult</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ip_cap</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">mac_cap</span>).<span class="ruby-identifier">values</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

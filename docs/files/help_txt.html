@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>help.txt</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>help.txt
+</h1>
+<div class='paths'>
+help.txt
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2021-05-26 22:27:09 -0700</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Commands:</p>
+
+<pre class="ruby"><span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">decrypt</span> [<span class="ruby-constant">PASSWORD</span>]  <span class="ruby-comment"># Decrypt the pantry folder</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">encrypt</span> [<span class="ruby-constant">PASSWORD</span>]  <span class="ruby-comment"># Encrypt the pantry folder</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">help</span> [<span class="ruby-constant">COMMAND</span>]      <span class="ruby-comment"># Describe subcommands or one specific subcommand</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">init</span> [<span class="ruby-constant">PATH</span>]         <span class="ruby-comment"># Create a pantry folder</span></pre>
+
+<p>Commands:</p>
+
+<pre class="ruby"><span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">add</span> [<span class="ruby-constant">SSID</span>] [<span class="ruby-constant">PASSWD</span>]  <span class="ruby-comment"># Adds a new wifi config to the persistant store</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">delete</span> [<span class="ruby-constant">SSID</span>]        <span class="ruby-comment"># Deletes a stored network from persistance</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">help</span> [<span class="ruby-constant">COMMAND</span>]       <span class="ruby-comment"># Describe subcommands or one specific subcommand</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">list</span>                 <span class="ruby-comment"># Show stored wifi configs</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">supplicant</span>           <span class="ruby-comment"># Write a wpa_supplicant.conf file to copy manually</span></pre>
+
+<p>Commands:</p>
+
+<pre class="ruby"><span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">add</span>                <span class="ruby-comment"># Add a new recipe</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">delete</span> [<span class="ruby-constant">HOSTNAME</span>]  <span class="ruby-comment"># Remove a recipe</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">help</span> [<span class="ruby-constant">COMMAND</span>]     <span class="ruby-comment"># Describe subcommands or one specific subcommand</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">initial</span>            <span class="ruby-comment"># Perform the initial setup commands from the recipe</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">list</span>               <span class="ruby-comment"># Show all recipes from a certain collection</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">write_boot</span>         <span class="ruby-comment"># Write a recipe&#39;s boot config to the SD card</span></pre>
+
+<p>Commands:</p>
+
+<pre class="ruby"><span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">boot</span> <span class="ruby-identifier">config</span>          <span class="ruby-comment"># Set values on the config file directly</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">boot</span> <span class="ruby-identifier">flash</span>           <span class="ruby-comment"># Flash a card from an image</span>&#x000A;<span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">boot</span> <span class="ruby-identifier">help</span> [<span class="ruby-constant">COMMAND</span>]  <span class="ruby-comment"># Describe subcommands or one specific subcommand</span></pre>
+
+<p>Usage:</p>
+
+<pre class="ruby"><span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">identify</span></pre>
+
+<p>Options:</p>
+
+<pre>-r, [--range=RANGE]                      # Which ip range to target&#x000A;                                         # Default: 192.168.1.0/24&#x000A;-p, [--program=PROGRAM]                  # What program to run with&#x000A;                                         # Default: arp&#x000A;-o, [--output=OUTPUT]                    # What data to return, either [i]p, [h]ostname, or [b]oth&#x000A;                                         # Default: i&#x000A;-i, [--interactive], [--no-interactive]  # Run with prompting&#x000A;-h, [--help], [--no-help]                # Display usage information</pre>
+
+<p>Find Raspberry Pi devices on the local network</p>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

@@ -23,8 +23,11 @@ module PiMaker
         end
 
         def run_interactive(input: $stdin, output: $stdout)
-          @wpa_config = PiMaker::WpaConfig.new(networks: @options[:credentials]) ||
-                        collect_wifi_networks
+          @wpa_config = if @options[:credentials]
+                          PiMaker::WpaConfig.new(networks: @options[:credentials])
+                        else
+                          collect_wifi_networks
+                        end
 
           save_file
         end

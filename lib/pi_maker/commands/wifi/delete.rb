@@ -12,7 +12,7 @@ module PiMaker
         end
 
         def run(input: $stdin, output: $stdout)
-          raise CLI::Error 'No ssid' unless @ssid
+          raise CLI::Error, 'No ssid' unless @ssid
 
           pantry = PiMaker::Pantry.global
 

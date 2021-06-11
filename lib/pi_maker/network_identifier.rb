@@ -43,7 +43,11 @@ module PiMaker
                       end
 
     # Structured result from running a scan program
-    ScanResult = Struct.new(:hostname, :ip_address, :mac_address, :manufacturer)
+    ScanResult = Struct.new(:hostname, :ip_address, :mac_address, :manufacturer) do
+      def to_str
+        ip_address
+      end
+    end
 
     class << self
       # Takes in +opts+ for :scan_with, and optional overrides for run, parse, and filter with.

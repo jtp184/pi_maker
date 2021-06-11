@@ -26,7 +26,7 @@ module PiMaker
 
           if @options[:verbose]
             runner.call do |l|
-              prompt.say(pastel.light_black(l))
+              prompt.say(pastel.bright_black(l))
             end
           else
             runner.call

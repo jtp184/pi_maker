@@ -45,16 +45,18 @@ Superclass:
 <h2>Methods</h2>
 <h3>Public Instance</h3>
 <ol>
+<li><a href="#method-i-abbrev">abbrev</a></li>
 <li><a href="#method-i-command">command</a></li>
-<li><a href="#method-i-cursor">cursor</a></li>
-<li><a href="#method-i-editor">editor</a></li>
+<li><a href="#method-i-editor_text">editor_text</a></li>
 <li><a href="#method-i-exec_exist-3F">exec_exist?</a></li>
 <li><a href="#method-i-execute">execute</a></li>
+<li><a href="#method-i-first_exec">first_exec</a></li>
 <li><a href="#method-i-generator">generator</a></li>
 <li><a href="#method-i-pager">pager</a></li>
-<li><a href="#method-i-platform">platform</a></li>
+<li><a href="#method-i-pastel">pastel</a></li>
+<li><a href="#method-i-progressbar">progressbar</a></li>
 <li><a href="#method-i-prompt">prompt</a></li>
-<li><a href="#method-i-screen">screen</a></li>
+<li><a href="#method-i-spinner">spinner</a></li>
 <li><a href="#method-i-which">which</a></li>
 </ol>
 </div>
@@ -63,10 +65,30 @@ Superclass:
 <div id='section'>
 <div id='methods'>
 <h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-abbrev'>
+<a name='method-i-abbrev'></a>
+<div class='synopsis'>
+<span class='name'>abbrev</span>
+<span class='arguments'>(val, key = nil)</span>
+
+</div>
+<div class='description'>
+
+<p>Unambiguously abbreviate values</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-abbrev-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-abbrev-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">abbrev</span>(<span class="ruby-identifier">val</span>, <span class="ruby-identifier">key</span> = <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">abr</span> = <span class="ruby-constant">Abbrev</span>.<span class="ruby-identifier">abbrev</span>(<span class="ruby-identifier">val</span>)&#x000A;  <span class="ruby-identifier">key</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">abr</span>[<span class="ruby-identifier">key</span>] <span class="ruby-operator">:</span> <span class="ruby-identifier">abr</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
 <div class='method public-instance' id='method-method-i-command'>
 <a name='method-i-command'></a>
 <div class='synopsis'>
-<span class='name'>command</span><span class='arguments'>(**options)</span>
+<span class='name'>command</span>
+<span class='arguments'>(options = {})</span>
 
 </div>
 <div class='description'>
@@ -78,31 +100,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-command-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-command-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">command</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-command&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-command-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">command</span>(<span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-command&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method public-instance' id='method-method-i-cursor'>
-<a name='method-i-cursor'></a>
+<div class='method public-instance' id='method-method-i-editor_text'>
+<a name='method-i-editor_text'></a>
 <div class='synopsis'>
-<span class='name'>cursor</span><span class='arguments'>()</span>
-
-</div>
-<div class='description'>
-
-<p>The cursor movement</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cursor-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-cursor-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cursor</span>&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-cursor&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Cursor</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method public-instance' id='method-method-i-editor'>
-<a name='method-i-editor'></a>
-<div class='synopsis'>
-<span class='name'>editor</span><span class='arguments'>()</span>
+<span class='name'>editor_text</span>
+<span class='arguments'>(txt = '')</span>
 
 </div>
 <div class='description'>
@@ -111,16 +116,17 @@ Superclass:
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-editor-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-editor_text-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-editor-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 33</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">editor</span>&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-editor&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Editor</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-editor_text-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 33</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">editor_text</span>(<span class="ruby-identifier">txt</span> = <span class="ruby-string">&#39;&#39;</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-editor&#39;</span>&#x000A;&#x000A;  <span class="ruby-identifier">preferred</span> = <span class="ruby-constant">ENV</span>[<span class="ruby-string">&#39;EDITOR&#39;</span>]&#x000A;  <span class="ruby-identifier">present</span> = <span class="ruby-identifier">first_exec</span>(<span class="ruby-operator">*</span><span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Editor</span><span class="ruby-operator">::</span><span class="ruby-constant">EXECUTABLES</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39; &#39;</span>).<span class="ruby-identifier">first</span> })&#x000A;&#x000A;  <span class="ruby-identifier">tf</span> = <span class="ruby-constant">Tempfile</span>.<span class="ruby-identifier">create</span>&#x000A;  <span class="ruby-identifier">tf</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">txt</span>)&#x000A;  <span class="ruby-identifier">tf</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;  <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;#{preferred || present} #{tf.path}&quot;</span>)&#x000A;&#x000A;  <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">tf</span>.<span class="ruby-identifier">path</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-exec_exist-3F'>
 <a name='method-i-exec_exist-3F'></a>
 <div class='synopsis'>
-<span class='name'>exec_exist?</span><span class='arguments'>(*args)</span>
+<span class='name'>exec_exist?</span>
+<span class='arguments'>(*args)</span>
 
 </div>
 <div class='description'>
@@ -132,13 +138,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-exec_exist-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-exec_exist-3F-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 75</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exec_exist?</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-which&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-exec_exist-3F-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 99</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exec_exist?</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-which&#39;</span>&#x000A;  <span class="ruby-identifier">args</span>.<span class="ruby-identifier">any?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span><span class="ruby-operator">|</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">a</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-execute'>
 <a name='method-i-execute'></a>
 <div class='synopsis'>
-<span class='name'>execute</span><span class='arguments'>(*)</span>
+<span class='name'>execute</span>
+<span class='arguments'>(*)</span>
 
 </div>
 <div class='description'>
@@ -150,13 +157,33 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-execute-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-execute-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 13</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">execute</span>(<span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">raise</span>(&#x000A;    <span class="ruby-constant">NotImplementedError</span>,&#x000A;    <span class="ruby-node">&quot;#{self.class}##{__method__} must be implemented&quot;</span>&#x000A;  )&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-execute-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 14</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">execute</span>(<span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-identifier">run_interactive</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:interactive</span>]&#x000A;&#x000A;  <span class="ruby-identifier">run</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-first_exec'>
+<a name='method-i-first_exec'></a>
+<div class='synopsis'>
+<span class='name'>first_exec</span>
+<span class='arguments'>(*args)</span>
+
+</div>
+<div class='description'>
+
+<p>Detect if any of these executables exist</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-first_exec-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-first_exec-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">first_exec</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-which&#39;</span>&#x000A;  <span class="ruby-identifier">args</span>.<span class="ruby-identifier">detect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span><span class="ruby-operator">|</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">a</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39; &#39;</span>).<span class="ruby-identifier">first</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-generator'>
 <a name='method-i-generator'></a>
 <div class='synopsis'>
-<span class='name'>generator</span><span class='arguments'>()</span>
+<span class='name'>generator</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -168,13 +195,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-generator-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-generator-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 39</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generator</span>&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-file&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">File</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-generator-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 49</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generator</span>&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-file&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">File</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-pager'>
 <a name='method-i-pager'></a>
 <div class='synopsis'>
-<span class='name'>pager</span><span class='arguments'>(**options)</span>
+<span class='name'>pager</span>
+<span class='arguments'>(options = {})</span>
 
 </div>
 <div class='description'>
@@ -186,31 +214,52 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-pager-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-pager-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 45</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">pager</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-pager&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Pager</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-pager-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 55</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">pager</span>(<span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-pager&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Pager</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method public-instance' id='method-method-i-platform'>
-<a name='method-i-platform'></a>
+<div class='method public-instance' id='method-method-i-pastel'>
+<a name='method-i-pastel'></a>
 <div class='synopsis'>
-<span class='name'>platform</span><span class='arguments'>()</span>
+<span class='name'>pastel</span>
+<span class='arguments'>(options = {})</span>
 
 </div>
 <div class='description'>
 
-<p>Terminal platform and OS properties</p>
+<p>Colorization for output</p>
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-platform-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-pastel-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-platform-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 51</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">platform</span>&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-platform&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Platform</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-pastel-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">pastel</span>(<span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;pastel&#39;</span>&#x000A;  <span class="ruby-constant">Pastel</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-progressbar'>
+<a name='method-i-progressbar'></a>
+<div class='synopsis'>
+<span class='name'>progressbar</span>
+<span class='arguments'>(*args)</span>
+
+</div>
+<div class='description'>
+
+<p>Linear progress bars</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-progressbar-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-progressbar-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 67</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">progressbar</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-progressbar&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">ProgressBar</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-prompt'>
 <a name='method-i-prompt'></a>
 <div class='synopsis'>
-<span class='name'>prompt</span><span class='arguments'>(**options)</span>
+<span class='name'>prompt</span>
+<span class='arguments'>(options = {})</span>
 
 </div>
 <div class='description'>
@@ -222,31 +271,33 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-prompt-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-prompt-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 57</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">prompt</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-prompt&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Prompt</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-prompt-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 73</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">prompt</span>(<span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-prompt&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Prompt</span>.<span class="ruby-identifier">new</span>(&#x000A;    {&#x000A;      <span class="ruby-value">interrupt:</span> <span class="ruby-identifier">proc</span> <span class="ruby-keyword">do</span>&#x000A;        <span class="ruby-identifier">puts</span>&#x000A;        <span class="ruby-identifier">puts</span> <span class="ruby-string">&#39;Exiting...&#39;</span>&#x000A;        <span class="ruby-identifier">abort</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;  )&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method public-instance' id='method-method-i-screen'>
-<a name='method-i-screen'></a>
+<div class='method public-instance' id='method-method-i-spinner'>
+<a name='method-i-spinner'></a>
 <div class='synopsis'>
-<span class='name'>screen</span><span class='arguments'>()</span>
+<span class='name'>spinner</span>
+<span class='arguments'>(*args)</span>
 
 </div>
 <div class='description'>
 
-<p>Get terminal screen properties</p>
+<p>Non-deterministic waiting prompt</p>
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-screen-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-spinner-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-screen-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 63</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">screen</span>&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-screen&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Screen</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-spinner-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 87</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">spinner</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-spinner&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Spinner</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-which'>
 <a name='method-i-which'></a>
 <div class='synopsis'>
-<span class='name'>which</span><span class='arguments'>(*args)</span>
+<span class='name'>which</span>
+<span class='arguments'>(*args)</span>
 
 </div>
 <div class='description'>
@@ -258,7 +309,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-which-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-which-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 69</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">which</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-which&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">which</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-which-source'><span class="ruby-comment"># File lib/pi_maker/command.rb, line 93</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">which</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">require</span> <span class="ruby-string">&#39;tty-which&#39;</span>&#x000A;  <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Which</span>.<span class="ruby-identifier">which</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

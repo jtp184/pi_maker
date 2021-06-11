@@ -23,6 +23,14 @@ module PiMaker
           File.open(config_path.split('/')[0..-2].join('/') + '/ssh', 'w+') { |f| f << '' }
 
           prompt.ok('Wrote ssh file')
+
+          return unless recipe.wpa_config.networks.any?
+
+          File.open("#{PiMaker.sd_card_path}/#{PiMaker::WpaConfig::FILENAME}", 'w+') do |f|
+            f << recipe.wpa_config.to_s
+          end
+
+          prompt.ok('Wrote wpa config')
         end
 
         alias run_interactive run
@@ -39,31 +47,32 @@ module PiMaker
                          elsif @options[:interactive]
                            prompt.ask('Path to save to: ', default: default_path)
                          else
-                           raise CLI::Error 'No config or path'
+                           raise CLI::Error, 'No config or path'
                          end
         end
 
         def boot_config
-          return @boot_config if @boot_config
+          @boot_config ||= recipe.boot_config
+        end
+
+        def recipe
+          return @recipe if @recipe
 
           pantry = PiMaker::Pantry.global
 
-          @boot_config = if @options[:interactive]
-                           recipe = pantry.recipes.find { |r| r.hostname == @hostname }
-                           return recipe if recipe
+          @recipe = if @options[:interactive]
+                      recipes = pantry.recipes.map(&:hostname)
+                      search = prompt.select('Use which recipe?', recipes)
 
-                           recipes = pantry.recipes.map(&:hostname)
-                           search = prompt.select('Use which recipe?', recipes)
+                      pantry.recipes.find { |r| r.hostname == search }
+                    else
+                      raise CLI::Error, 'No hostname' unless @hostname
 
-                           pantry.recipes.find { |r| r.hostname == search }
-                         else
-                           raise CLI::Error 'No hostname' unless @hostname
+                      recipe = pantry.recipes.find { |r| r.hostname == @hostname }
+                      raise CLI::Error, 'No recipe' unless recipe
 
-                           recipe = pantry.recipes.find { |r| r.hostname == @hostname }
-                           raise CLI::Error 'No recipe' unless recipe
-
-                           recipe
-                         end.boot_config
+                      recipe
+                    end
         end
 
         def default_exists?

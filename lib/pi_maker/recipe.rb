@@ -44,6 +44,7 @@ module PiMaker
       inst.parse_wifi_config_options(yaml)
       inst.parse_boot_config_options(yaml)
       inst.parse_initial_config_options(yaml)
+      inst.parse_additional_setups(yaml)
 
       inst
     end
@@ -119,7 +120,10 @@ module PiMaker
         if args.is_a?(Array)
           self.wpa_config.append(*args)
         elsif args.is_a?(String)
-          Pantry.global.wifi_networks[args]
+          passwd = Pantry.global.wifi_networks[args]
+          next unless passwd
+
+          self.wpa_config.append(args, passwd)
         end
       end
     end

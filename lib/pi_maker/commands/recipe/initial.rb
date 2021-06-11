@@ -21,9 +21,13 @@ module PiMaker
                                      raise CLI::Error, 'No hostname to connect with'
                                    end
 
-          perform_basic
-          perform_login
-          perform_reboot
+          initial_config
+
+          if @options[:interactive] && !@options[:verbose]
+            spinbar.run { perform_initial }
+          else
+            perform_initial
+          end
 
           prompt.ok('Commands run')
         end
@@ -31,6 +35,12 @@ module PiMaker
         alias run_interactive run
 
         private
+
+        def perform_initial
+          perform_basic
+          perform_login
+          perform_reboot
+        end
 
         def scan_for_host
           args = {}
@@ -42,7 +52,7 @@ module PiMaker
           return results.first if results.one?
 
           unless @options[:interactive]
-            raise CLI::Error "Multiple ips, please pass one as an argument:\n#{results.join("\n")}"
+            raise CLI::Error, "Multiple ips, please pass one as an argument:\n#{results.join("\n")}"
           end
 
           prompt.select('Which IP?', results)
@@ -53,7 +63,7 @@ module PiMaker
 
           if @options[:verbose]
             runner({ shell: ['sudo reboot now'] }).call do |l|
-              prompt.say(pastel.light_black(l))
+              prompt.say(pastel.bright_black(l))
             end
           else
             runner({ shell: ['sudo reboot now'] }).call
@@ -65,7 +75,7 @@ module PiMaker
 
           if @options[:verbose]
             runner(recipe.login_setup).call do |l|
-              prompt.say(pastel.light_black(l))
+              prompt.say(pastel.bright_black(l))
             end
           else
             runner(recipe.login_setup).call
@@ -75,7 +85,7 @@ module PiMaker
         def perform_basic
           if @options[:verbose]
             runner.call do |l|
-              prompt.say(pastel.light_black(l))
+              prompt.say(pastel.bright_black(l))
             end
           else
             runner.call
@@ -105,7 +115,7 @@ module PiMaker
               recipes = pantry.recipes.map { |r| [r.hostname, r] }.to_h
               recipe || recipes[prompt.select('Use which recipe?', recipes.keys)]
             else
-              raise CLI::Error 'No recipe' unless recipe
+              raise CLI::Error, 'No recipe' unless recipe
 
               recipe
             end
@@ -114,6 +124,16 @@ module PiMaker
 
         def initial_config
           @initial_config ||= recipe.initial_setup
+        end
+
+        def spinbar
+          spinner(
+            '[:spinner] Applying initial config...',
+            success_mark: '✅',
+            error_mark: '❗️',
+            frames: '🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕐🕑',
+            interval: 12
+          )
         end
       end
     end
