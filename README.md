@@ -268,7 +268,39 @@ PiMaker::NetworkIdentifier.call(
 ```
 
 ### CommandGroup
+
+Translating a set of `Instructions` into the actual shell commands to execute them is handled by the `CommandGroup` class. 
+
+```ruby
+instructions = PiMaker::Pantry.global
+                              .recipes
+                              .first
+                              .initial_setup
+
+cmds = PiMaker::CommandGroup.new(instructions)
+
+# Returns runnable versions of install directives
+cmds.apt_packages # => 'sudo apt-get install -y imagemagick nodejs'
+```
 ### RemoteRunner
+
+Executing a `CommandGroup` on a pi over the network via SSH is done with the `RemoteRunner` class, which wraps `net/ssh` and `net/scp`.
+
+```ruby
+runner = PiMaker::RemoteRunner.new(
+  # You can pass a username / password here, or use the default
+  config: {
+    username: 'pi',
+    password: 'raspberry'
+  },
+  # Pass a command group to execute it
+  command_group: cmds,
+  # Upload files with from/to tuples or a hash
+  upload_files: [['./settings.yml', '/home/pi/.config/settings.yml']],
+  # Download files from a path the same way
+  download_files: { '/home/pi/something.txt' => './' }
+)
+```
 
 ## CLI
 
