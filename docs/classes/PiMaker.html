@@ -64,7 +64,7 @@ PiMaker
 <a href="../files/lib/pi_maker/file_encrypter_rb.html">lib/pi_maker/file_encrypter.rb</a>
 </li>
 <li class='other'>
-<a href="../files/lib/pi_maker/ingredients_rb.html">lib/pi_maker/ingredients.rb</a>
+<a href="../files/lib/pi_maker/instructions_rb.html">lib/pi_maker/instructions.rb</a>
 </li>
 <li class='other'>
 <a href="../files/lib/pi_maker/network_identifier_rb.html">lib/pi_maker/network_identifier.rb</a>
@@ -116,7 +116,7 @@ PiMaker
 <li><a href="PiMaker/CLI.html">PiMaker::CLI</a></li>
 <li><a href="PiMaker/Command.html">PiMaker::Command</a></li>
 <li><a href="PiMaker/CommandGroup.html">PiMaker::CommandGroup</a></li>
-<li><a href="PiMaker/Ingredients.html">PiMaker::Ingredients</a></li>
+<li><a href="PiMaker/Instructions.html">PiMaker::Instructions</a></li>
 <li><a href="PiMaker/Pantry.html">PiMaker::Pantry</a></li>
 <li><a href="PiMaker/PasskeyError.html">PiMaker::PasskeyError</a></li>
 <li><a href="PiMaker/Recipe.html">PiMaker::Recipe</a></li>
@@ -131,7 +131,8 @@ PiMaker
 <div class='method public-class' id='method-method-c-default_login'>
 <a name='method-c-default_login'></a>
 <div class='synopsis'>
-<span class='name'>default_login</span><span class='arguments'>()</span>
+<span class='name'>default_login</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -143,13 +144,14 @@ PiMaker
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-default_login-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-default_login-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 41</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">default_login</span>&#x000A;  {&#x000A;    <span class="ruby-value">user:</span> <span class="ruby-string">&#39;pi&#39;</span>,&#x000A;    <span class="ruby-value">hostname:</span> <span class="ruby-string">&#39;raspberrypi.local&#39;</span>,&#x000A;    <span class="ruby-value">password:</span> <span class="ruby-string">&#39;raspberry&#39;</span>&#x000A;  }.<span class="ruby-identifier">freeze</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-default_login-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 43</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">default_login</span>&#x000A;  {&#x000A;    <span class="ruby-value">user:</span> <span class="ruby-string">&#39;pi&#39;</span>,&#x000A;    <span class="ruby-value">hostname:</span> <span class="ruby-string">&#39;raspberrypi.local&#39;</span>,&#x000A;    <span class="ruby-value">password:</span> <span class="ruby-string">&#39;raspberry&#39;</span>&#x000A;  }.<span class="ruby-identifier">freeze</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-host_os'>
 <a name='method-c-host_os'></a>
 <div class='synopsis'>
-<span class='name'>host_os</span><span class='arguments'>()</span>
+<span class='name'>host_os</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -161,13 +163,14 @@ PiMaker
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-host_os-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-host_os-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">host_os</span>&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-constant">RUBY_PLATFORM</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/cygwin|mswin|mingw|bccwin|wince|emx/</span>&#x000A;    <span class="ruby-value">:windows</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/darwin/</span>&#x000A;    <span class="ruby-value">:mac</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/linux/</span>&#x000A;    <span class="ruby-identifier">pi</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-string">&#39;/proc/cpuinfo&#39;</span>) <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Raspberry Pi/</span>&#x000A;    <span class="ruby-identifier">pi</span> <span class="ruby-operator">?</span> <span class="ruby-value">:raspberrypi</span> <span class="ruby-operator">:</span> <span class="ruby-value">:linux</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-host_os-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 18</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">host_os</span>&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-constant">RUBY_PLATFORM</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/cygwin|mswin|mingw|bccwin|wince|emx/</span>&#x000A;    <span class="ruby-value">:windows</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/darwin/</span>&#x000A;    <span class="ruby-value">:mac</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-regexp">/linux/</span>&#x000A;    <span class="ruby-identifier">pi</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-string">&#39;/proc/cpuinfo&#39;</span>) <span class="ruby-operator">=~</span> <span class="ruby-regexp">/Raspberry Pi/</span>&#x000A;    <span class="ruby-identifier">pi</span> <span class="ruby-operator">?</span> <span class="ruby-value">:raspberrypi</span> <span class="ruby-operator">:</span> <span class="ruby-value">:linux</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-sd_card_path'>
 <a name='method-c-sd_card_path'></a>
 <div class='synopsis'>
-<span class='name'>sd_card_path</span><span class='arguments'>()</span>
+<span class='name'>sd_card_path</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -179,13 +182,14 @@ PiMaker
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-sd_card_path-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-sd_card_path-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 29</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">sd_card_path</span>&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">host_os</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:mac</span>&#x000A;    <span class="ruby-string">&#39;/Volumes/boot&#39;</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:linux</span>, <span class="ruby-value">:raspberrypi</span>&#x000A;    <span class="ruby-string">&#39;/mnt/boot&#39;</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-string">&#39;E:&#39;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-sd_card_path-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 31</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">sd_card_path</span>&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">host_os</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:mac</span>&#x000A;    <span class="ruby-string">&#39;/Volumes/boot&#39;</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:linux</span>, <span class="ruby-value">:raspberrypi</span>&#x000A;    <span class="ruby-string">&#39;/mnt/boot&#39;</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-string">&#39;E:&#39;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-system_cmd'>
 <a name='method-c-system_cmd'></a>
 <div class='synopsis'>
-<span class='name'>system_cmd</span><span class='arguments'>(opts = {})</span>
+<span class='name'>system_cmd</span>
+<span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
@@ -197,7 +201,7 @@ PiMaker
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-system_cmd-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-system_cmd-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 50</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">system_cmd</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@system_cmd</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">printer:</span> <span class="ruby-value">:null</span>)&#x000A;&#x000A;  <span class="ruby-identifier">default_opts</span> = { <span class="ruby-value">command:</span> <span class="ruby-identifier">opts</span>, <span class="ruby-value">raise_errors:</span> <span class="ruby-keyword">true</span> }&#x000A;&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">default_opts</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">default_opts</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>)&#x000A;&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:command</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;             <span class="ruby-ivar">@system_cmd</span>.<span class="ruby-identifier">run!</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:command</span>])&#x000A;           <span class="ruby-keyword">else</span>&#x000A;             <span class="ruby-ivar">@system_cmd</span>.<span class="ruby-identifier">run!</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">opts</span>[<span class="ruby-value">:command</span>])&#x000A;           <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:raise_errors</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">result</span>.<span class="ruby-identifier">success?</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">SystemCommandError</span>, <span class="ruby-node">&quot;#{opts[:command]} failed with #{result.err}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">result</span>.<span class="ruby-identifier">out</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-system_cmd-source'><span class="ruby-comment"># File lib/pi_maker.rb, line 52</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">system_cmd</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@system_cmd</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">TTY</span><span class="ruby-operator">::</span><span class="ruby-constant">Command</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">printer:</span> <span class="ruby-value">:null</span>)&#x000A;&#x000A;  <span class="ruby-identifier">default_opts</span> = { <span class="ruby-value">command:</span> <span class="ruby-identifier">opts</span>, <span class="ruby-value">raise_errors:</span> <span class="ruby-keyword">true</span> }&#x000A;&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">default_opts</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">default_opts</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>)&#x000A;&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:command</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;             <span class="ruby-ivar">@system_cmd</span>.<span class="ruby-identifier">run!</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:command</span>])&#x000A;           <span class="ruby-keyword">else</span>&#x000A;             <span class="ruby-ivar">@system_cmd</span>.<span class="ruby-identifier">run!</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">opts</span>[<span class="ruby-value">:command</span>])&#x000A;           <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:raise_errors</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">result</span>.<span class="ruby-identifier">success?</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">SystemCommandError</span>, <span class="ruby-node">&quot;#{opts[:command]} failed with #{result.err}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">result</span>.<span class="ruby-identifier">out</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

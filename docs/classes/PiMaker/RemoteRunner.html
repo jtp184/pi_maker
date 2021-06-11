@@ -52,9 +52,12 @@ Superclass:
 <li><a href="#method-i-call">call</a></li>
 <li><a href="#attribute-i-command_group">command_group</a></li>
 <li><a href="#attribute-i-config">config</a></li>
+<li><a href="#method-i-copy_files">copy_files</a></li>
+<li><a href="#attribute-i-download_files">download_files</a></li>
 <li><a href="#attribute-i-result">result</a></li>
 <li><a href="#method-i-run_commands">run_commands</a></li>
 <li><a href="#method-i-run_text_blocks">run_text_blocks</a></li>
+<li><a href="#attribute-i-upload_files">upload_files</a></li>
 </ol>
 <h3>Private Instance</h3>
 <ol>
@@ -62,7 +65,6 @@ Superclass:
 <li><a href="#method-i-create_temp_files">create_temp_files</a></li>
 <li><a href="#method-i-create_temp_folder">create_temp_folder</a></li>
 <li><a href="#method-i-destroy_temp_folder">destroy_temp_folder</a></li>
-<li><a href="#method-i-scp_options">scp_options</a></li>
 <li><a href="#method-i-ssh_options">ssh_options</a></li>
 </ol>
 </div>
@@ -79,7 +81,7 @@ Superclass:
 </td>
 <td class='context-item-value'>[R]</td>
 <td class='context-item-desc'>
-<p>ssh config, the <a href="CommandGroup.html"><code>CommandGroup</code></a> to run, and the result after commands have been run</p>
+<p>The commands to run, as a <a href="CommandGroup.html"><code>CommandGroup</code></a></p>
 </td>
 </tr>
 <tr class='top-aligned-row context-row'>
@@ -88,7 +90,16 @@ Superclass:
 </td>
 <td class='context-item-value'>[R]</td>
 <td class='context-item-desc'>
-<p>ssh config, the <a href="CommandGroup.html"><code>CommandGroup</code></a> to run, and the result after commands have been run</p>
+<p>The SSH options</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-download_files'>download_files</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'>
+<p>Tuples of files to copy from remote to local</p>
 </td>
 </tr>
 <tr class='top-aligned-row context-row'>
@@ -97,7 +108,16 @@ Superclass:
 </td>
 <td class='context-item-value'>[R]</td>
 <td class='context-item-desc'>
-<p>ssh config, the <a href="CommandGroup.html"><code>CommandGroup</code></a> to run, and the result after commands have been run</p>
+<p>An array which is populated by the command output after running</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-upload_files'>upload_files</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'>
+<p>Tuples of files to copy from local to remote</p>
 </td>
 </tr>
 </table>
@@ -108,7 +128,8 @@ Superclass:
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span><span class='arguments'>(opts = {})</span>
+<span class='name'>new</span>
+<span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
@@ -120,14 +141,15 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 11</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@config</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">default_login</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:config</span>, {}))&#x000A;&#x000A;  <span class="ruby-ivar">@command_group</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:command_group</span>, <span class="ruby-constant">CommandGroup</span>.<span class="ruby-identifier">new</span>)&#x000A;  <span class="ruby-ivar">@result</span> = []&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 19</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@config</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">default_login</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:config</span>, {}))&#x000A;&#x000A;  <span class="ruby-ivar">@command_group</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:command_group</span>]&#x000A;  <span class="ruby-ivar">@upload_files</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:upload_files</span>, [])&#x000A;  <span class="ruby-ivar">@download_files</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:download_files</span>, [])&#x000A;  <span class="ruby-ivar">@result</span> = []&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
 <div class='method public-instance' id='method-method-i-call'>
 <a name='method-i-call'></a>
 <div class='synopsis'>
-<span class='name'>call</span><span class='arguments'>(&watcher)</span>
+<span class='name'>call</span>
+<span class='arguments'>(&watcher)</span>
 
 </div>
 <div class='description'>
@@ -139,13 +161,33 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 19</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-ivar">@result</span> = []&#x000A;  <span class="ruby-identifier">run_commands</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-identifier">run_text_blocks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 29</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-ivar">@result</span> = []&#x000A;  <span class="ruby-identifier">run_commands</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-identifier">run_text_blocks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-identifier">copy_files</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-copy_files'>
+<a name='method-i-copy_files'></a>
+<div class='synopsis'>
+<span class='name'>copy_files</span>
+<span class='arguments'>(&watcher)</span>
+
+</div>
+<div class='description'>
+
+<p>Vopies the sources from <a href="RemoteRunner.html#method-i-copy_files"><code>copy_files</code></a> to destination paths</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-copy_files-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-copy_files-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 87</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">copy_files</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">upload_files</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">download_files</span>.<span class="ruby-identifier">empty?</span>&#x000A;&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SCP</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">scp</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">upload_files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">local_file</span>, <span class="ruby-identifier">remote_path</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">scp</span>.<span class="ruby-identifier">upload!</span> <span class="ruby-identifier">local_file</span>, <span class="ruby-identifier">remote_path</span>&#x000A;&#x000A;      <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-node">&quot;scp #{local_file} #{remote_path}&quot;</span>, [<span class="ruby-string">&#39;&#39;</span>]]&#x000A;      <span class="ruby-identifier">watcher</span>.<span class="ruby-identifier">call</span>(<span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">first</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">download_files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">remote_path</span>, <span class="ruby-identifier">local_file</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">scp</span>.<span class="ruby-identifier">download!</span> <span class="ruby-identifier">remote_path</span>, <span class="ruby-identifier">local_file</span>&#x000A;&#x000A;      <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-node">&quot;scp #{remote_path} #{local_file}&quot;</span>, [<span class="ruby-string">&#39;&#39;</span>]]&#x000A;      <span class="ruby-identifier">watcher</span>.<span class="ruby-identifier">call</span>(<span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">first</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-run_commands'>
 <a name='method-i-run_commands'></a>
 <div class='synopsis'>
-<span class='name'>run_commands</span><span class='arguments'>(&watcher)</span>
+<span class='name'>run_commands</span>
+<span class='arguments'>(&watcher)</span>
 
 </div>
 <div class='description'>
@@ -157,13 +199,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-run_commands-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-run_commands-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 28</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_commands</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">empty?</span>&#x000A;&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">connection</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cmd</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">cmd</span>, []]&#x000A;&#x000A;      <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">open_channel</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-identifier">cmd</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tty</span>, <span class="ruby-identifier">_ret</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">tty</span>.<span class="ruby-identifier">on_data</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_c</span>, <span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>&#x000A;          <span class="ruby-keyword">end</span>&#x000A;&#x000A;          <span class="ruby-identifier">tty</span>.<span class="ruby-identifier">on_extended_data</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_c</span>, <span class="ruby-identifier">_t</span>, <span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>&#x000A;          <span class="ruby-keyword">end</span>&#x000A;&#x000A;          <span class="ruby-identifier">watcher</span>.<span class="ruby-identifier">call</span>(<span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;        <span class="ruby-keyword">end</span>&#x000A;      <span class="ruby-keyword">end</span>.<span class="ruby-identifier">wait</span>&#x000A;&#x000A;      <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&#39;&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">empty?</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-run_commands-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 39</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_commands</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">command_group</span>&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">empty?</span>&#x000A;&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">connection</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">commands</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cmd</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">cmd</span>, []]&#x000A;      <span class="ruby-identifier">watcher</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">cmd</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;&#x000A;      <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">open_channel</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-identifier">cmd</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tty</span>, <span class="ruby-identifier">_ret</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">tty</span>.<span class="ruby-identifier">on_data</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_c</span>, <span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>&#x000A;          <span class="ruby-keyword">end</span>&#x000A;&#x000A;          <span class="ruby-identifier">tty</span>.<span class="ruby-identifier">on_extended_data</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_c</span>, <span class="ruby-identifier">_t</span>, <span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>&#x000A;          <span class="ruby-keyword">end</span>&#x000A;&#x000A;          <span class="ruby-identifier">watcher</span>.<span class="ruby-identifier">call</span>(<span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;        <span class="ruby-keyword">end</span>&#x000A;      <span class="ruby-keyword">end</span>.<span class="ruby-identifier">wait</span>&#x000A;&#x000A;      <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&#39;&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">empty?</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-run_text_blocks'>
 <a name='method-i-run_text_blocks'></a>
 <div class='synopsis'>
-<span class='name'>run_text_blocks</span><span class='arguments'>(&watcher)</span>
+<span class='name'>run_text_blocks</span>
+<span class='arguments'>(&watcher)</span>
 
 </div>
 <div class='description'>
@@ -175,14 +218,15 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-run_text_blocks-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-run_text_blocks-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 56</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_text_blocks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>.<span class="ruby-identifier">empty?</span>&#x000A;&#x000A;  <span class="ruby-identifier">timestamp</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span>&#x000A;&#x000A;  <span class="ruby-identifier">temp_files</span> = <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>&#x000A;                            .<span class="ruby-identifier">transform_values</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">_v</span><span class="ruby-operator">|</span> <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span> }&#x000A;&#x000A;  <span class="ruby-identifier">append_opts</span> = <span class="ruby-identifier">timestamp</span>, <span class="ruby-identifier">temp_files</span>&#x000A;&#x000A;  <span class="ruby-identifier">create_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-identifier">create_temp_files</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-identifier">append_files</span>(<span class="ruby-identifier">append_opts</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-identifier">destroy_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-run_text_blocks-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 69</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run_text_blocks</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">command_group</span>&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>.<span class="ruby-identifier">empty?</span>&#x000A;&#x000A;  <span class="ruby-identifier">timestamp</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span>&#x000A;&#x000A;  <span class="ruby-identifier">temp_files</span> = <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>&#x000A;                            .<span class="ruby-identifier">transform_values</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">_v</span><span class="ruby-operator">|</span> <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span> }&#x000A;&#x000A;  <span class="ruby-identifier">append_opts</span> = <span class="ruby-identifier">timestamp</span>, <span class="ruby-identifier">temp_files</span>&#x000A;&#x000A;  <span class="ruby-identifier">create_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-identifier">create_temp_files</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-identifier">append_files</span>(<span class="ruby-identifier">append_opts</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-identifier">destroy_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Private Instance methods</h2>
 <div class='method private-instance' id='method-method-i-append_files'>
 <a name='method-i-append_files'></a>
 <div class='synopsis'>
-<span class='name'>append_files</span><span class='arguments'>(append_opts, &watcher)</span>
+<span class='name'>append_files</span>
+<span class='arguments'>(append_opts, &watcher)</span>
 
 </div>
 <div class='description'>
@@ -194,13 +238,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-append_files-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-append_files-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 92</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">append_files</span>(<span class="ruby-identifier">append_opts</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">filepath</span>, <span class="ruby-identifier">_l</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">connection</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">open_channel</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">src_path</span> = <span class="ruby-node">&quot;/tmp/pi_maker_#{append_opts[0]}/#{append_opts[1][filepath]}&quot;</span>&#x000A;        <span class="ruby-identifier">cmd</span> = <span class="ruby-node">&quot;cat #{src_path} &gt;&gt; #{filepath}&quot;</span>&#x000A;&#x000A;        <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-identifier">cmd</span>)&#x000A;        <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">cmd</span>, [<span class="ruby-string">&#39;&#39;</span>]]&#x000A;        <span class="ruby-identifier">watcher</span>.<span class="ruby-identifier">call</span>(<span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-append_files-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 124</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">append_files</span>(<span class="ruby-identifier">append_opts</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">watcher</span>)&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">connection</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">filepath</span>, <span class="ruby-identifier">_l</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">open_channel</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">src_path</span> = <span class="ruby-node">&quot;/tmp/pi_maker_#{append_opts[0]}/#{append_opts[1][filepath]}&quot;</span>&#x000A;        <span class="ruby-identifier">cmd</span> = <span class="ruby-node">&quot;cat #{src_path} &gt;&gt; #{filepath}&quot;</span>&#x000A;&#x000A;        <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-identifier">cmd</span>)&#x000A;&#x000A;        <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">cmd</span>, [<span class="ruby-string">&#39;&#39;</span>]]&#x000A;        <span class="ruby-identifier">watcher</span>.<span class="ruby-identifier">call</span>(<span class="ruby-ivar">@result</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">last</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;      <span class="ruby-keyword">end</span>.<span class="ruby-identifier">wait</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-create_temp_files'>
 <a name='method-i-create_temp_files'></a>
 <div class='synopsis'>
-<span class='name'>create_temp_files</span><span class='arguments'>(append_opts)</span>
+<span class='name'>create_temp_files</span>
+<span class='arguments'>(append_opts)</span>
 
 </div>
 <div class='description'>
@@ -212,13 +257,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-create_temp_files-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-create_temp_files-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 75</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_temp_files</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">filepath</span>, <span class="ruby-identifier">lines</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">contents</span> = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">lines</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;\n&quot;</span>) <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot;\n&quot;</span>)&#x000A;    <span class="ruby-identifier">remote</span> = <span class="ruby-node">&quot;/tmp/pi_maker_#{append_opts[0]}/#{append_opts[1][filepath]}&quot;</span>&#x000A;&#x000A;    <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SCP</span>.<span class="ruby-identifier">upload!</span>(&#x000A;      <span class="ruby-operator">*</span><span class="ruby-identifier">scp_options</span>(&#x000A;        <span class="ruby-identifier">contents</span>,&#x000A;        <span class="ruby-identifier">remote</span>&#x000A;      )&#x000A;    )&#x000A;&#x000A;    <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-node">&quot;scp #{remote}&quot;</span>, [<span class="ruby-string">&#39;&#39;</span>]]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-create_temp_files-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 110</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_temp_files</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SCP</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">scp</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">command_group</span>.<span class="ruby-identifier">text_blocks</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">filepath</span>, <span class="ruby-identifier">lines</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">contents</span> = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">lines</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;\n&quot;</span>) <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot;\n&quot;</span>)&#x000A;      <span class="ruby-identifier">remote</span> = <span class="ruby-node">&quot;/tmp/pi_maker_#{append_opts[0]}/#{append_opts[1][filepath]}&quot;</span>&#x000A;&#x000A;      <span class="ruby-identifier">scp</span>.<span class="ruby-identifier">upload!</span>(<span class="ruby-identifier">contents</span>, <span class="ruby-identifier">remote</span>)&#x000A;&#x000A;      <span class="ruby-ivar">@result</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-node">&quot;scp #{remote}&quot;</span>, [<span class="ruby-string">&#39;&#39;</span>]]&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-create_temp_folder'>
 <a name='method-i-create_temp_folder'></a>
 <div class='synopsis'>
-<span class='name'>create_temp_folder</span><span class='arguments'>(append_opts)</span>
+<span class='name'>create_temp_folder</span>
+<span class='arguments'>(append_opts)</span>
 
 </div>
 <div class='description'>
@@ -230,13 +276,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-create_temp_folder-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-create_temp_folder-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 108</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span> <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;mkdir /tmp/pi_maker_#{append_opts[0]}&quot;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-create_temp_folder-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 141</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span> <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;mkdir /tmp/pi_maker_#{append_opts[0]}&quot;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-destroy_temp_folder'>
 <a name='method-i-destroy_temp_folder'></a>
 <div class='synopsis'>
-<span class='name'>destroy_temp_folder</span><span class='arguments'>(append_opts)</span>
+<span class='name'>destroy_temp_folder</span>
+<span class='arguments'>(append_opts)</span>
 
 </div>
 <div class='description'>
@@ -248,31 +295,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy_temp_folder-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-destroy_temp_folder-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 113</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span> <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;rm -rf /tmp/pi_maker_#{append_opts[0]}&quot;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-instance' id='method-method-i-scp_options'>
-<a name='method-i-scp_options'></a>
-<div class='synopsis'>
-<span class='name'>scp_options</span><span class='arguments'>(local, remote)</span>
-
-</div>
-<div class='description'>
-
-<p>Arguments for an SCP invocation</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-scp_options-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-scp_options-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 126</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">scp_options</span>(<span class="ruby-identifier">local</span>, <span class="ruby-identifier">remote</span>)&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">config</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">:hostname</span>, <span class="ruby-value">:user</span>)&#x000A;&#x000A;  <span class="ruby-identifier">opts</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">local</span>&#x000A;  <span class="ruby-identifier">opts</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">remote</span>&#x000A;&#x000A;  <span class="ruby-identifier">opts</span> <span class="ruby-operator">&lt;&lt;</span> { <span class="ruby-value">ssh:</span> { <span class="ruby-value">password:</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:password</span>] } } <span class="ruby-keyword">if</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:password</span>]&#x000A;&#x000A;  <span class="ruby-identifier">opts</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-destroy_temp_folder-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 146</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy_temp_folder</span>(<span class="ruby-identifier">append_opts</span>)&#x000A;  <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">ssh_options</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span> <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec</span>(<span class="ruby-node">&quot;rm -rf /tmp/pi_maker_#{append_opts[0]}&quot;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-ssh_options'>
 <a name='method-i-ssh_options'></a>
 <div class='synopsis'>
-<span class='name'>ssh_options</span><span class='arguments'>()</span>
+<span class='name'>ssh_options</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -284,7 +314,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-ssh_options-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-ssh_options-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 118</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">ssh_options</span>&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">config</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">:hostname</span>, <span class="ruby-value">:user</span>)&#x000A;  <span class="ruby-identifier">opts</span> <span class="ruby-operator">&lt;&lt;</span> { <span class="ruby-value">password:</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:password</span>] } <span class="ruby-keyword">if</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:password</span>]&#x000A;&#x000A;  <span class="ruby-identifier">opts</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-ssh_options-source'><span class="ruby-comment"># File lib/pi_maker/remote_runner.rb, line 151</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">ssh_options</span>&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">config</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">:hostname</span>, <span class="ruby-value">:user</span>).<span class="ruby-identifier">values</span>&#x000A;  <span class="ruby-identifier">opts</span> <span class="ruby-operator">&lt;&lt;</span> { <span class="ruby-value">password:</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:password</span>] } <span class="ruby-keyword">if</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:password</span>]&#x000A;&#x000A;  <span class="ruby-identifier">opts</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

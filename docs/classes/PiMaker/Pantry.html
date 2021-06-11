@@ -46,12 +46,15 @@ Superclass:
 <h3>Public Class</h3>
 <ol>
 <li><a href="#method-c-global">global</a></li>
+<li><a href="#method-c-global_exists-3F">global_exists?</a></li>
 <li><a href="#method-c-new">new</a></li>
 </ol>
 <h3>Public Instance</h3>
 <ol>
 <li><a href="#attribute-i-base_path">base_path</a></li>
 <li><a href="#method-i-clear">clear</a></li>
+<li><a href="#method-i-exists-3F">exists?</a></li>
+<li><a href="#attribute-i-file_paths">file_paths</a></li>
 <li><a href="#attribute-i-password">password</a></li>
 <li><a href="#attribute-i-recipes">recipes</a></li>
 <li><a href="#method-i-reload">reload</a></li>
@@ -64,7 +67,6 @@ Superclass:
 <li><a href="#method-i-file_present-3F">file_present?</a></li>
 <li><a href="#method-i-load_recipes">load_recipes</a></li>
 <li><a href="#method-i-load_wifi_networks">load_wifi_networks</a></li>
-<li><a href="#method-i-locate_pantry">locate_pantry</a></li>
 <li><a href="#method-i-root_path">root_path</a></li>
 </ol>
 </div>
@@ -78,7 +80,7 @@ Superclass:
 <tr class='top-aligned-row context-row'>
 <td class='context-item-name'>FILE_EXT</td>
 <td>=</td>
-<td class='context-item-value'>'enc|ya?ml$'.freeze</td>
+<td class='context-item-value'>'(?:\.enc)?\.ya?ml$'.freeze</td>
 <td>&nbsp;</td>
 <td class='context-item-desc'>
 <p>Matches encoded or unencoded yaml files</p>
@@ -120,6 +122,15 @@ Superclass:
 </tr>
 <tr class='top-aligned-row context-row'>
 <td class='context-item-name'>
+<a name='attribute-i-file_paths'>file_paths</a>
+</td>
+<td class='context-item-value'>[RW]</td>
+<td class='context-item-desc'>
+<p>Paths where files are stored at</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
 <a name='attribute-i-password'>password</a>
 </td>
 <td class='context-item-value'>[RW]</td>
@@ -153,25 +164,46 @@ Superclass:
 <div class='method public-class' id='method-method-c-global'>
 <a name='method-c-global'></a>
 <div class='synopsis'>
-<span class='name'>global</span><span class='arguments'>()</span>
+<span class='name'>global</span>
+<span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
 
-<p>If we can locate a global pantry, loads it</p>
+<p>If we can locate a global pantry, loads it. Override with <code>opts</code></p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-global-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-global-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 35</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">global</span>&#x000A;  <span class="ruby-identifier">new</span>(<span class="ruby-value">base_path:</span> <span class="ruby-identifier">locate_pantry</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">locate_pantry</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-global-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 38</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">global</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">global_exists?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key</span>(<span class="ruby-value">:base_path</span>)&#x000A;    <span class="ruby-identifier">new</span>({ <span class="ruby-value">base_path:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-node">&quot;#{global_exists?}/.pi_maker&quot;</span>) }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>))&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">new</span>({ <span class="ruby-value">base_path:</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">pwd</span> }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">rescue</span> <span class="ruby-constant">PasskeyError</span>&#x000A;  <span class="ruby-identifier">new</span>({ <span class="ruby-value">base_path:</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">pwd</span> }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-global_exists-3F'>
+<a name='method-c-global_exists-3F'></a>
+<div class='synopsis'>
+<span class='name'>global_exists?</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Return nil if we can&#39;t find a dotfile, or the containing directory</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-global_exists-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-global_exists-3F-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 49</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">global_exists?</span>&#x000A;  [<span class="ruby-constant">Dir</span>.<span class="ruby-identifier">pwd</span>, <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">home</span>, <span class="ruby-node">&quot;#{Dir.home}/.config/pi_maker&quot;</span>].<span class="ruby-identifier">detect</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">pth</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-node">&quot;#{pth}/.pi_maker&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span><span class='arguments'>(opts = {})</span>
+<span class='name'>new</span>
+<span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
@@ -183,14 +215,15 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@base_path</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:base_path</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@password</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:password</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">fpath</span> = <span class="ruby-identifier">base_path</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;/#{PASSWORD_FILE_NAME}&quot;</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">fpath</span>) <span class="ruby-operator">?</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">fpath</span>) <span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-ivar">@recipes</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:recipes</span>, <span class="ruby-identifier">load_recipes</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@wifi_networks</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:wifi_networks</span>, <span class="ruby-identifier">load_wifi_networks</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-ivar">@base_path</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:base_path</span>)&#x000A;  <span class="ruby-ivar">@file_paths</span> = {}&#x000A;&#x000A;  <span class="ruby-ivar">@password</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:password</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">fpath</span> = <span class="ruby-identifier">base_path</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;/#{PASSWORD_FILE_NAME}&quot;</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">fpath</span>) <span class="ruby-operator">?</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">fpath</span>) <span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-ivar">@recipes</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:recipes</span>, <span class="ruby-identifier">load_recipes</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@wifi_networks</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:wifi_networks</span>, <span class="ruby-identifier">load_wifi_networks</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
 <div class='method public-instance' id='method-method-i-clear'>
 <a name='method-i-clear'></a>
 <div class='synopsis'>
-<span class='name'>clear</span><span class='arguments'>()</span>
+<span class='name'>clear</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -202,13 +235,33 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-clear-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-clear-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 78</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear</span>&#x000A;  <span class="ruby-ivar">@recipes</span> = []&#x000A;  <span class="ruby-ivar">@wifi_networks</span> = {}&#x000A;  <span class="ruby-keyword">self</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-clear-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 95</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear</span>&#x000A;  <span class="ruby-ivar">@recipes</span> = []&#x000A;  <span class="ruby-ivar">@wifi_networks</span> = {}&#x000A;  <span class="ruby-keyword">self</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-exists-3F'>
+<a name='method-i-exists-3F'></a>
+<div class='synopsis'>
+<span class='name'>exists?</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Checks that this has been written to by checking the recipes subfolder</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-exists-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-exists-3F-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 102</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exists?</span>&#x000A;  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">root_path</span>(<span class="ruby-string">&#39;recipes&#39;</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-reload'>
 <a name='method-i-reload'></a>
 <div class='synopsis'>
-<span class='name'>reload</span><span class='arguments'>()</span>
+<span class='name'>reload</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -220,13 +273,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-reload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-reload-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reload</span>&#x000A;  <span class="ruby-ivar">@recipes</span> = <span class="ruby-identifier">load_recipes</span>&#x000A;  <span class="ruby-ivar">@wifi_networks</span> = <span class="ruby-identifier">load_wifi_networks</span>&#x000A;  <span class="ruby-keyword">self</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-reload-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 87</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reload</span>&#x000A;  <span class="ruby-ivar">@file_paths</span> = {}&#x000A;  <span class="ruby-ivar">@recipes</span> = <span class="ruby-identifier">load_recipes</span>&#x000A;  <span class="ruby-ivar">@wifi_networks</span> = <span class="ruby-identifier">load_wifi_networks</span>&#x000A;  <span class="ruby-keyword">self</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-write'>
 <a name='method-i-write'></a>
 <div class='synopsis'>
-<span class='name'>write</span><span class='arguments'>(opts = {})</span>
+<span class='name'>write</span>
+<span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
@@ -238,14 +292,15 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-write-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-write-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 41</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">write</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">store_path</span> = <span class="ruby-constant">Pathname</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:path</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">base_path</span>)&#x000A;  <span class="ruby-identifier">passwd</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:password</span>, <span class="ruby-identifier">password</span>)&#x000A;  <span class="ruby-identifier">file_ext</span> = <span class="ruby-identifier">passwd</span> <span class="ruby-operator">?</span> <span class="ruby-string">&#39;.enc.yml&#39;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39;.yml&#39;</span>&#x000A;&#x000A;  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span>(<span class="ruby-identifier">store_path</span>) <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">store_path</span>)&#x000A;  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;recipes&#39;</span>)) <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;recipes&#39;</span>))&#x000A;&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">wifi_networks</span>.<span class="ruby-identifier">empty?</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-node">&quot;wifi_config#{file_ext}&quot;</span>), <span class="ruby-string">&#39;w+b&#39;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">f</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">encrypt</span>(<span class="ruby-constant">Psych</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">wifi_networks</span>), <span class="ruby-identifier">passwd</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">recipes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">rec</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">fname</span> = <span class="ruby-node">&quot;#{rec.hostname}_recipe#{file_ext}&quot;</span>&#x000A;&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;recipes&#39;</span>).<span class="ruby-identifier">join</span>(<span class="ruby-identifier">fname</span>), <span class="ruby-string">&#39;w+b&#39;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">f</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">rec</span>.<span class="ruby-identifier">to_yaml</span>(<span class="ruby-identifier">passwd</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:password_file</span>, <span class="ruby-keyword">true</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">passwd</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;.pantry_password&#39;</span>), <span class="ruby-string">&#39;w+&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">passwd</span> }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">self</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-write-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 57</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">write</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">store_path</span> = <span class="ruby-constant">Pathname</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:path</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">base_path</span>)&#x000A;  <span class="ruby-identifier">passwd</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:password</span>, <span class="ruby-identifier">password</span>)&#x000A;  <span class="ruby-identifier">file_ext</span> = <span class="ruby-identifier">passwd</span> <span class="ruby-operator">?</span> <span class="ruby-string">&#39;.enc.yml&#39;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&#39;.yml&#39;</span>&#x000A;&#x000A;  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span>(<span class="ruby-identifier">store_path</span>) <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">store_path</span>)&#x000A;  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;recipes&#39;</span>)) <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;recipes&#39;</span>))&#x000A;&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">wifi_networks</span>.<span class="ruby-identifier">empty?</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-node">&quot;wifi_config#{file_ext}&quot;</span>), <span class="ruby-string">&#39;w+b&#39;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">f</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">encrypt</span>(<span class="ruby-constant">Psych</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">wifi_networks</span>), <span class="ruby-identifier">passwd</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">recipes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">rec</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">fname</span> = <span class="ruby-node">&quot;#{rec.hostname}_recipe#{file_ext}&quot;</span>&#x000A;&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;recipes&#39;</span>).<span class="ruby-identifier">join</span>(<span class="ruby-identifier">fname</span>), <span class="ruby-string">&#39;w+b&#39;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">f</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">rec</span>.<span class="ruby-identifier">to_yaml</span>(<span class="ruby-identifier">passwd</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:password_file</span>, <span class="ruby-keyword">true</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">passwd</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">store_path</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;.pantry_password&#39;</span>), <span class="ruby-string">&#39;w+&#39;</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">passwd</span> }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">self</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Private Instance methods</h2>
 <div class='method private-instance' id='method-method-i-file_list'>
 <a name='method-i-file_list'></a>
 <div class='synopsis'>
-<span class='name'>file_list</span><span class='arguments'>(path = root_path)</span>
+<span class='name'>file_list</span>
+<span class='arguments'>(path = root_path)</span>
 
 </div>
 <div class='description'>
@@ -257,13 +312,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-file_list-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-file_list-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 128</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file_list</span>(<span class="ruby-identifier">path</span> = <span class="ruby-identifier">root_path</span>)&#x000A;  <span class="ruby-constant">Dir</span>[<span class="ruby-node">&quot;#{path}/*&quot;</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-file_list-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 145</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file_list</span>(<span class="ruby-identifier">path</span> = <span class="ruby-identifier">root_path</span>)&#x000A;  <span class="ruby-constant">Dir</span>[<span class="ruby-node">&quot;#{path}/*&quot;</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-file_present-3F'>
 <a name='method-i-file_present-3F'></a>
 <div class='synopsis'>
-<span class='name'>file_present?</span><span class='arguments'>(file, path = root_path)</span>
+<span class='name'>file_present?</span>
+<span class='arguments'>(file, path = root_path)</span>
 
 </div>
 <div class='description'>
@@ -275,13 +331,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-file_present-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-file_present-3F-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 123</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file_present?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">path</span> = <span class="ruby-identifier">root_path</span>)&#x000A;  <span class="ruby-identifier">file_list</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">detect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-identifier">file</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-file_present-3F-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 140</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file_present?</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">path</span> = <span class="ruby-identifier">root_path</span>)&#x000A;  <span class="ruby-identifier">file_list</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">detect</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-identifier">file</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-load_recipes'>
 <a name='method-i-load_recipes'></a>
 <div class='synopsis'>
-<span class='name'>load_recipes</span><span class='arguments'>()</span>
+<span class='name'>load_recipes</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -293,13 +350,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load_recipes-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load_recipes-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_recipes</span>&#x000A;  <span class="ruby-keyword">return</span> [] <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">root_path</span>(<span class="ruby-string">&#39;recipes&#39;</span>))&#x000A;&#x000A;  <span class="ruby-identifier">file_list</span>(<span class="ruby-identifier">root_path</span>(<span class="ruby-string">&#39;recipes&#39;</span>)).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">recipe</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">recipe</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/#{FILE_EXT}/</span>&#x000A;&#x000A;    <span class="ruby-constant">Recipe</span>.<span class="ruby-identifier">from_yaml</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">recipe</span>), <span class="ruby-identifier">password</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-load_recipes-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 120</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_recipes</span>&#x000A;  <span class="ruby-keyword">return</span> [] <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">root_path</span>(<span class="ruby-string">&#39;recipes&#39;</span>))&#x000A;&#x000A;  <span class="ruby-identifier">file_list</span>(<span class="ruby-identifier">root_path</span>(<span class="ruby-string">&#39;recipes&#39;</span>)).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">recipe</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">recipe</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/#{FILE_EXT}/</span>&#x000A;&#x000A;    <span class="ruby-identifier">inst</span> = <span class="ruby-constant">Recipe</span>.<span class="ruby-identifier">from_yaml</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">recipe</span>), <span class="ruby-identifier">password</span>)&#x000A;    <span class="ruby-identifier">file_paths</span>[<span class="ruby-identifier">inst</span>] = <span class="ruby-identifier">recipe</span>&#x000A;    <span class="ruby-identifier">inst</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-load_wifi_networks'>
 <a name='method-i-load_wifi_networks'></a>
 <div class='synopsis'>
-<span class='name'>load_wifi_networks</span><span class='arguments'>()</span>
+<span class='name'>load_wifi_networks</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -311,31 +369,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load_wifi_networks-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load_wifi_networks-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 96</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_wifi_networks</span>&#x000A;  <span class="ruby-identifier">fi</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">root_path</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file_present?</span>(<span class="ruby-constant">WIFI_CONFIG_FILENAME</span>)&#x000A;&#x000A;  <span class="ruby-keyword">return</span> {} <span class="ruby-keyword">unless</span> <span class="ruby-identifier">fi</span>&#x000A;&#x000A;  <span class="ruby-constant">Psych</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">decrypt</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">fi</span>), <span class="ruby-identifier">password</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method private-instance' id='method-method-i-locate_pantry'>
-<a name='method-i-locate_pantry'></a>
-<div class='synopsis'>
-<span class='name'>locate_pantry</span><span class='arguments'>()</span>
-
-</div>
-<div class='description'>
-
-<p>Finds a dotfile for pi_maker</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-locate_pantry-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-locate_pantry-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 87</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">locate_pantry</span>&#x000A;  <span class="ruby-identifier">dot_loc</span> = [<span class="ruby-constant">Dir</span>.<span class="ruby-identifier">pwd</span>, <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">home</span>, <span class="ruby-node">&quot;#{Dir.home}/.config/pi_maker&quot;</span>].<span class="ruby-identifier">detect</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">Dir</span>[<span class="ruby-node">&quot;#{e}/.pi_maker&quot;</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">dot_loc</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">dot_loc</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-load_wifi_networks-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 109</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_wifi_networks</span>&#x000A;  <span class="ruby-identifier">fi</span> = <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">root_path</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file_present?</span>(<span class="ruby-constant">WIFI_CONFIG_FILENAME</span>)&#x000A;&#x000A;  <span class="ruby-keyword">return</span> {} <span class="ruby-keyword">unless</span> <span class="ruby-identifier">fi</span>&#x000A;&#x000A;  <span class="ruby-identifier">inst</span> = <span class="ruby-constant">Psych</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">decrypt</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">fi</span>), <span class="ruby-identifier">password</span>))&#x000A;  <span class="ruby-identifier">file_paths</span>[<span class="ruby-identifier">inst</span>] = <span class="ruby-identifier">fi</span>&#x000A;  <span class="ruby-identifier">inst</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method private-instance' id='method-method-i-root_path'>
 <a name='method-i-root_path'></a>
 <div class='synopsis'>
-<span class='name'>root_path</span><span class='arguments'>(*joins)</span>
+<span class='name'>root_path</span>
+<span class='arguments'>(*joins)</span>
 
 </div>
 <div class='description'>
@@ -347,7 +388,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-root_path-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-root_path-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 116</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">root_path</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">joins</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-identifier">base_path</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">joins</span>.<span class="ruby-identifier">empty?</span>&#x000A;&#x000A;  <span class="ruby-constant">Pathname</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">base_path</span>).<span class="ruby-identifier">join</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">joins</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-root_path-source'><span class="ruby-comment"># File lib/pi_maker/pantry.rb, line 133</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">root_path</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">joins</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-identifier">base_path</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">joins</span>.<span class="ruby-identifier">empty?</span>&#x000A;&#x000A;  <span class="ruby-constant">Pathname</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">base_path</span>).<span class="ruby-identifier">join</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">joins</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
