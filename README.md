@@ -230,7 +230,43 @@ sd_card.write_image('~/Downloads/raspios.img') # => #<PiMaker::FlashingOperation
 ```
 
 #### FlashingOperation
+
+Writing the OS image to the SD card is accomplished with the `FlashingOperation` class. It wraps an `IO.popen` call to `dd`, and reports when it completes
+
+```ruby
+# Initialize by itself and defer execution
+flop = PiMaker::FlashingOperation.new(image_path: './raspios.img', disk: PiMaker::DiskManagement.sd_card_device.unmount)
+
+# Begin the write like this
+flop.call
+
+# Check for completion
+flop.finished? # => false
+sleep 300 && flop.finished? # => true
+
+# The preferred way is to call from the StorageDevice, which unmounts the disk, and instantiates and starts the operation
+PiMaker::DiskManagement.sd_card_device.write_image('./raspios.img') # => #<PiMaker::FlashingOperation>
+```
+
 ### NetworkIdentifier
+
+The `NetworkIdentifier` will search for valid Raspberry Pis on the network, and return their ip addresses. This is useful for connecting to and running commands on the pi after initial flashing, before a hostname has been set.
+
+```ruby
+# Standard call method with no arguments, uses `arp` by default
+PiMaker::NetworkIdentifier.call # => ['192.168.1.127']
+
+# Also has a built in parser for using nmap with sudo
+PiMaker::NetworkIdentifier.call(scan_with: :nmap)
+
+# And you can pass your own program to call, and parse and filter with any callable object
+PiMaker::NetworkIdentifier.call(
+  scan_with: :my_program,
+  parse_with: ->(out) { out.scan(/\d{3}\.\d{3}.\d.\d{3}/) }
+  filter_with: ->(ips) { ips.select { |i| i[-1] == '7'} }
+)
+```
+
 ### CommandGroup
 ### RemoteRunner
 
