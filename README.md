@@ -41,7 +41,8 @@ instructions = PiMaker::Instructions.new(
   apt_packages: %w(neofetch kitty),
   # Array of gems to install to system using sudo gem install
   gems: %w(tty-config tty-prompt),
-  # Hash, with keys of github repos to clone to ~/repos, values of an array of post-clone commands
+  # Hash, with keys of github repos to clone to ~/repos
+  # values of an array of post-clone commands
   github_repos: {
     'jtp184/arch_dotfiles' => [
       'mkdir -p ~/.config',
@@ -98,9 +99,12 @@ wpa_config = PiMaker::WpaConfig.new(networks: { 'WorldOfWifi' => 'passw0rd' })
 wpa_config.append('WifiAtWork', 'b3tt3rp@assw0rd')
 
 # Redacts passwords by default
-wpa_config.to_h # => { country_code: 'US', networks: ['WorldOfWifi', 'WifiAtWork']}
+wpa_config.to_h
+# => { country_code: 'US', networks: ['WorldOfWifi', 'WifiAtWork']}
+
 # Override by passing true
-wpa_config.to_h(true) # => { networks: { 'WorldOfWifi' => 'passw0rd, ... 
+wpa_config.to_h(true)
+# => { networks: { 'WorldOfWifi' => 'passw0rd, ... 
 
 # Export proper format to a file
 wpa_config.to_s # => "ctrl_interface=DIR=/var..."
@@ -117,10 +121,24 @@ PiMaker::Recipe.define do |r|
   r.password = SecureRandom.hex
 
   # Pass in currently defined wifi options, or new ones
-  r.wifi_config_options = { networks: ['WorldOfWifi', { 'NewConnection' => 'B33SW@X' }] }
+  r.wifi_config_options = {
+    networks: [
+      'WorldOfWifi',
+      {
+        'NewConnection' => 'B33SW@X'
+      }
+    ] 
+  }
 
   # Pass a boot config constructor
-  r.boot_config_options = { ssh: true, config: { 'all' => { 'dtparam=spi' => 'on' } } }
+  r.boot_config_options = {
+    ssh: true,
+    config: {
+      'all' => {
+        'dtparam=spi' => 'on'
+      } 
+    }
+  }
 
   # Handle initial configuration with an Instructions object
   r.initial_setup_options = {
@@ -151,10 +169,13 @@ PiMaker::Pantry.global # => #<PiMaker::Pantry...>
 # And accept options for password
 PiMaker::Pantry.global(password: 'SN3AKY')
 
-# If the global pantry doesn't exist, the returned instance can create it by calling #write
+# If the global pantry doesn't exist, create it by calling #write
 PiMaker::Pantry.global.write
 # You can also write with encryption, or to a specific path
-PiMaker::Pantry.global.write(password: 'badpassword12345', path: './')
+PiMaker::Pantry.global.write(
+  password: 'badpassword12345',
+  path: './'
+)
 ```
 
 A Pantry carries recipes and wifi networks, which are accessible within the recipes without reiterating their passwords
@@ -176,7 +197,8 @@ The `FileEncrypter` handles converting plaintext to encrypted text, keeping cred
 PiMaker::FileEncrypter.encrypt('SuperSecretText', 'SecretPassword')
 # => "PIMAKER:ENCRYPTED\n\x97c\xCC\xB8z\xCE7\xDCwY:\x01\"\xC2\xF2l\xC6\xC11F\x8Blh \xCA\x89#8\xB4\xF7\x12u"
 
-# Various classes within the gem include exporting which optionally passes through the FileEncrypter
+# Various classes within the gem include exporting
+# which optionally pass through the FileEncrypter
 
 # Export to an encrypted file which decrypts to a yaml file
 enc = PiMaker::Recipe.new.to_yaml('UtterlyUnhackable')
@@ -206,7 +228,8 @@ The Disk protocols read filesystem data from different operating systems, and ha
 protocol = PiMaker::DiskManagement.protocol
 
 # Find an attached SD card, when one exists, based on OS defaults
-protocol.sd_card_device # => /dev/disk2: /Volumes/boot | 2 partitions (63.8646 gigabytes)
+protocol.sd_card_device
+# => /dev/disk2: /Volumes/boot | 2 partitions (63.8646 gigabytes)
 
 # Many disk functions can be called directly if desired, but are better called on the resulting device
 protocol.mounted?('/dev/disk2') # => true
@@ -226,7 +249,8 @@ sd_card.dev_path # => '/dev/disk2'
 
 sd_card.unmount && sd_card.mounted? # => false
 
-sd_card.write_image('~/Downloads/raspios.img') # => #<PiMaker::FlashingOperation>
+sd_card.write_image('~/Downloads/raspios.img')
+# => #<PiMaker::FlashingOperation>
 ```
 
 #### FlashingOperation
@@ -235,7 +259,10 @@ Writing the OS image to the SD card is accomplished with the `FlashingOperation`
 
 ```ruby
 # Initialize by itself and defer execution
-flop = PiMaker::FlashingOperation.new(image_path: './raspios.img', disk: PiMaker::DiskManagement.sd_card_device.unmount)
+flop = PiMaker::FlashingOperation.new(
+  image_path: './raspios.img',
+  disk: PiMaker::DiskManagement.sd_card_device.unmount
+)
 
 # Begin the write like this
 flop.call
@@ -245,7 +272,8 @@ flop.finished? # => false
 sleep 300 && flop.finished? # => true
 
 # The preferred way is to call from the StorageDevice, which unmounts the disk, and instantiates and starts the operation
-PiMaker::DiskManagement.sd_card_device.write_image('./raspios.img') # => #<PiMaker::FlashingOperation>
+PiMaker::DiskManagement.sd_card_device.write_image('./raspios.img')
+# => #<PiMaker::FlashingOperation>
 ```
 
 ### NetworkIdentifier
@@ -259,7 +287,8 @@ PiMaker::NetworkIdentifier.call # => ['192.168.1.127']
 # Also has a built in parser for using nmap with sudo
 PiMaker::NetworkIdentifier.call(scan_with: :nmap)
 
-# And you can pass your own program to call, and parse and filter with any callable object
+# And you can pass your own program to call
+# and parse and filter with any callable object
 PiMaker::NetworkIdentifier.call(
   scan_with: :my_program,
   parse_with: ->(out) { out.scan(/\d{3}\.\d{3}.\d.\d{3}/) }
@@ -303,6 +332,8 @@ runner = PiMaker::RemoteRunner.new(
 ```
 
 ## CLI
+
+PiMaker is easiest to use with the built in `pi_maker` cli program, which allows you to define, store, and apply pi configurations. 
 
 Most of the CLI commands and subcommands can be run with the `--interactive` option to prompt for selection when needed.
 
