@@ -31,7 +31,7 @@ module PiMaker
     desc 'identify', 'Find Raspberry Pi devices on the local network'
 
     method_option :range, aliases: '-r', default: '192.168.1.0/24', desc: 'Which ip range to target'
-    method_option :program, aliases: '-p', default: PiMaker::NetworkIdentifier::DEFAULT_PROGRAM,
+    method_option :program, aliases: '-p', default: PiMaker::NetworkIdentifier::DEFAULT_PROGRAM[PiMaker.host_os],
                             desc: 'What program to run with'
     method_option :output, aliases: '-o', default: 'i',
                            desc: 'What data to return, either [i]p, [h]ostname, or [b]oth'

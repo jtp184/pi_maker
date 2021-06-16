@@ -16,9 +16,11 @@ module PiMaker
     # Other Instructions sets to apply
     attr_accessor :additional_setup
 
+    FIELDS = %i[hostname password wpa_config boot_config initial_setup additional_setup].freeze
+
     # Takes in +opts+ for the attributes
     def initialize(opts = {})
-      %i[hostname password wpa_config boot_config initial_setup additional_setup].each do |key|
+      FIELDS.each do |key|
         instance_variable_set("@#{key}", opts[key]) if opts[key]
       end
 
@@ -52,7 +54,9 @@ module PiMaker
     # Returns an Instructions list to set the hostname and password on the pi
     def login_setup(old_password = PiMaker.default_login[:password])
       Instructions.define do |i|
-        i.raspi_config = { do_hostname: hostname }
+        i.raspi_config = { do_hostname: hostname } if hostname
+        next unless password
+
         i.shell = [
           format(
             %{(echo "%<old_pass>s" ; echo "%<new_pass>s" ; echo "%<new_pass>s") | passwd},
@@ -74,7 +78,7 @@ module PiMaker
       data[:initial_setup_options] = initial_setup.to_h if initial_setup
 
       if additional_setup
-        data[:additional_setup_options] = additional_setup.transform_values(&:to_h)
+        data[:additional_setup_options] = additional_setup&.transform_values(&:to_h)
       end
 
       data
@@ -84,6 +88,22 @@ module PiMaker
     def to_yaml(passwd = nil, opts = {})
       yml = Psych.dump(to_h(opts))
       FileEncrypter.encrypt(yml, passwd)
+    end
+
+    def to_rb
+      <<~DOC
+        #{self.class.name}.define do |re|
+          re.hostname = '#{hostname}'
+          re.password = '#{password}'
+
+          re.wifi_config_options = #{wpa_config.to_h}
+
+          re.boot_config_options = #{boot_config.to_h}
+
+          re.initial_setup_options = #{initial_setup.to_h}
+          re.additional_setup_options = #{additional_setup&.transform_values(&:to_h) || {}}
+        end
+      DOC
     end
 
     # Parses the initial config options
@@ -97,7 +117,7 @@ module PiMaker
     def parse_additional_setups(opts)
       return unless opts.to_h.key?(:additional_setup_options)
 
-      self.additional_setup ||= opts[:additional_setup_options].transform_values do |ins|
+      self.additional_setup = opts[:additional_setup_options].transform_values do |ins|
         Instructions.new(ins)
       end
     end

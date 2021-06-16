@@ -11,7 +11,7 @@ RSpec.describe PiMaker::NetworkIdentifier do
     end
 
     context 'with no provided scan_with program' do
-      let(:program) { PiMaker::NetworkIdentifier::DEFAULT_PROGRAM }
+      let(:program) { PiMaker::NetworkIdentifier::DEFAULT_PROGRAM[PiMaker.host_os] }
 
       context 'with a program installed' do
         it 'runs the command' do
@@ -77,6 +77,40 @@ RSpec.describe PiMaker::NetworkIdentifier do
             expect { subject }.not_to raise_error
           end
         end
+      end
+    end
+  end
+
+  describe 'ScanResult' do
+    before do
+      allow(TTY::Which).to(
+        receive(:which).with(program.to_s).and_return(!FactoryBot.fixtures[program].nil?)
+      )
+
+      allow(PiMaker).to receive(:system_cmd).and_return(FactoryBot.fixtures[program])
+    end
+
+    let(:program) { :nmap }
+    subject { described_class.call(scan_with: :nmap).first }
+
+    describe 'to_s' do
+      it 'returns the ip_address' do
+        expect(subject.to_s).to eq(subject.ip_address)
+        expect(subject.to_str).to eq(subject.ip_address)
+      end
+    end
+  end
+
+  describe '::DEFAULT_PROGRAM' do
+    context 'on mac' do
+      it 'returns :arp' do
+        expect(described_class::DEFAULT_PROGRAM[:mac]).to eq(:arp)
+      end
+    end
+
+    context 'on linux' do
+      it 'returns :nmap' do
+        expect(described_class::DEFAULT_PROGRAM[:linux]).to eq(:nmap)
       end
     end
   end

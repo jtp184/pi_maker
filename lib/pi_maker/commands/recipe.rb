@@ -29,6 +29,35 @@ module PiMaker
         end
       end
 
+      desc 'gem [GEMNAME]', 'Create a recipe with a gem as a starting point'
+
+      method_option :hostname, aliases: '-n', type: :string,
+                               desc: 'Set the hostname'
+
+      method_option :password, aliases: '-w', type: :string,
+                               desc: 'Set the password'
+
+      method_option :wifi_options, aliases: '-f', type: :hash,
+                                   desc: 'Set the wifi options'
+
+      method_option :boot_options, aliases: '-b', type: :hash,
+                                   desc: 'Set the boot options'
+
+      method_option :pantry, aliases: '-p', type: :boolean, default: true,
+                             desc: 'Save this recipe to the pantry as well'
+
+      method_option :local_file, aliases: '-l', type: :boolean, default: false,
+                                 desc: 'Whether to write out a local file with the contents'
+
+      def gem(gemname = nil)
+        if options[:help]
+          invoke :help, ['gem']
+        else
+          require_relative 'recipe/gem'
+          PiMaker::Commands::Recipe::Gem.new(gemname, options).execute
+        end
+      end
+
       desc 'add', 'Add a new recipe'
 
       method_option :hostname, aliases: '-n', type: :string,

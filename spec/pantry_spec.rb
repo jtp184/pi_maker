@@ -1,6 +1,12 @@
 RSpec.describe PiMaker::Pantry do
   subject(:pantry) { FactoryBot.build(:pantry, base_path: @temp_path) }
-  let(:secure_pantry) { FactoryBot.build(:pantry, password: SecureRandom.hex, base_path: @temp_path) }
+  let(:secure_pantry) do
+    FactoryBot.build(
+      :pantry,
+      password: SecureRandom.hex,
+      base_path: @temp_path
+    )
+  end
 
   before :all do
     @temp_dir = Dir.mktmpdir("pi_maker_pantry_test_#{SecureRandom.uuid}")
@@ -35,6 +41,10 @@ RSpec.describe PiMaker::Pantry do
     before do
       subject.write(path: @temp_path)
       subject.clear.reload
+    end
+
+    it 'exists when the directory is present' do
+      expect(subject.exists?).to be(true)
     end
 
     describe 'unsecure' do
