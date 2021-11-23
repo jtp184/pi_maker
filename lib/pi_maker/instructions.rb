@@ -57,6 +57,29 @@ module PiMaker
       end
     end
 
+    # Combine the subvalues of self and +other+ to make new instructions
+    def +(other)
+      raise TypeError unless other.is_a?(self.class)
+
+      combo = self.class.new
+
+      LISTS.each do |key, type|
+        val = if type == Hash
+                send(key).merge(other.send(key))
+              elsif type == Array
+                send(key) + other.send(key)
+              end
+
+        combo.send(:"#{key}=", val)
+      end
+
+      TEXT_BLOCKS.each_key do |key|
+        combo.send(:"#{key}=", send(key) + other.send(key))
+      end
+
+      combo
+    end
+
     private
 
     # Returns true if the +key+ is one of the LISTS or TEXT_BLOCKS keys

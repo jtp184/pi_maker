@@ -11,40 +11,45 @@ module PiMaker
     ].freeze
 
     # Parses output from arp to get the hostname, IP, and MAC addresses
-    ARP_PARSER = %r{
+    ARP_PARSER = /
       (?<hostname>\?|[\w.-]+)\s
       \((?<ip_address>[[:xdigit:].:]+)\)
       \sat\s
       (?<mac_address>(?:[[:xdigit:]]{1,2}:?){6})
-    }x.freeze
+    /x.freeze
 
     # Parses the IP address line from nmap to return the hostname and ip_address
-    NMAP_IP_PARSER = %r{
+    NMAP_IP_PARSER = /
       for\s
       (?:
         (?:(?<hostname>[\w.-]+)\s\((?<ip_address>[\d.]+)\))
         |
         (?<ip_address>[\d.]+)
       )
-    }x.freeze
+    /x.freeze
 
     # Parses the MAC address line from nmap to return the MAC address and manufacturer name
-    NMAP_MAC_PARSER = %r{
+    NMAP_MAC_PARSER = /
       MAC\sAddress:\s
       (?<mac_address>(?:[[:xdigit:]]{2}:?){6})
       \s
       \((?<manufacturer>.*)\)
-    }x.freeze
+    /x.freeze
 
     # Default program to run on mac and linux machines
-    DEFAULT_PROGRAM = case PiMaker.host_os
-                      when :mac then :arp
-                      when :linux, :raspberrypi then :nmap
-                      end
+    DEFAULT_PROGRAM = {
+      mac: :arp,
+      linux: :nmap,
+      raspberry: :nmap
+    }
 
     # Structured result from running a scan program
     ScanResult = Struct.new(:hostname, :ip_address, :mac_address, :manufacturer) do
       def to_str
+        ip_address
+      end
+
+      def to_s
         ip_address
       end
     end
@@ -53,7 +58,7 @@ module PiMaker
       # Takes in +opts+ for :scan_with, and optional overrides for run, parse, and filter with.
       # returns an array of ScanResult objects
       def call(opts = {})
-        prog = opts.fetch(:scan_with, DEFAULT_PROGRAM)
+        prog = opts.fetch(:scan_with, DEFAULT_PROGRAM[PiMaker.host_os])
 
         raise ArgumentError, "#{prog} is not installed" unless TTY::Which.which(prog.to_s)
 

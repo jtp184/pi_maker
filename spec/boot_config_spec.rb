@@ -66,7 +66,7 @@ RSpec.describe PiMaker::BootConfig do
     end
   end
 
-  describe '#[]' do
+  describe 'hash accessors' do
     let(:config_params) do
       {
         'pi3' => { 'test_3_param' => true },
@@ -76,16 +76,36 @@ RSpec.describe PiMaker::BootConfig do
 
     let(:boot_config) { FactoryBot.build(:boot_config, config: config_params) }
 
-    context 'key is one of the filters' do
-      subject { boot_config['pi3'] }
+    describe '#[]' do
+      context 'key is one of the filters' do
+        subject { boot_config['pi3'] }
 
-      it { is_expected.to be_a(OpenStruct) }
+        it { is_expected.to be_a(OpenStruct) }
+      end
+
+      context 'key is not one of the filters' do
+        subject { boot_config['test_all_param'] }
+
+        it { is_expected.to be_a(Integer) }
+      end
     end
 
-    context 'key is not one of the filters' do
-      subject { boot_config['test_all_param'] }
+    describe '#[]=' do
+      context 'when given a defined filter' do
+        it 'applies the key to that filter' do
+          expect { boot_config['pi3'] = OpenStruct.new }.to change {
+            boot_config.pi3.test_3_param
+          }.from(true).to(nil)
+        end
+      end
 
-      it { is_expected.to be_a(Integer) }
+      context 'when not passed a defined filter' do
+        it 'applies the key to all configs' do
+          expect { boot_config['test_heql_param'] = true }.to change {
+            boot_config['all']['test_heql_param']
+          }.from(nil).to(true)
+        end
+      end
     end
   end
 end

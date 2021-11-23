@@ -1,48 +1,49 @@
 # frozen_string_literal: true
 
 require_relative '../../command'
-require_relative '../helpers'
 
 module PiMaker
   module Commands
     class Recipe
-      class Add < PiMaker::Command
-        include Helpers
-
-        def initialize(options)
+      class Gem < PiMaker::Command
+        def initialize(gemname, options)
+          @gemname = gemname
           @options = options
         end
 
-        def run(input: $stdin, output: $stdout)
-          @recipe = PiMaker::Recipe.new(
-            hostname: @options.fetch(:hostname),
-            password: @options.fetch(:password),
-            wpa_config: PiMaker::WpaConfig.new(networks: @options.fetch(:wifi_options)),
-            boot_config: PiMaker::BootConfig.new(
-              config: @options.fetch(:boot_options),
-              ssh: @options.fetch(:ssh)
-            ),
-            initial_setup: PiMaker::Instructions.new(
-              @options.fetch(:initial_setup).transform_values { |v| v.split(',') }
-            )
-          )
+        def run_interactive(input: $stdin, output: $stdout)
+          args = {
+            hostname: prompt.ask('Hostname: ', default: @gemname),
+            password: prompt.mask('Password: '),
+            wpa_config: collect_wifi_networks,
+            boot_config: collect_boot_options,
+          }
+
+          @recipe = PiMaker::Recipe.new(gem_recipe.merge(args))
 
           save_and_output
         end
 
-        def run_interactive(input: $stdin, output: $stdout)
-          @recipe = PiMaker::Recipe.new(
-            hostname: prompt.ask('Hostname: '),
-            password: prompt.mask('Password: '),
-            wpa_config: collect_wifi_networks,
-            boot_config: collect_boot_options,
-            initial_setup: collect_instructions
-          )
+        def run(input: $stdin, output: $stdout)
+          args = {
+            hostname: options[:hostname] || "#{@gemname}-pi",
+            password: options[:password],
+            wpa_config: options[:wifi_options],
+          }
+
+          @recipe = PiMaker::Recipe.new(gem_recipe.merge(args))
 
           save_and_output
         end
 
         private
+
+        def gem_recipe
+          require Strings::Case.underscore(@gemname)
+
+          gem_class = const_get(Strings::Case.pascal_case(@gemname))
+          gem_class.pi_maker_recipe
+        end
 
         def save_and_output
           if @options[:pantry]

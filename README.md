@@ -329,7 +329,7 @@ PiMaker::NetworkIdentifier.call(scan_with: :nmap)
 # and parse and filter with any callable object
 PiMaker::NetworkIdentifier.call(
   scan_with: :my_program,
-  parse_with: ->(out) { out.scan(/\d{3}\.\d{3}.\d.\d{3}/) }
+  parse_with: ->(out) { out.scan(/\d{3}\.\d{3}.\d.\d{3}/) },
   filter_with: ->(ips) { ips.select { |i| i[-1] == '7'} }
 )
 ```
@@ -493,6 +493,23 @@ Options:
   -w, [--scan-with=SCAN_WITH]      # Use a different program to scan with
 
 Perform the initial setup commands from the recipe
+```
+
+#### `gem`
+```
+Usage:
+  pi_maker recipe gem [GEMNAME]
+
+Options:
+  -n, [--hostname=HOSTNAME]              # Set the hostname
+  -w, [--password=PASSWORD]              # Set the password
+  -f, [--wifi-options=key:value]         # Set the wifi options
+  -b, [--boot-options=key:value]         # Set the boot options
+  -p, [--pantry], [--no-pantry]          # Save this recipe to the pantry as well
+                                         # Default: true
+  -l, [--local-file], [--no-local-file]  # Whether to write out a local file with the contents
+
+Create a recipe with a gem as a starting point
 ```
 
 #### `list`

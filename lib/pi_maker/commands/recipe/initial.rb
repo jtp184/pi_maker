@@ -61,12 +61,16 @@ module PiMaker
         def perform_reboot
           return unless @options[:reboot]
 
+          reboot = Instructions.define do |i|
+            i.shell = ['sudo reboot now']
+          end
+
           if @options[:verbose]
-            runner({ shell: ['sudo reboot now'] }).call do |l|
+            runner(reboot).call do |l|
               prompt.say(pastel.bright_black(l))
             end
           else
-            runner({ shell: ['sudo reboot now'] }).call
+            runner(reboot).call
           end
         end
 

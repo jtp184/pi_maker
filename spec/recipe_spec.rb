@@ -18,4 +18,10 @@ RSpec.describe PiMaker::Recipe do
       expect(subject.shell.first).to match(/passwd/)
     end
   end
+
+  describe '#to_rb' do
+    it 'is evalable' do
+      expect { eval recipe.to_rb }.not_to raise_error
+    end
+  end
 end
