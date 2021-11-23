@@ -62,6 +62,7 @@ Superclass:
 <li><a href="#method-i-parse_wifi_config_options">parse_wifi_config_options</a></li>
 <li><a href="#attribute-i-password">password</a></li>
 <li><a href="#method-i-to_h">to_h</a></li>
+<li><a href="#method-i-to_rb">to_rb</a></li>
 <li><a href="#method-i-to_yaml">to_yaml</a></li>
 <li><a href="#attribute-i-wpa_config">wpa_config</a></li>
 </ol>
@@ -69,6 +70,20 @@ Superclass:
 <div id='context'>
 </div>
 <div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>FIELDS</td>
+<td>=</td>
+<td class='context-item-value'>%i[hostname password wpa_config boot_config initial_setup additional_setup].freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+</table>
+</div>
+</div>
 <div id='attribute-list'>
 <h2 class='section-bar'>Attributes</h2>
 <div class='name-list'>
@@ -135,8 +150,7 @@ Superclass:
 <div class='method public-class' id='method-method-c-define'>
 <a name='method-c-define'></a>
 <div class='synopsis'>
-<span class='name'>define</span>
-<span class='arguments'>(hsh = {})</span>
+<span class='name'>define</span><span class='arguments'>(hsh = {})</span>
 
 </div>
 <div class='description'>
@@ -148,14 +162,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-define-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-define-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 32</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">define</span>(<span class="ruby-identifier">hsh</span> = {})&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">hsh</span>)&#x000A;  <span class="ruby-keyword">yield</span> <span class="ruby-identifier">opts</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;  <span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-define-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 34</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">define</span>(<span class="ruby-identifier">hsh</span> = {})&#x000A;  <span class="ruby-identifier">opts</span> = <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">hsh</span>)&#x000A;  <span class="ruby-keyword">yield</span> <span class="ruby-identifier">opts</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;  <span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-from_yaml'>
 <a name='method-c-from_yaml'></a>
 <div class='synopsis'>
-<span class='name'>from_yaml</span>
-<span class='arguments'>(yml, encrypted = nil)</span>
+<span class='name'>from_yaml</span><span class='arguments'>(yml, encrypted = nil)</span>
 
 </div>
 <div class='description'>
@@ -167,14 +180,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-from_yaml-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-from_yaml-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 39</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">from_yaml</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">encrypted</span> = <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">yaml</span> = <span class="ruby-constant">Psych</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">decrypt</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">encrypted</span>))&#x000A;&#x000A;  <span class="ruby-identifier">inst</span> = <span class="ruby-identifier">new</span>(<span class="ruby-identifier">yaml</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">:hostname</span>, <span class="ruby-value">:password</span>))&#x000A;&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_wifi_config_options</span>(<span class="ruby-identifier">yaml</span>)&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_boot_config_options</span>(<span class="ruby-identifier">yaml</span>)&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_initial_config_options</span>(<span class="ruby-identifier">yaml</span>)&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_additional_setups</span>(<span class="ruby-identifier">yaml</span>)&#x000A;&#x000A;  <span class="ruby-identifier">inst</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-from_yaml-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 41</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">from_yaml</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">encrypted</span> = <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">yaml</span> = <span class="ruby-constant">Psych</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">decrypt</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">encrypted</span>))&#x000A;&#x000A;  <span class="ruby-identifier">inst</span> = <span class="ruby-identifier">new</span>(<span class="ruby-identifier">yaml</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">:hostname</span>, <span class="ruby-value">:password</span>))&#x000A;&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_wifi_config_options</span>(<span class="ruby-identifier">yaml</span>)&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_boot_config_options</span>(<span class="ruby-identifier">yaml</span>)&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_initial_config_options</span>(<span class="ruby-identifier">yaml</span>)&#x000A;  <span class="ruby-identifier">inst</span>.<span class="ruby-identifier">parse_additional_setups</span>(<span class="ruby-identifier">yaml</span>)&#x000A;&#x000A;  <span class="ruby-identifier">inst</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span>
-<span class='arguments'>(opts = {})</span>
+<span class='name'>new</span><span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
@@ -186,15 +198,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 20</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-node">%i[hostname password wpa_config boot_config initial_setup additional_setup]</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-node">&quot;@#{key}&quot;</span>, <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">key</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">key</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">parse_wifi_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-identifier">parse_boot_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-identifier">parse_initial_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-identifier">parse_additional_setups</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 22</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-constant">FIELDS</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-node">&quot;@#{key}&quot;</span>, <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">key</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">key</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">parse_wifi_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-identifier">parse_boot_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-identifier">parse_initial_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-identifier">parse_additional_setups</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
 <div class='method public-instance' id='method-method-i-login_setup'>
 <a name='method-i-login_setup'></a>
 <div class='synopsis'>
-<span class='name'>login_setup</span>
-<span class='arguments'>(old_password = PiMaker.default_login[:password])</span>
+<span class='name'>login_setup</span><span class='arguments'>(old_password = PiMaker.default_login[:password])</span>
 
 </div>
 <div class='description'>
@@ -206,14 +217,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-login_setup-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-login_setup-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">login_setup</span>(<span class="ruby-identifier">old_password</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">default_login</span>[<span class="ruby-value">:password</span>])&#x000A;  <span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">define</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">i</span>.<span class="ruby-identifier">raspi_config</span> = { <span class="ruby-value">do_hostname:</span> <span class="ruby-identifier">hostname</span> }&#x000A;    <span class="ruby-identifier">i</span>.<span class="ruby-identifier">shell</span> = [&#x000A;      <span class="ruby-identifier">format</span>(&#x000A;        <span class="ruby-string">%{(echo &quot;%&lt;old_pass&gt;s&quot; ; echo &quot;%&lt;new_pass&gt;s&quot; ; echo &quot;%&lt;new_pass&gt;s&quot;) | passwd}</span>,&#x000A;        <span class="ruby-value">old_pass:</span> <span class="ruby-identifier">old_password</span>,&#x000A;        <span class="ruby-value">new_pass:</span> <span class="ruby-identifier">password</span>&#x000A;      )&#x000A;    ]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-login_setup-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 55</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">login_setup</span>(<span class="ruby-identifier">old_password</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">default_login</span>[<span class="ruby-value">:password</span>])&#x000A;  <span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">define</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">i</span>.<span class="ruby-identifier">raspi_config</span> = { <span class="ruby-value">do_hostname:</span> <span class="ruby-identifier">hostname</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">hostname</span>&#x000A;    <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">password</span>&#x000A;&#x000A;    <span class="ruby-identifier">i</span>.<span class="ruby-identifier">shell</span> = [&#x000A;      <span class="ruby-identifier">format</span>(&#x000A;        <span class="ruby-string">%{(echo &quot;%&lt;old_pass&gt;s&quot; ; echo &quot;%&lt;new_pass&gt;s&quot; ; echo &quot;%&lt;new_pass&gt;s&quot;) | passwd}</span>,&#x000A;        <span class="ruby-value">old_pass:</span> <span class="ruby-identifier">old_password</span>,&#x000A;        <span class="ruby-value">new_pass:</span> <span class="ruby-identifier">password</span>&#x000A;      )&#x000A;    ]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-parse_additional_setups'>
 <a name='method-i-parse_additional_setups'></a>
 <div class='synopsis'>
-<span class='name'>parse_additional_setups</span>
-<span class='arguments'>(opts)</span>
+<span class='name'>parse_additional_setups</span><span class='arguments'>(opts)</span>
 
 </div>
 <div class='description'>
@@ -225,14 +235,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-parse_additional_setups-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-parse_additional_setups-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 97</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_additional_setups</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:additional_setup_options</span>)&#x000A;&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">additional_setup</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:additional_setup_options</span>].<span class="ruby-identifier">transform_values</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ins</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">ins</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-parse_additional_setups-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 117</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_additional_setups</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:additional_setup_options</span>)&#x000A;&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">additional_setup</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:additional_setup_options</span>].<span class="ruby-identifier">transform_values</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ins</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">ins</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-parse_boot_config_options'>
 <a name='method-i-parse_boot_config_options'></a>
 <div class='synopsis'>
-<span class='name'>parse_boot_config_options</span>
-<span class='arguments'>(opts)</span>
+<span class='name'>parse_boot_config_options</span><span class='arguments'>(opts)</span>
 
 </div>
 <div class='description'>
@@ -244,14 +253,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-parse_boot_config_options-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-parse_boot_config_options-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 106</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_boot_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:boot_config_options</span>)&#x000A;&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">boot_config</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">BootConfig</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:boot_config_options</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-parse_boot_config_options-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 126</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_boot_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:boot_config_options</span>)&#x000A;&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">boot_config</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">BootConfig</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:boot_config_options</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-parse_initial_config_options'>
 <a name='method-i-parse_initial_config_options'></a>
 <div class='synopsis'>
-<span class='name'>parse_initial_config_options</span>
-<span class='arguments'>(opts)</span>
+<span class='name'>parse_initial_config_options</span><span class='arguments'>(opts)</span>
 
 </div>
 <div class='description'>
@@ -263,14 +271,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-parse_initial_config_options-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-parse_initial_config_options-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 90</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_initial_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:initial_setup_options</span>)&#x000A;&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">initial_setup</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:initial_setup_options</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-parse_initial_config_options-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 110</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_initial_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:initial_setup_options</span>)&#x000A;&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">initial_setup</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:initial_setup_options</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-parse_wifi_config_options'>
 <a name='method-i-parse_wifi_config_options'></a>
 <div class='synopsis'>
-<span class='name'>parse_wifi_config_options</span>
-<span class='arguments'>(opts)</span>
+<span class='name'>parse_wifi_config_options</span><span class='arguments'>(opts)</span>
 
 </div>
 <div class='description'>
@@ -282,14 +289,13 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-parse_wifi_config_options-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-parse_wifi_config_options-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 113</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_wifi_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:wifi_config_options</span>)&#x000A;&#x000A;  <span class="ruby-identifier">conf</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:wifi_config_options</span>]&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">wpa_config</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">WpaConfig</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">conf</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">:country_code</span>))&#x000A;&#x000A;  <span class="ruby-identifier">conf</span>[<span class="ruby-value">:networks</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">args</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)&#x000A;      <span class="ruby-keyword">self</span>.<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">append</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;    <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;      <span class="ruby-identifier">passwd</span> = <span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span>.<span class="ruby-identifier">wifi_networks</span>[<span class="ruby-identifier">args</span>]&#x000A;      <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">passwd</span>&#x000A;&#x000A;      <span class="ruby-keyword">self</span>.<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">append</span>(<span class="ruby-identifier">args</span>, <span class="ruby-identifier">passwd</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-parse_wifi_config_options-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 133</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_wifi_config_options</span>(<span class="ruby-identifier">opts</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:wifi_config_options</span>)&#x000A;&#x000A;  <span class="ruby-identifier">conf</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:wifi_config_options</span>]&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">wpa_config</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">WpaConfig</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">conf</span>.<span class="ruby-identifier">slice</span>(<span class="ruby-value">:country_code</span>))&#x000A;&#x000A;  <span class="ruby-identifier">conf</span>[<span class="ruby-value">:networks</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">args</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)&#x000A;      <span class="ruby-keyword">self</span>.<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">append</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;    <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;      <span class="ruby-identifier">passwd</span> = <span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span>.<span class="ruby-identifier">wifi_networks</span>[<span class="ruby-identifier">args</span>]&#x000A;      <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">passwd</span>&#x000A;&#x000A;      <span class="ruby-keyword">self</span>.<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">append</span>(<span class="ruby-identifier">args</span>, <span class="ruby-identifier">passwd</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-to_h'>
 <a name='method-i-to_h'></a>
 <div class='synopsis'>
-<span class='name'>to_h</span>
-<span class='arguments'>(opts = {})</span>
+<span class='name'>to_h</span><span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
@@ -301,14 +307,29 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-to_h-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-to_h-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 67</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_h</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">data</span> = {}&#x000A;&#x000A;  <span class="ruby-node">%i[hostname password]</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">data</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">send</span>(<span class="ruby-identifier">k</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">k</span>) }&#x000A;&#x000A;  <span class="ruby-identifier">data</span>[<span class="ruby-value">:wifi_config_options</span>] = <span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">to_h</span>(<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:with_passwords</span>, <span class="ruby-keyword">true</span>)) <span class="ruby-keyword">if</span> <span class="ruby-identifier">wpa_config</span>&#x000A;  <span class="ruby-identifier">data</span>[<span class="ruby-value">:boot_config_options</span>] = <span class="ruby-identifier">boot_config</span>.<span class="ruby-identifier">to_h</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">boot_config</span>&#x000A;  <span class="ruby-identifier">data</span>[<span class="ruby-value">:initial_setup_options</span>] = <span class="ruby-identifier">initial_setup</span>.<span class="ruby-identifier">to_h</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">initial_setup</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">additional_setup</span>&#x000A;    <span class="ruby-identifier">data</span>[<span class="ruby-value">:additional_setup_options</span>] = <span class="ruby-identifier">additional_setup</span>.<span class="ruby-identifier">transform_values</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_h</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">data</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-to_h-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_h</span>(<span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">data</span> = {}&#x000A;&#x000A;  <span class="ruby-node">%i[hostname password]</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">k</span><span class="ruby-operator">|</span> <span class="ruby-identifier">data</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">send</span>(<span class="ruby-identifier">k</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">k</span>) }&#x000A;&#x000A;  <span class="ruby-identifier">data</span>[<span class="ruby-value">:wifi_config_options</span>] = <span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">to_h</span>(<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:with_passwords</span>, <span class="ruby-keyword">true</span>)) <span class="ruby-keyword">if</span> <span class="ruby-identifier">wpa_config</span>&#x000A;  <span class="ruby-identifier">data</span>[<span class="ruby-value">:boot_config_options</span>] = <span class="ruby-identifier">boot_config</span>.<span class="ruby-identifier">to_h</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">boot_config</span>&#x000A;  <span class="ruby-identifier">data</span>[<span class="ruby-value">:initial_setup_options</span>] = <span class="ruby-identifier">initial_setup</span>.<span class="ruby-identifier">to_h</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">initial_setup</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">additional_setup</span>&#x000A;    <span class="ruby-identifier">data</span>[<span class="ruby-value">:additional_setup_options</span>] = <span class="ruby-identifier">additional_setup</span>&amp;.<span class="ruby-identifier">transform_values</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_h</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">data</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-to_rb'>
+<a name='method-i-to_rb'></a>
+<div class='synopsis'>
+<span class='name'>to_rb</span><span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-to_rb-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-to_rb-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 93</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_rb</span>&#x000A;      <span class="ruby-identifier">&lt;&lt;~DOC</span>&#x000A;<span class="ruby-value">        #{self.class.name}.define do |re|&#x000A;          re.hostname = &#39;#{hostname}&#39;&#x000A;          re.password = &#39;#{password}&#39;&#x000A;&#x000A;          re.wifi_config_options = #{wpa_config.to_h}&#x000A;&#x000A;          re.boot_config_options = #{boot_config.to_h}&#x000A;&#x000A;          re.initial_setup_options = #{initial_setup.to_h}&#x000A;          re.additional_setup_options = #{additional_setup&amp;.transform_values(&amp;:to_h) || {}}&#x000A;        end&#x000A;</span><span class="ruby-identifier">      DOC</span>&#x000A;    <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-to_yaml'>
 <a name='method-i-to_yaml'></a>
 <div class='synopsis'>
-<span class='name'>to_yaml</span>
-<span class='arguments'>(passwd = nil, opts = {})</span>
+<span class='name'>to_yaml</span><span class='arguments'>(passwd = nil, opts = {})</span>
 
 </div>
 <div class='description'>
@@ -320,7 +341,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-to_yaml-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-to_yaml-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 84</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_yaml</span>(<span class="ruby-identifier">passwd</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">yml</span> = <span class="ruby-constant">Psych</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">to_h</span>(<span class="ruby-identifier">opts</span>))&#x000A;  <span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">encrypt</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">passwd</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-to_yaml-source'><span class="ruby-comment"># File lib/pi_maker/recipe.rb, line 88</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_yaml</span>(<span class="ruby-identifier">passwd</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">yml</span> = <span class="ruby-constant">Psych</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">to_h</span>(<span class="ruby-identifier">opts</span>))&#x000A;  <span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">encrypt</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">passwd</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

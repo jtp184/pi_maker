@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>module PiMaker::FileEncrypter - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+  var index_rel_prefix = "../";
+</script>
+
+<script src="../js/navigation.js" defer></script>
+<script src="../js/search.js" defer></script>
+<script src="../js/search_index.js" defer></script>
+<script src="../js/searcher.js" defer></script>
+<script src="../js/darkfish.js" defer></script>
+
+<link href="../css/fonts.css" rel="stylesheet">
+<link href="../css/rdoc.css" rel="stylesheet">
+
+
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-5B-5D">::[]</a>
+    
+    <li ><a href="#method-c-call">::call</a>
+    
+    <li ><a href="#method-c-decrypt">::decrypt</a>
+    
+    <li ><a href="#method-c-encrypt">::encrypt</a>
+    
+    <li ><a href="#method-c-encrypted-3F">::encrypted?</a>
+    
+    <li ><a href="#method-c-key_from_password">::key_from_password</a>
+    
+    <li ><a href="#method-c-new_cipher">::new_cipher</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-PiMaker::FileEncrypter">
+  <h1 id="module-PiMaker::FileEncrypter" class="module">
+    module PiMaker::FileEncrypter
+  </h1>
+
+  <section class="description">
+    
+<p>Encrypt and decrypt files using openssl</p>
+
+  </section>
+
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <section class="constants-list">
+      <header>
+        <h3>Constants</h3>
+      </header>
+      <dl>
+      
+        <dt id="HEADER">HEADER
+        
+        <dd><p>Regex for files encrypted with this method</p>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      
+      <div id="attribute-c-cipher" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">cipher</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Reader for the cipher class</p>
+        
+        </div>
+      </div>
+      
+    </section>
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-5B-5D" class="method-detail method-alias">
+        
+        <div class="method-heading">
+          <span class="method-name">[]</span><span
+            class="method-args">(str, passwd)</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+        </div>
+
+        
+
+        
+        <div class="aliases">
+          Alias for: <a href="FileEncrypter.html#method-c-call">call</a>
+        </div>
+        
+      </div>
+
+    
+      <div id="method-c-call" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">call</span><span
+            class="method-args">(str, passwd)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Given a <code>str</code> and a <code>passwd</code>, decides whether to encrypt or decrypt based on utf8</p>
+          
+          
+
+          
+          <div class="method-source-code" id="call-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 46</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span>)
+  <span class="ruby-identifier">encrypted?</span>(<span class="ruby-identifier">str</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">decrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">encrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+        <div class="aliases">
+          Also aliased as: <a href="FileEncrypter.html#method-c-5B-5D">[]</a>
+        </div>
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-decrypt" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">decrypt</span><span
+            class="method-args">(str, passwd = nil)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Given the +str to decrypt, and a <code>passwd</code> to decrypt it with, returns the original string. Raises a <a href="PasskeyError.html"><code>PasskeyError</code></a> if a passwd is not provided, or the string if it doesn&#39;t need to be</p>
+          
+          
+
+          
+          <div class="method-source-code" id="decrypt-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">decrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">str</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">encrypted?</span>(<span class="ruby-identifier">str</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">PasskeyError</span>, <span class="ruby-string">&#39;No password provided&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">passwd</span>.<span class="ruby-identifier">nil?</span>
+
+  <span class="ruby-identifier">vector</span> = <span class="ruby-identifier">str</span>[<span class="ruby-constant">HEADER</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">bytes</span>.<span class="ruby-identifier">first</span>(<span class="ruby-value">16</span>).<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:chr</span>).<span class="ruby-identifier">join</span>
+  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">str</span>[<span class="ruby-constant">HEADER</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">bytes</span>[<span class="ruby-value">16</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:chr</span>).<span class="ruby-identifier">join</span>
+
+  <span class="ruby-identifier">new_cipher</span>.<span class="ruby-identifier">decrypt</span>
+
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv</span> = <span class="ruby-identifier">vector</span>
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key</span> = <span class="ruby-identifier">key_from_password</span>(<span class="ruby-identifier">passwd</span>)
+
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">data</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">final</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-encrypt" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">encrypt</span><span
+            class="method-args">(str, passwd = nil)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Given the <code>str</code> to encrypt, and an optional passwd to encrypt it with, returns an encoded string, or the string itself if no password is given</p>
+          
+          
+
+          
+          <div class="method-source-code" id="encrypt-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">encrypt</span>(<span class="ruby-identifier">str</span>, <span class="ruby-identifier">passwd</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">str</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">passwd</span>.<span class="ruby-identifier">nil?</span>
+
+  <span class="ruby-identifier">new_cipher</span>.<span class="ruby-identifier">encrypt</span>
+
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key</span> = <span class="ruby-identifier">key_from_password</span>(<span class="ruby-identifier">passwd</span>)
+
+  <span class="ruby-identifier">vector</span> = <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">bytes</span>(<span class="ruby-value">16</span>)
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv</span> = <span class="ruby-identifier">vector</span>
+
+  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">str</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">final</span>
+
+  [<span class="ruby-constant">HEADER</span>, <span class="ruby-identifier">vector</span>, <span class="ruby-identifier">data</span>].<span class="ruby-identifier">join</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-encrypted-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">encrypted?</span><span
+            class="method-args">(str)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns true for strings that have the <a href="FileEncrypter.html#HEADER"><code>HEADER</code></a> in the right location</p>
+          
+          
+
+          
+          <div class="method-source-code" id="encrypted-3F-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">encrypted?</span>(<span class="ruby-identifier">str</span>)
+  <span class="ruby-identifier">str</span>[<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-constant">HEADER</span>.<span class="ruby-identifier">length</span>] <span class="ruby-operator">==</span> <span class="ruby-constant">HEADER</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="private-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Private Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-key_from_password" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">key_from_password</span><span
+            class="method-args">(passwd)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Given the <code>passwd</code>, converts it into a 16 byte key using OpenSSL::KDF.pbkdf2_hmac</p>
+          
+          
+
+          
+          <div class="method-source-code" id="key_from_password-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 63</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">key_from_password</span>(<span class="ruby-identifier">passwd</span>)
+  <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">KDF</span>.<span class="ruby-identifier">pbkdf2_hmac</span>(
+    <span class="ruby-identifier">passwd</span>,
+    <span class="ruby-value">iterations:</span> <span class="ruby-value">16</span>,
+    <span class="ruby-value">length:</span> <span class="ruby-value">16</span>,
+    <span class="ruby-value">hash:</span> <span class="ruby-string">&#39;sha256&#39;</span>,
+    <span class="ruby-value">salt:</span> <span class="ruby-string">&#39;JTP184 / PIMAKER&#39;</span>
+  )
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-new_cipher" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new_cipher</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Set the instanced cipher to a new instance</p>
+          
+          
+
+          
+          <div class="method-source-code" id="new_cipher-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/file_encrypter.rb, line 74</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">new_cipher</span>
+  <span class="ruby-ivar">@cipher</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;AES-128-CBC&#39;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.1.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

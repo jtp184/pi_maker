@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class PiMaker::BootConfig - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+  var index_rel_prefix = "../";
+</script>
+
+<script src="../js/navigation.js" defer></script>
+<script src="../js/search.js" defer></script>
+<script src="../js/search_index.js" defer></script>
+<script src="../js/searcher.js" defer></script>
+<script src="../js/darkfish.js" defer></script>
+
+<link href="../css/fonts.css" rel="stylesheet">
+<link href="../css/rdoc.css" rel="stylesheet">
+
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">Object
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-from_yaml">::from_yaml</a>
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-5B-5D">#[]</a>
+    
+    <li ><a href="#method-i-5B-5D-3D">#[]=</a>
+    
+    <li ><a href="#method-i-deep_hashify">#deep_hashify</a>
+    
+    <li ><a href="#method-i-default_config">#default_config</a>
+    
+    <li ><a href="#method-i-extract_actionable_lines">#extract_actionable_lines</a>
+    
+    <li class="calls-super" ><a href="#method-i-method_missing">#method_missing</a>
+    
+    <li ><a href="#method-i-parse_file">#parse_file</a>
+    
+    <li class="calls-super" ><a href="#method-i-respond_to_missing-3F">#respond_to_missing?</a>
+    
+    <li ><a href="#method-i-to_h">#to_h</a>
+    
+    <li ><a href="#method-i-to_s">#to_s</a>
+    
+    <li ><a href="#method-i-to_yaml">#to_yaml</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-PiMaker::BootConfig">
+  <h1 id="class-PiMaker::BootConfig" class="class">
+    class PiMaker::BootConfig
+  </h1>
+
+  <section class="description">
+    
+<p>Wrapper for the config.txt file on the boot volume</p>
+
+  </section>
+
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <section class="constants-list">
+      <header>
+        <h3>Constants</h3>
+      </header>
+      <dl>
+      
+        <dt id="FILENAME">FILENAME
+        
+        <dd><p>Filename on disk</p>
+        
+      
+        <dt id="FILTERS">FILTERS
+        
+        <dd><p>The different groups a config option can belong to</p>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      
+      <div id="attribute-i-config" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">config</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>The config object where options are set</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-ssh" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">ssh</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Enable ssh on the boot volume</p>
+        
+        </div>
+      </div>
+      
+    </section>
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-from_yaml" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">from_yaml</span><span
+            class="method-args">(yml, encrypted = nil)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Parse the <code>yml</code> string and create a new instance from it</p>
+          
+          
+
+          
+          <div class="method-source-code" id="from_yaml-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 27</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">from_yaml</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">encrypted</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-identifier">new</span>(<span class="ruby-constant">Psych</span>.<span class="ruby-identifier">load</span>(<span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">decrypt</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">encrypted</span>)))
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(opts = {})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Takes in <code>opts</code> for the config and path</p>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 32</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">opts</span> = {})
+  <span class="ruby-ivar">@ssh</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:ssh</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:ssh</span>) <span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:path</span>)
+    <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">parse_file</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:path</span>]))
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@config</span> = <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>
+
+    <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:config</span>, <span class="ruby-identifier">default_config</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-constant">FILTERS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>.<span class="ruby-identifier">to_s</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)
+        <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">key</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-identifier">value</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">key</span>][<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">v</span> }
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-ivar">@config</span>[<span class="ruby-string">&#39;all&#39;</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-ivar">@config</span>[<span class="ruby-string">&#39;all&#39;</span>][<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-5B-5D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">[]</span><span
+            class="method-args">(key)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Get the <code>key</code> from the config, defaulting to all if it isn&#39;t a filter</p>
+          
+          
+
+          
+          <div class="method-source-code" id="5B-5D-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 61</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-constant">FILTERS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>)
+    <span class="ruby-identifier">config</span>[<span class="ruby-identifier">key</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">config</span>[<span class="ruby-string">&#39;all&#39;</span>][<span class="ruby-identifier">key</span>]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-5B-5D-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">[]=</span><span
+            class="method-args">(key, value)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Set the <code>key</code> to the <code>value</code>, defaulting to all if it isn&#39;t a filter</p>
+          
+          
+
+          
+          <div class="method-source-code" id="5B-5D-3D-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 70</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]=</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-constant">FILTERS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>)
+    <span class="ruby-identifier">config</span>[<span class="ruby-identifier">key</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">config</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">config</span>[<span class="ruby-string">&#39;all&#39;</span>][<span class="ruby-identifier">key</span>] <span class="ruby-operator">||=</span> <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">config</span>[<span class="ruby-string">&#39;all&#39;</span>][<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-method_missing" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">method_missing</span><span
+            class="method-args">(mtd_name, *args, &amp;block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Pass the <code>mtd_name</code> as a subargument of all if missing</p>
+          
+          
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+          
+
+          
+          <div class="method-source-code" id="method_missing-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 106</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">method_missing</span>(<span class="ruby-identifier">mtd_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-keyword">self</span>[<span class="ruby-string">&#39;all&#39;</span>].<span class="ruby-identifier">send</span>(<span class="ruby-identifier">mtd_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">NoMethodError</span>
+  <span class="ruby-keyword">super</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-respond_to_missing-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">respond_to_missing?</span><span
+            class="method-args">(mtd_name, priv = false)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Responds to <code>mtd_name</code> and returns whether we have a key already for all</p>
+          
+          
+            <div class="method-calls-super">
+              Calls superclass method
+              
+            </div>
+          
+
+          
+          <div class="method-source-code" id="respond_to_missing-3F-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 113</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">respond_to_missing?</span>(<span class="ruby-identifier">mtd_name</span>, <span class="ruby-identifier">priv</span> = <span class="ruby-keyword">false</span>)
+  <span class="ruby-keyword">self</span>[<span class="ruby-string">&#39;all&#39;</span>].<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">mtd_name</span>) <span class="ruby-operator">||</span> <span class="ruby-keyword">super</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-to_h" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">to_h</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Return a hash representation</p>
+          
+          
+
+          
+          <div class="method-source-code" id="to_h-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 94</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_h</span>
+  { <span class="ruby-value">ssh:</span> <span class="ruby-identifier">ssh</span>, <span class="ruby-value">config:</span> <span class="ruby-identifier">deep_hashify</span> }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-to_s" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">to_s</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Output all config options as a stream of k=v</p>
+          
+          
+
+          
+          <div class="method-source-code" id="to_s-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 81</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_s</span>
+  <span class="ruby-identifier">s</span> = <span class="ruby-string">+&#39;&#39;</span>
+
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">sort</span>.<span class="ruby-identifier">reverse</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">s</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;[#{k}]\n&quot;</span>
+
+    <span class="ruby-identifier">v</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">i</span>, <span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">s</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{i}=#{f}\n&quot;</span> }
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">s</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot;\n&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-to_yaml" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">to_yaml</span><span
+            class="method-args">(password = nil)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Dump the hash representation, taking in an optional <code>password</code> to encrypt with</p>
+          
+          
+
+          
+          <div class="method-source-code" id="to_yaml-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 99</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">to_yaml</span>(<span class="ruby-identifier">password</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-identifier">yml</span> = <span class="ruby-constant">Psych</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">to_h</span>)
+
+  <span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">encrypt</span>(<span class="ruby-identifier">yml</span>, <span class="ruby-identifier">password</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="private-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Private Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-deep_hashify" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">deep_hashify</span><span
+            class="method-args">(node = config)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Given the starting <code>note</code>, recursively transforms the subvalues to hashes</p>
+          
+          
+
+          
+          <div class="method-source-code" id="deep_hashify-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 120</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">deep_hashify</span>(<span class="ruby-identifier">node</span> = <span class="ruby-identifier">config</span>)
+  <span class="ruby-identifier">node</span>.<span class="ruby-identifier">to_h</span>.<span class="ruby-identifier">transform_values</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">v</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:to_h</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">deep_hashify</span>(<span class="ruby-identifier">v</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">v</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-default_config" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">default_config</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>The default options</p>
+          
+          
+
+          
+          <div class="method-source-code" id="default_config-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 127</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">default_config</span>
+  {
+    <span class="ruby-string">&#39;pi4&#39;</span> <span class="ruby-operator">=&gt;</span> {
+      <span class="ruby-string">&#39;dtparam=audio&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;on&#39;</span>,
+      <span class="ruby-string">&#39;max_framebuffers&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;2&#39;</span>
+    },
+    <span class="ruby-string">&#39;all&#39;</span> <span class="ruby-operator">=&gt;</span> {
+      <span class="ruby-string">&#39;dtoverlay&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;vc4-fkms-v3d&#39;</span>
+    }
+  }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-extract_actionable_lines" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">extract_actionable_lines</span><span
+            class="method-args">(file_contents)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Extracts non empty and non comment lines from <code>file_contents</code></p>
+          
+          
+
+          
+          <div class="method-source-code" id="extract_actionable_lines-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 162</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_actionable_lines</span>(<span class="ruby-identifier">file_contents</span>)
+  <span class="ruby-identifier">file_contents</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^$/</span>
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^#/</span>
+
+    [<span class="ruby-regexp">/^(\[)(.*)\]/</span>, <span class="ruby-regexp">/(.*)=(.*)/</span>].<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">ma</span><span class="ruby-operator">|</span> <span class="ruby-identifier">ma</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">line</span>) }
+                                .<span class="ruby-identifier">compact</span>
+                                .<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">compact</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-parse_file" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">parse_file</span><span
+            class="method-args">(file_contents)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Takes the <code>file_contents</code> and interprets them</p>
+          
+          
+
+          
+          <div class="method-source-code" id="parse_file-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/boot_config.rb, line 140</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_file</span>(<span class="ruby-identifier">file_contents</span>)
+  <span class="ruby-identifier">set_lines</span> = <span class="ruby-identifier">extract_actionable_lines</span>(<span class="ruby-identifier">file_contents</span>)
+
+  <span class="ruby-identifier">opts</span> = { <span class="ruby-string">&#39;all&#39;</span> <span class="ruby-operator">=&gt;</span> {} }
+  <span class="ruby-identifier">current_group</span> = <span class="ruby-string">&#39;all&#39;</span>
+
+  <span class="ruby-identifier">set_lines</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">val</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">group_declare</span> = <span class="ruby-identifier">val</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&#39;[&#39;</span>
+
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">group_declare</span>
+      <span class="ruby-identifier">current_group</span> = <span class="ruby-identifier">val</span>[<span class="ruby-value">2</span>]
+      <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">current_group</span>] <span class="ruby-operator">||=</span> {}
+      <span class="ruby-keyword">next</span>
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">current_group</span>][<span class="ruby-identifier">val</span>[<span class="ruby-value">1</span>]] = <span class="ruby-identifier">val</span>[<span class="ruby-value">2</span>]
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">transform_values</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">v</span>) })
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.1.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
