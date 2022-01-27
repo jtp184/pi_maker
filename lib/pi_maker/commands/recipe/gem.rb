@@ -38,6 +38,8 @@ module PiMaker
 
         private
 
+        attr_reader :options
+
         def gem_recipe
           require Strings::Case.underscore(@gemname)
 
