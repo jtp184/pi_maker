@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>README - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/navigation.js" defer></script>
+<script src="./js/search.js" defer></script>
+<script src="./js/search_index.js" defer></script>
+<script src="./js/searcher.js" defer></script>
+<script src="./js/darkfish.js" defer></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+<div class="nav-section">
+  <h3>Table of Contents</h3>
+
+  <ul class="link-list" role="directory">
+    <li><a href="#label-PiMaker">PiMaker</a>
+    <li><a href="#label-Installation">Installation</a>
+    <li><a href="#label-Hardware+-26+Imaging">Hardware &amp; Imaging</a>
+    <li><a href="#label-Usage">Usage</a>
+    <li><a href="#label-Quickstart">Quickstart</a>
+    <li><a href="#label-Documentation">Documentation</a>
+    <li><a href="#label-PiMaker">PiMaker</a>
+    <li><a href="#label-Instructions">Instructions</a>
+    <li><a href="#label-BootConfig">BootConfig</a>
+    <li><a href="#label-WpaConfig">WpaConfig</a>
+    <li><a href="#label-Recipe">Recipe</a>
+    <li><a href="#label-Pantry">Pantry</a>
+    <li><a href="#label-FileEncrypter">FileEncrypter</a>
+    <li><a href="#label-DiskManagement">DiskManagement</a>
+    <li><a href="#label-DiskProtocol">DiskProtocol</a>
+    <li><a href="#label-StorageDevice">StorageDevice</a>
+    <li><a href="#label-FlashingOperation">FlashingOperation</a>
+    <li><a href="#label-NetworkIdentifier">NetworkIdentifier</a>
+    <li><a href="#label-CommandGroup">CommandGroup</a>
+    <li><a href="#label-RemoteRunner">RemoteRunner</a>
+    <li><a href="#label-CLI">CLI</a>
+    <li><a href="#label-pantry"><code>pantry</code></a>
+    <li><a href="#label-init"><code>init</code></a>
+    <li><a href="#label-encrypt"><code>encrypt</code></a>
+    <li><a href="#label-decrypt"><code>decrypt</code></a>
+    <li><a href="#label-wifi"><code>wifi</code></a>
+    <li><a href="#label-add"><code>add</code></a>
+    <li><a href="#label-delete"><code>delete</code></a>
+    <li><a href="#label-list"><code>list</code></a>
+    <li><a href="#label-supplicant"><code>supplicant</code></a>
+    <li><a href="#label-recipe"><code>recipe</code></a>
+    <li><a href="#label-add"><code>add</code></a>
+    <li><a href="#label-delete"><code>delete</code></a>
+    <li><a href="#label-initial"><code>initial</code></a>
+    <li><a href="#label-gem"><code>gem</code></a>
+    <li><a href="#label-list"><code>list</code></a>
+    <li><a href="#label-write_boot"><code>write_boot</code></a>
+    <li><a href="#label-boot"><code>boot</code></a>
+    <li><a href="#label-config"><code>config</code></a>
+    <li><a href="#label-flash"><code>flash</code></a>
+    <li><a href="#label-identify"><code>identify</code></a>
+    <li><a href="#label-remote"><code>remote</code></a>
+    <li><a href="#label-apply"><code>apply</code></a>
+    <li><a href="#label-connect"><code>connect</code></a>
+    <li><a href="#label-upload"><code>upload</code></a>
+    <li><a href="#label-download"><code>download</code></a>
+  </ul>
+</div>
+
+
+  <div id="project-metadata">
+    <div id="fileindex-section" class="nav-section">
+  <h3>Pages</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./CODE_OF_CONDUCT_md.html">CODE_OF_CONDUCT</a>
+  
+    <li><a href="./LICENSE_txt.html">LICENSE</a>
+  
+    <li><a href="./README_md.html">README</a>
+  
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-label="Page README.md">
+
+<h1 id="label-PiMaker"><a href="PiMaker.html"><code>PiMaker</code></a><span><a href="#label-PiMaker">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p><a href="PiMaker.html"><code>PiMaker</code></a> is a CLI configurator for Raspberry Pi devices. I created this gem to rapidly prototype on and work with Raspberry Pi devices and Ruby code, with the goal of abstracting away setup for my Pi hardware gems. It allows the storage and definition of recipes, which define configurations of installed programs, downloaded git repos, and more. <a href="PiMaker.html"><code>PiMaker</code></a> provides a sensible interface to setting up Raspberry Pi for use with hardware and software, with a particular mission to provide the ability for Ruby gems to define Pi configurations without needing to worry about how to apply them.</p>
+
+<h2 id="label-Installation">Installation<span><a href="#label-Installation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Add this line to your application&#39;s Gemfile: <code>ruby gem &#39;pi_maker&#39;, github: &#39;jtp184/pi_maker&#39; </code></p>
+
+<p>You can also download and install it globally with <code>bash git clone https://github.com/jtp184/pi_maker.git cd pi_maker rake install </code></p>
+
+<h2 id="label-Hardware+-26+Imaging">Hardware &amp; Imaging<span><a href="#label-Hardware+-26+Imaging">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>This gem was tested with various SD cards, on Mac and Linux operating systems, and with the Raspberry Pi 3+ and 4.</p>
+
+<p>Software images can be downloaded from <a href="https://www.raspberrypi.org/software/operating-systems/">raspberrypi.org</a> directly or through torrent. I reccomend the full desktop version for the preinstalled software tools, but pi_maker can write any <code>.img</code> file.</p>
+
+<h2 id="label-Usage">Usage<span><a href="#label-Usage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="label-Quickstart">Quickstart<span><a href="#label-Quickstart">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre># Create a repository of pi configurations
+$ pi_maker pantry init
+# Configure options for your pi interactively
+$ pi_maker recipe add --interactive
+# Insert SD card, then flash
+$ pi_maker boot flash --image=/path/to/image.img --interactive
+$ pi_maker recipe write_boot --interactive
+# Eject SD card, insert into pi, and power on
+# Locate pi on network and apply your config to it
+$ pi_maker recipe initial --interactive</pre>
+
+<h3 id="label-Documentation">Documentation<span><a href="#label-Documentation">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>All methods and classes are RDoc documented at <a href="https://jtp184.github.io/pi_maker">jtp184.github.io/pi_maker</a>/</p>
+
+<h3 id="label-PiMaker"><a href="PiMaker.html"><code>PiMaker</code></a><span><a href="#label-PiMaker">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The base module has a couple of methods on it for determining top level os-based info, storing defaults, and running system commands.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Returns a different symbol based on OS</span>
+<span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">host_os</span> <span class="ruby-comment"># =&gt; :mac / :raspberrypi / :linux</span>
+
+<span class="ruby-comment"># Sensible default for the mounted volume</span>
+<span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">sd_card_path</span> <span class="ruby-comment"># =&gt; /Volumes/boot</span>
+
+<span class="ruby-comment"># Store default login info</span>
+<span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">default_login</span> 
+<span class="ruby-comment"># =&gt; {</span>
+<span class="ruby-comment">#   user: &#39;pi&#39;,</span>
+<span class="ruby-comment">#   hostname: &#39;raspberrypi.local&#39;,</span>
+<span class="ruby-comment">#   password: &#39;raspberry&#39;</span>
+<span class="ruby-comment"># }</span>
+
+<span class="ruby-comment"># Run command with some more sensible parsing than simple backticks</span>
+<span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;echo hello&#39;</span>)
+</pre>
+
+<h3 id="label-Instructions">Instructions<span><a href="#label-Instructions">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>Instructions</code> class holds data for what should be installed or configured on the Pi.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Basic initialization with all options</span>
+<span class="ruby-identifier">instructions</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">new</span>(
+  <span class="ruby-comment"># Array of packages to install using apt-get install</span>
+  <span class="ruby-value">apt_packages:</span> <span class="ruby-node">%w(neofetch kitty)</span>,
+  <span class="ruby-comment"># Array of gems to install to system using sudo gem install</span>
+  <span class="ruby-value">gems:</span> <span class="ruby-node">%w(tty-config tty-prompt)</span>,
+  <span class="ruby-comment"># Hash, with keys of github repos to clone to ~/repos</span>
+  <span class="ruby-comment"># values of an array of post-clone commands</span>
+  <span class="ruby-value">github_repos:</span> {
+    <span class="ruby-string">&#39;jtp184/arch_dotfiles&#39;</span> <span class="ruby-operator">=&gt;</span> [
+      <span class="ruby-string">&#39;mkdir -p ~/.config&#39;</span>,
+      <span class="ruby-string">&#39;cp -R ~/repos/arch_dotfiles/config ~/.config&#39;</span>
+    ]
+  },
+  <span class="ruby-comment"># Run any raw shell commands</span>
+  <span class="ruby-value">shell:</span> [<span class="ruby-string">&#39;touch ~/.hushlogin&#39;</span>],
+  <span class="ruby-comment"># Runs the raspi-config nongui version, allowing argument passing</span>
+  <span class="ruby-value">raspi_config:</span> {
+    <span class="ruby-string">&#39;do_spi&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">0</span>,
+    <span class="ruby-string">&#39;do_expand_rootfs&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-keyword">nil</span>
+  },
+  <span class="ruby-comment"># Chunks of text to append to bashrc</span>
+  <span class="ruby-value">bashrc:</span> [<span class="ruby-node">&quot;export PIMAKER_ID=#{SecureRandom.uuid}&quot;</span>]
+)
+
+<span class="ruby-comment"># Also available through block syntax using .define</span>
+<span class="ruby-identifier">further_instructions</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Instructions</span>.<span class="ruby-identifier">define</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">i</span>.<span class="ruby-identifier">apt_packages</span> = <span class="ruby-node">%w[wget]</span>
+  <span class="ruby-identifier">i</span>.<span class="ruby-identifier">gems</span> =  <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">friday?</span> <span class="ruby-operator">?</span> <span class="ruby-node">%w[colorize]</span> <span class="ruby-operator">:</span> <span class="ruby-node">%w[pastel]</span>
+<span class="ruby-keyword">end</span>
+</pre>
+
+<h3 id="label-BootConfig">BootConfig<span><a href="#label-BootConfig">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Altering options on the SD Card&#39;s <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/">config.txt</a> file is achieved with the <code>BootConfig</code> class, which can both read and write a config.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Enable SSH at boot</span>
+<span class="ruby-identifier">boot_config</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">BootConfig</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">ssh:</span> <span class="ruby-keyword">true</span>)
+
+<span class="ruby-identifier">boot_config</span>[<span class="ruby-string">&#39;pi4&#39;</span>] = {
+  <span class="ruby-string">&#39;dtparam=audio&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;on&#39;</span>,
+  <span class="ruby-string">&#39;max_framebuffers&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;2&#39;</span>,
+}
+
+<span class="ruby-comment"># You can also read an existing config</span>
+<span class="ruby-identifier">card_config</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">BootConfig</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">path:</span> <span class="ruby-string">&#39;/mnt/boot/config.txt&#39;</span>)
+
+<span class="ruby-identifier">card_config</span>[<span class="ruby-string">&#39;all&#39;</span>] <span class="ruby-comment"># =&gt; { &#39;dtoverlay&#39; =&gt; &#39;vc4-fkms-v3d&#39; }</span>
+
+<span class="ruby-identifier">card_config</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-comment"># =&gt; &quot;[pi4]\ndtparam=audio=on...&quot;</span>
+</pre>
+
+<h3 id="label-WpaConfig">WpaConfig<span><a href="#label-WpaConfig">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Wifi credentials can be entered using a <code>WpaConfig</code>, which carries a number of networks and can be written to the boot config to preset the wifi network before boot.</p>
+
+<pre class="ruby"><span class="ruby-identifier">wpa_config</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">WpaConfig</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">networks:</span> { <span class="ruby-string">&#39;WorldOfWifi&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;passw0rd&#39;</span> })
+
+<span class="ruby-comment"># Append new credentials to the config</span>
+<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">append</span>(<span class="ruby-string">&#39;WifiAtWork&#39;</span>, <span class="ruby-string">&#39;b3tt3rp@assw0rd&#39;</span>)
+
+<span class="ruby-comment"># Redacts passwords by default</span>
+<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">to_h</span>
+<span class="ruby-comment"># =&gt; { country_code: &#39;US&#39;, networks: [&#39;WorldOfWifi&#39;, &#39;WifiAtWork&#39;]}</span>
+
+<span class="ruby-comment"># Override by passing true</span>
+<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">to_h</span>(<span class="ruby-keyword">true</span>)
+<span class="ruby-comment"># =&gt; { networks: { &#39;WorldOfWifi&#39; =&gt; &#39;passw0rd, ...</span>
+
+<span class="ruby-comment"># Export proper format to a file</span>
+<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-comment"># =&gt; &quot;ctrl_interface=DIR=/var...&quot;</span>
+</pre>
+
+<h3 id="label-Recipe">Recipe<span><a href="#label-Recipe">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Binding together initialization and configuration options is the <code>Recipe</code> class, which is used to define a particular named setup of pi</p>
+
+<pre class="ruby"><span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Recipe</span>.<span class="ruby-identifier">define</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span>
+  <span class="ruby-comment"># Set a hostname and password to be applied</span>
+  <span class="ruby-identifier">r</span>.<span class="ruby-identifier">hostname</span> = <span class="ruby-string">&#39;PiMaker-ExamplePi&#39;</span>
+  <span class="ruby-identifier">r</span>.<span class="ruby-identifier">password</span> = <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span>
+
+  <span class="ruby-comment"># Pass in currently defined wifi options, or new ones</span>
+  <span class="ruby-identifier">r</span>.<span class="ruby-identifier">wifi_config_options</span> = {
+    <span class="ruby-value">networks:</span> [
+      <span class="ruby-string">&#39;WorldOfWifi&#39;</span>,
+      {
+        <span class="ruby-string">&#39;NewConnection&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;B33SW@X&#39;</span>
+      }
+    ] 
+  }
+
+  <span class="ruby-comment"># Pass a boot config constructor</span>
+  <span class="ruby-identifier">r</span>.<span class="ruby-identifier">boot_config_options</span> = {
+    <span class="ruby-value">ssh:</span> <span class="ruby-keyword">true</span>,
+    <span class="ruby-value">config:</span> {
+      <span class="ruby-string">&#39;all&#39;</span> <span class="ruby-operator">=&gt;</span> {
+        <span class="ruby-string">&#39;dtparam=spi&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;on&#39;</span>
+      } 
+    }
+  }
+
+  <span class="ruby-comment"># Handle initial configuration with an Instructions object</span>
+  <span class="ruby-identifier">r</span>.<span class="ruby-identifier">initial_setup_options</span> = {
+    <span class="ruby-value">apt_packages:</span> <span class="ruby-node">%w[imagemagick nodejs npm]</span>,
+    <span class="ruby-value">bashrc:</span> <span class="ruby-string">&#39;export NJS_ROOT=/home/pi/npm&#39;</span>
+  }
+
+  <span class="ruby-comment"># Other optional named Instructions sets to execute</span>
+  <span class="ruby-identifier">r</span>.<span class="ruby-identifier">additional_setup_options</span> = {
+    <span class="ruby-value">use_kitty:</span> { <span class="ruby-value">apt_packages:</span> <span class="ruby-node">%w[kitty]</span> },
+    <span class="ruby-value">add_tty_gems:</span> { <span class="ruby-value">gem:</span> <span class="ruby-node">%w[tty-prompt tty-cursor]</span> }
+  }
+<span class="ruby-keyword">end</span>
+</pre>
+
+<h3 id="label-Pantry">Pantry<span><a href="#label-Pantry">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>Pantry</code> is where <code>Recipe</code> objects are stored. The class has functionality for saving and loading collections to YAML files, handling encryption of files on disk, and locating and loading from a global and persistant pantry.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Checks for existing config file in current directory, home directory, and ~/.config/pi_maker</span>
+<span class="ruby-comment"># Returns the directory a pantry was found in, or nil</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global_exists?</span> <span class="ruby-comment"># =&gt; &#39;/home/pi&#39;</span>
+
+<span class="ruby-comment"># Can load the file that exists</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span> <span class="ruby-comment"># =&gt; #&lt;PiMaker::Pantry...&gt;</span>
+
+<span class="ruby-comment"># And accept options for password</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span>(<span class="ruby-value">password:</span> <span class="ruby-string">&#39;SN3AKY&#39;</span>)
+
+<span class="ruby-comment"># If the global pantry doesn&#39;t exist, create it by calling #write</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span>.<span class="ruby-identifier">write</span>
+<span class="ruby-comment"># You can also write with encryption, or to a specific path</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span>.<span class="ruby-identifier">write</span>(
+  <span class="ruby-value">password:</span> <span class="ruby-string">&#39;badpassword12345&#39;</span>,
+  <span class="ruby-value">path:</span> <span class="ruby-string">&#39;./&#39;</span>
+)
+</pre>
+
+<p>A Pantry carries recipes and wifi networks, which are accessible within the recipes without reiterating their passwords</p>
+
+<pre class="ruby"><span class="ruby-identifier">pantry</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span>
+
+<span class="ruby-comment"># Networks within the pantry can be passed as string instead of as hash</span>
+<span class="ruby-identifier">pantry</span>.<span class="ruby-identifier">wifi_networks</span> <span class="ruby-comment"># =&gt; { &#39;AccessPoint&#39; =&gt; &#39;AP101&#39; }</span>
+
+<span class="ruby-identifier">pantry</span>.<span class="ruby-identifier">recipes</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">wpa_config</span>.<span class="ruby-identifier">networks</span>[<span class="ruby-string">&#39;AccessPoint&#39;</span>] <span class="ruby-comment"># =&gt; &#39;AP101&#39;</span>
+</pre>
+
+<h3 id="label-FileEncrypter">FileEncrypter<span><a href="#label-FileEncrypter">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>FileEncrypter</code> handles converting plaintext to encrypted text, keeping credentials within recipes safe.</p>
+
+<pre class="ruby"><span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">FileEncrypter</span>.<span class="ruby-identifier">encrypt</span>(<span class="ruby-string">&#39;SuperSecretText&#39;</span>, <span class="ruby-string">&#39;SecretPassword&#39;</span>)
+<span class="ruby-comment"># =&gt; &quot;PIMAKER:ENCRYPTED\n\x97c\xCC\xB8z\xCE7\xDCwY:\x01\&quot;\xC2\xF2l\xC6\xC11F\x8Blh \xCA\x89#8\xB4\xF7\x12u&quot;</span>
+
+<span class="ruby-comment"># Various classes within the gem include exporting</span>
+<span class="ruby-comment"># which optionally pass through the FileEncrypter</span>
+
+<span class="ruby-comment"># Export to an encrypted file which decrypts to a yaml file</span>
+<span class="ruby-identifier">enc</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Recipe</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">to_yaml</span>(<span class="ruby-string">&#39;UtterlyUnhackable&#39;</span>)
+
+<span class="ruby-comment"># Decrypt it by providing the original password</span>
+<span class="ruby-identifier">dec</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Recipe</span>.<span class="ruby-identifier">from_yaml</span>(<span class="ruby-identifier">enc</span>, <span class="ruby-string">&#39;UtterlyUnhackable&#39;</span>) <span class="ruby-operator">==</span> <span class="ruby-identifier">enc</span> <span class="ruby-comment"># =&gt; true</span>
+</pre>
+
+<h3 id="label-DiskManagement">DiskManagement<span><a href="#label-DiskManagement">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The DiskManagement module houses functions surrounding reading the state of the filesystem and flashing of SD cards. The module itself is a shortcut for these functions, automatically picking a disk protocol and passing method calls to it.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Automatically decides based on OS</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">DiskManagement</span>.<span class="ruby-identifier">protocol</span> <span class="ruby-comment"># =&gt; PiMaker::DiskManagement::MacOs</span>
+
+<span class="ruby-comment"># Passes messages to protocol when applicable</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">DiskManagement</span>.<span class="ruby-identifier">list_devices</span> 
+<span class="ruby-comment"># =&gt; [/dev/disk2: /Volumes/boot | 2 partitions (63.8646 gigabytes)]</span>
+</pre>
+
+<h4 id="label-DiskProtocol">DiskProtocol<span><a href="#label-DiskProtocol">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<p>The Disk protocols read filesystem data from different operating systems, and handle formatting and writing to disks. The base class provides functionality common to both, and child classes provide duck typed methods to interact with the underlying system. The <code>Linux</code> disk protocol uses <code>lsblk</code> to get disk info and <code>mount</code> / <code>umount</code> to control them, while the <code>MacOs</code> disk protocol uses <code>diskutil</code> for all of its functions.</p>
+
+<pre class="ruby"><span class="ruby-identifier">protocol</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">DiskManagement</span>.<span class="ruby-identifier">protocol</span>
+
+<span class="ruby-comment"># Find an attached SD card, when one exists, based on OS defaults</span>
+<span class="ruby-identifier">protocol</span>.<span class="ruby-identifier">sd_card_device</span>
+<span class="ruby-comment"># =&gt; /dev/disk2: /Volumes/boot | 2 partitions (63.8646 gigabytes)</span>
+
+<span class="ruby-comment"># Many disk functions can be called directly if desired, but are better called on the resulting device</span>
+<span class="ruby-identifier">protocol</span>.<span class="ruby-identifier">mounted?</span>(<span class="ruby-string">&#39;/dev/disk2&#39;</span>) <span class="ruby-comment"># =&gt; true</span>
+<span class="ruby-identifier">protocol</span>.<span class="ruby-identifier">mount_point_for</span>(<span class="ruby-string">&#39;/dev/disk2&#39;</span>) <span class="ruby-comment"># =&gt; &#39;/Volumes/boot&#39;</span>
+</pre>
+
+<h4 id="label-StorageDevice">StorageDevice<span><a href="#label-StorageDevice">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<p><code>StorageDevice</code> represents a connected disk. It wraps the data extracted from the <code>DiskProtocol</code>, and includes methods to query status and information, as well as initiating a <code>FlashingOperation</code> on itself.</p>
+
+<pre class="ruby"><span class="ruby-identifier">sd_card</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">DiskManagement</span>.<span class="ruby-identifier">sd_card_device</span>
+
+<span class="ruby-identifier">sd_card</span>.<span class="ruby-identifier">capacity</span> <span class="ruby-comment"># =&gt; 127259789970</span>
+<span class="ruby-identifier">sd_card</span>.<span class="ruby-identifier">size</span> <span class="ruby-comment"># =&gt; &quot;127.2597 gigabytes&quot;</span>
+<span class="ruby-identifier">sd_card</span>.<span class="ruby-identifier">mounted?</span> <span class="ruby-comment"># =&gt; true</span>
+<span class="ruby-identifier">sd_card</span>.<span class="ruby-identifier">dev_path</span> <span class="ruby-comment"># =&gt; &#39;/dev/disk2&#39;</span>
+
+<span class="ruby-identifier">sd_card</span>.<span class="ruby-identifier">unmount</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">sd_card</span>.<span class="ruby-identifier">mounted?</span> <span class="ruby-comment"># =&gt; false</span>
+
+<span class="ruby-identifier">sd_card</span>.<span class="ruby-identifier">write_image</span>(<span class="ruby-string">&#39;~/Downloads/raspios.img&#39;</span>)
+<span class="ruby-comment"># =&gt; #&lt;PiMaker::FlashingOperation&gt;</span>
+</pre>
+
+<h4 id="label-FlashingOperation">FlashingOperation<span><a href="#label-FlashingOperation">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<p>Writing the OS image to the SD card is accomplished with the <code>FlashingOperation</code> class. It wraps an <code>IO.popen</code> call to <code>dd</code>, and reports when it completes</p>
+
+<pre class="ruby"><span class="ruby-comment"># Initialize by itself and defer execution</span>
+<span class="ruby-identifier">flop</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">FlashingOperation</span>.<span class="ruby-identifier">new</span>(
+  <span class="ruby-value">image_path:</span> <span class="ruby-string">&#39;./raspios.img&#39;</span>,
+  <span class="ruby-value">disk:</span> <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">DiskManagement</span>.<span class="ruby-identifier">sd_card_device</span>.<span class="ruby-identifier">unmount</span>
+)
+
+<span class="ruby-comment"># Begin the write like this</span>
+<span class="ruby-identifier">flop</span>.<span class="ruby-identifier">call</span>
+
+<span class="ruby-comment"># Check for completion</span>
+<span class="ruby-identifier">flop</span>.<span class="ruby-identifier">finished?</span> <span class="ruby-comment"># =&gt; false</span>
+<span class="ruby-identifier">sleep</span> <span class="ruby-value">300</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">flop</span>.<span class="ruby-identifier">finished?</span> <span class="ruby-comment"># =&gt; true</span>
+
+<span class="ruby-comment"># The preferred way is to call from the StorageDevice, which unmounts the disk, and instantiates and starts the operation</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">DiskManagement</span>.<span class="ruby-identifier">sd_card_device</span>.<span class="ruby-identifier">write_image</span>(<span class="ruby-string">&#39;./raspios.img&#39;</span>)
+<span class="ruby-comment"># =&gt; #&lt;PiMaker::FlashingOperation&gt;</span>
+</pre>
+
+<h3 id="label-NetworkIdentifier">NetworkIdentifier<span><a href="#label-NetworkIdentifier">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>NetworkIdentifier</code> will search for valid Raspberry Pis on the network, and return their ip addresses. This is useful for connecting to and running commands on the pi after initial flashing, before a hostname has been set.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Standard call method with no arguments, uses `arp` by default</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">NetworkIdentifier</span>.<span class="ruby-identifier">call</span> <span class="ruby-comment"># =&gt; [&#39;192.168.1.127&#39;]</span>
+
+<span class="ruby-comment"># Also has a built in parser for using nmap with sudo</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">NetworkIdentifier</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">scan_with:</span> <span class="ruby-value">:nmap</span>)
+
+<span class="ruby-comment"># And you can pass your own program to call</span>
+<span class="ruby-comment"># and parse and filter with any callable object</span>
+<span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">NetworkIdentifier</span>.<span class="ruby-identifier">call</span>(
+  <span class="ruby-value">scan_with:</span> <span class="ruby-value">:my_program</span>,
+  <span class="ruby-value">parse_with:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">out</span>) { <span class="ruby-identifier">out</span>.<span class="ruby-identifier">scan</span>(<span class="ruby-regexp">/\d{3}\.\d{3}.\d.\d{3}/</span>) },
+  <span class="ruby-value">filter_with:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">ips</span>) { <span class="ruby-identifier">ips</span>.<span class="ruby-identifier">select</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">i</span>[<span class="ruby-value">-1</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&#39;7&#39;</span>} }
+)
+</pre>
+
+<h3 id="label-CommandGroup">CommandGroup<span><a href="#label-CommandGroup">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Translating a set of <code>Instructions</code> into the actual shell commands to execute them is handled by the <code>CommandGroup</code> class.</p>
+
+<pre class="ruby"><span class="ruby-identifier">instructions</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">Pantry</span>.<span class="ruby-identifier">global</span>
+                              .<span class="ruby-identifier">recipes</span>
+                              .<span class="ruby-identifier">first</span>
+                              .<span class="ruby-identifier">initial_setup</span>
+
+<span class="ruby-identifier">cmds</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">CommandGroup</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">instructions</span>)
+
+<span class="ruby-comment"># Returns runnable versions of install directives</span>
+<span class="ruby-identifier">cmds</span>.<span class="ruby-identifier">apt_packages</span> <span class="ruby-comment"># =&gt; &#39;sudo apt-get install -y imagemagick nodejs&#39;</span>
+</pre>
+
+<h3 id="label-RemoteRunner">RemoteRunner<span><a href="#label-RemoteRunner">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Executing a <code>CommandGroup</code> on a pi over the network via SSH is done with the <code>RemoteRunner</code> class, which wraps <code>net/ssh</code> and <code>net/scp</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">runner</span> = <span class="ruby-constant">PiMaker</span><span class="ruby-operator">::</span><span class="ruby-constant">RemoteRunner</span>.<span class="ruby-identifier">new</span>(
+  <span class="ruby-comment"># You can pass a username / password here, or use the default</span>
+  <span class="ruby-value">config:</span> {
+    <span class="ruby-value">username:</span> <span class="ruby-string">&#39;pi&#39;</span>,
+    <span class="ruby-value">password:</span> <span class="ruby-string">&#39;raspberry&#39;</span>
+  },
+  <span class="ruby-comment"># Pass a command group to execute it</span>
+  <span class="ruby-value">command_group:</span> <span class="ruby-identifier">cmds</span>,
+  <span class="ruby-comment"># Upload files with from/to tuples or a hash</span>
+  <span class="ruby-value">upload_files:</span> [[<span class="ruby-string">&#39;./settings.yml&#39;</span>, <span class="ruby-string">&#39;/home/pi/.config/settings.yml&#39;</span>]],
+  <span class="ruby-comment"># Download files from a path the same way</span>
+  <span class="ruby-value">download_files:</span> { <span class="ruby-string">&#39;/home/pi/something.txt&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;./&#39;</span> }
+)
+</pre>
+
+<h2 id="label-CLI">CLI<span><a href="#label-CLI">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p><a href="PiMaker.html"><code>PiMaker</code></a> is easiest to use with the built in <code>pi_maker</code> cli program, which allows you to define, store, and apply pi configurations.</p>
+
+<p>Most of the CLI commands and subcommands can be run with the <code>--interactive</code> option to prompt for selection when needed.</p>
+
+<h3 id="label-pantry"><code>pantry</code><span><a href="#label-pantry">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<h4 id="label-init"><code>init</code><span><a href="#label-init">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker pantry init [PATH]
+
+Options:
+  -o, [--overwrite], [--no-overwrite]  # Overwrite existing pantry
+
+Create a pantry folder</pre>
+
+<h4 id="label-encrypt"><code>encrypt</code><span><a href="#label-encrypt">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre class="ruby"><span class="ruby-constant">Usage</span>
+  <span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">encrypt</span> [<span class="ruby-constant">PASSWORD</span>]
+
+<span class="ruby-constant">Encrypt</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">folder</span>
+</pre>
+
+<h4 id="label-decrypt"><code>decrypt</code><span><a href="#label-decrypt">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre class="ruby"><span class="ruby-constant">Usage</span>
+  <span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">decrypt</span> [<span class="ruby-constant">PASSWORD</span>]
+
+<span class="ruby-constant">Decrypt</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">pantry</span> <span class="ruby-identifier">folder</span>
+</pre>
+
+<h3 id="label-wifi"><code>wifi</code><span><a href="#label-wifi">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<h4 id="label-add"><code>add</code><span><a href="#label-add">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre class="ruby"><span class="ruby-constant">Usage</span>
+  <span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">add</span> [<span class="ruby-constant">SSID</span>] [<span class="ruby-constant">PASSWD</span>]
+
+<span class="ruby-constant">Adds</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">new</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">config</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">persistant</span> <span class="ruby-identifier">store</span>
+</pre>
+
+<h4 id="label-delete"><code>delete</code><span><a href="#label-delete">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre class="ruby"><span class="ruby-constant">Usage</span>
+  <span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">wifi</span> <span class="ruby-identifier">delete</span> [<span class="ruby-constant">SSID</span>]
+
+<span class="ruby-constant">Deletes</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">stored</span> <span class="ruby-identifier">network</span> <span class="ruby-identifier">from</span> <span class="ruby-identifier">persistance</span>
+</pre>
+
+<h4 id="label-list"><code>list</code><span><a href="#label-list">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker wifi list
+
+Options:
+  -p, [--passwords], [--no-passwords]  # Whether to show passwords for networks
+
+Show stored wifi configs</pre>
+
+<h4 id="label-supplicant"><code>supplicant</code><span><a href="#label-supplicant">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker wifi supplicant
+
+Options:
+  -s, [--save=SAVE]              # Where to save to, defaults to the sd card, or current directory
+  -c, [--credentials=key:value]  # Set a single credential as the file contents
+
+Write a wpa_supplicant.conf file to copy manually</pre>
+
+<h3 id="label-recipe"><code>recipe</code><span><a href="#label-recipe">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<h4 id="label-add"><code>add</code><span><a href="#label-add">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker recipe add
+
+Options:
+  -n, [--hostname=HOSTNAME]              # Set the hostname
+  -w, [--password=PASSWORD]              # Set the password
+  -f, [--wifi-options=key:value]         # Set the wifi options
+  -b, [--boot-options=key:value]         # Set the boot options
+  -o, [--initial-setup=key:value]        # Set the initial setup options
+  -e, [--export-format=EXPORT_FORMAT]    # Output as ruby or yaml
+                                         # Default: yaml
+  -p, [--pantry], [--no-pantry]          # Save this recipe to the pantry as well
+                                         # Default: true
+  -l, [--local-file], [--no-local-file]  # Whether to write out a local file with the contents
+  -s, [--ssh], [--no-ssh]                # Enable ssh on boot
+                                         # Default: true
+
+Add a new recipe</pre>
+
+<h4 id="label-delete"><code>delete</code><span><a href="#label-delete">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre class="ruby"><span class="ruby-constant">Usage</span>
+  <span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">delete</span> [<span class="ruby-constant">HOSTNAME</span>]
+
+<span class="ruby-constant">Remove</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">recipe</span>
+</pre>
+
+<h4 id="label-initial"><code>initial</code><span><a href="#label-initial">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker recipe initial
+
+Options:
+  -p, [--path=PATH]                # Save to a specific path
+  -v, [--verbose], [--no-verbose]  # Whether to print command output
+  -r, [--reboot], [--no-reboot]    # Reboot after running commands
+  -l, [--login], [--no-login]      # Set the hostname and password
+                                   # Default: true
+  -c, [--credentials=key:value]    # Pass in login details directly
+  -s, [--scan], [--no-scan]        # Use the network identifier to pick a pi
+                                   # Default: true
+  -w, [--scan-with=SCAN_WITH]      # Use a different program to scan with
+
+Perform the initial setup commands from the recipe</pre>
+
+<h4 id="label-gem"><code>gem</code><span><a href="#label-gem">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage:
+  pi_maker recipe gem [GEMNAME]
+
+Options:
+  -n, [--hostname=HOSTNAME]              # Set the hostname
+  -w, [--password=PASSWORD]              # Set the password
+  -f, [--wifi-options=key:value]         # Set the wifi options
+  -b, [--boot-options=key:value]         # Set the boot options
+  -p, [--pantry], [--no-pantry]          # Save this recipe to the pantry as well
+                                         # Default: true
+  -l, [--local-file], [--no-local-file]  # Whether to write out a local file with the contents
+
+Create a recipe with a gem as a starting point</pre>
+
+<h4 id="label-list"><code>list</code><span><a href="#label-list">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre class="ruby"><span class="ruby-constant">Usage</span>
+  <span class="ruby-identifier">pi_maker</span> <span class="ruby-identifier">recipe</span> <span class="ruby-identifier">list</span>
+
+<span class="ruby-constant">Show</span> <span class="ruby-identifier">all</span> <span class="ruby-identifier">recipes</span> <span class="ruby-identifier">from</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">certain</span> <span class="ruby-identifier">collection</span>
+</pre>
+
+<h4 id="label-write_boot"><code>write_boot</code><span><a href="#label-write_boot">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker recipe write_boot
+
+Options:
+  -p, [--path=PATH]  # Save to a specific path
+
+Write a recipe&#39;s boot config to the SD card</pre>
+
+<h3 id="label-boot"><code>boot</code><span><a href="#label-boot">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<h4 id="label-config"><code>config</code><span><a href="#label-config">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker boot config
+
+Options:
+  -s, [--save=SAVE]         # Where to save to, defaults to the sd card, or current directory
+  -v, [--values=key:value]  # Pass values to the config
+
+Set values on the config file directly</pre>
+
+<h4 id="label-flash"><code>flash</code><span><a href="#label-flash">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker boot flash
+
+Options:
+  -m, [--image=IMAGE]    # An image file to write
+  -d, [--device=DEVICE]  # The device to write to
+
+Flash a card from an image</pre>
+
+<h3 id="label-identify"><code>identify</code><span><a href="#label-identify">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>Usage
+  pi_maker identify
+
+Options:
+  -r, [--range=RANGE]                      # Which ip range to target
+                                           # Default: 192.168.1.0/24
+  -p, [--program=PROGRAM]                  # What program to run with
+                                           # Default: arp
+  -o, [--output=OUTPUT]                    # What data to return, either [i]p, [h]ostname, or [b]oth
+                                           # Default: i
+  -i, [--interactive], [--no-interactive]  # Run with prompting
+  -h, [--help], [--no-help]                # Display usage information
+
+Find Raspberry Pi devices on the local network</pre>
+
+<h3 id="label-remote"><code>remote</code><span><a href="#label-remote">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<h4 id="label-apply"><code>apply</code><span><a href="#label-apply">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker remote apply
+
+Options:
+  -v, [--verbose], [--no-verbose]    # Whether to print command output
+  -c, [--config=key:value]           # Pass in a hash of config options
+  -s, [--scan], [--no-scan]          # Perform a network scan to find hosts
+  -k, [--connect-with=CONNECT_WITH]  # Whether to use [i]p_address or [h]ostname to connect
+                                     # Default: i
+
+Apply a recipe from the pantry</pre>
+
+<h4 id="label-connect"><code>connect</code><span><a href="#label-connect">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker remote connect
+
+Options:
+  -c, [--config=key:value]           # Pass in a hash of config options
+  -s, [--scan], [--no-scan]          # Perform a network scan to find hosts
+  -k, [--connect-with=CONNECT_WITH]  # Whether to use [i]p_address or [h]ostname to connect
+                                     # Default: i
+
+Connect to a pi over SSH</pre>
+
+<h4 id="label-upload"><code>upload</code><span><a href="#label-upload">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker remote upload
+
+Options:
+  -c, [--config=key:value]           # Pass in a hash of config options
+  -s, [--scan], [--no-scan]          # Perform a network scan to find hosts
+  -k, [--connect-with=CONNECT_WITH]  # Whether to use [i]p_address or [h]ostname to connect
+                                     # Default: i
+
+Transfer a local file to the remote</pre>
+
+<h4 id="label-download"><code>download</code><span><a href="#label-download">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<pre>Usage
+  pi_maker remote download
+
+Options:
+  -c, [--config=key:value]           # Pass in a hash of config options
+  -s, [--scan], [--no-scan]          # Perform a network scan to find hosts
+  -k, [--connect-with=CONNECT_WITH]  # Whether to use [i]p_address or [h]ostname to connect
+                                     # Default: i
+
+Copy a remote file</pre>
+
+</main>
+
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.1.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

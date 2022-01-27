@@ -50,6 +50,7 @@ Superclass:
 </ol>
 <h3>Public Instance</h3>
 <ol>
+<li><a href="#method-i-2B">+</a></li>
 <li><a href="#method-i-5B-5D">[]</a></li>
 <li><a href="#method-i-to_h">to_h</a></li>
 </ol>
@@ -99,8 +100,7 @@ bashrc: '/home/pi/.bashrc'
 <div class='method public-class' id='method-method-c-define'>
 <a name='method-c-define'></a>
 <div class='synopsis'>
-<span class='name'>define</span>
-<span class='arguments'>(hsh = {})</span>
+<span class='name'>define</span><span class='arguments'>(hsh = {})</span>
 
 </div>
 <div class='description'>
@@ -118,8 +118,7 @@ bashrc: '/home/pi/.bashrc'
 <div class='method public-class' id='method-method-c-new'>
 <a name='method-c-new'></a>
 <div class='synopsis'>
-<span class='name'>new</span>
-<span class='arguments'>(opts = {})</span>
+<span class='name'>new</span><span class='arguments'>(opts = {})</span>
 
 </div>
 <div class='description'>
@@ -135,11 +134,28 @@ bashrc: '/home/pi/.bashrc'
 </div>
 </div>
 <h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-2B'>
+<a name='method-i-2B'></a>
+<div class='synopsis'>
+<span class='name'>+</span><span class='arguments'>(other)</span>
+
+</div>
+<div class='description'>
+
+<p>Combine the subvalues of self and <code>other</code> to make new instructions</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-2B-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-2B-source'><span class="ruby-comment"># File lib/pi_maker/instructions.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">+</span>(<span class="ruby-identifier">other</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">TypeError</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>)&#x000A;&#x000A;  <span class="ruby-identifier">combo</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">new</span>&#x000A;&#x000A;  <span class="ruby-constant">LISTS</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">type</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">val</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Hash</span>&#x000A;            <span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>).<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">other</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>))&#x000A;          <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Array</span>&#x000A;            <span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>)&#x000A;          <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">combo</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{key}=&quot;</span>, <span class="ruby-identifier">val</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-constant">TEXT_BLOCKS</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">combo</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{key}=&quot;</span>, <span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">other</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">key</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">combo</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
 <div class='method public-instance' id='method-method-i-5B-5D'>
 <a name='method-i-5B-5D'></a>
 <div class='synopsis'>
-<span class='name'>[]</span>
-<span class='arguments'>(field)</span>
+<span class='name'>[]</span><span class='arguments'>(field)</span>
 
 </div>
 <div class='description'>
@@ -157,8 +173,7 @@ bashrc: '/home/pi/.bashrc'
 <div class='method public-instance' id='method-method-i-to_h'>
 <a name='method-i-to_h'></a>
 <div class='synopsis'>
-<span class='name'>to_h</span>
-<span class='arguments'>()</span>
+<span class='name'>to_h</span><span class='arguments'>()</span>
 
 </div>
 <div class='description'>
@@ -177,8 +192,7 @@ bashrc: '/home/pi/.bashrc'
 <div class='method private-instance' id='method-method-i-valid_attribute-3F'>
 <a name='method-i-valid_attribute-3F'></a>
 <div class='synopsis'>
-<span class='name'>valid_attribute?</span>
-<span class='arguments'>(key)</span>
+<span class='name'>valid_attribute?</span><span class='arguments'>(key)</span>
 
 </div>
 <div class='description'>
@@ -190,7 +204,7 @@ bashrc: '/home/pi/.bashrc'
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-valid_attribute-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-valid_attribute-3F-source'><span class="ruby-comment"># File lib/pi_maker/instructions.rb, line 63</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">valid_attribute?</span>(<span class="ruby-identifier">key</span>)&#x000A;  <span class="ruby-constant">LISTS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>) <span class="ruby-operator">||</span> <span class="ruby-constant">TEXT_BLOCKS</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-valid_attribute-3F-source'><span class="ruby-comment"># File lib/pi_maker/instructions.rb, line 86</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">valid_attribute?</span>(<span class="ruby-identifier">key</span>)&#x000A;  <span class="ruby-constant">LISTS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>) <span class="ruby-operator">||</span> <span class="ruby-constant">TEXT_BLOCKS</span>.<span class="ruby-identifier">keys</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">key</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class PiMaker::DiskManagement::MacOs - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../";
+  var index_rel_prefix = "../../";
+</script>
+
+<script src="../../js/navigation.js" defer></script>
+<script src="../../js/search.js" defer></script>
+<script src="../../js/search_index.js" defer></script>
+<script src="../../js/searcher.js" defer></script>
+<script src="../../js/darkfish.js" defer></script>
+
+<link href="../../css/fonts.css" rel="stylesheet">
+<link href="../../css/rdoc.css" rel="stylesheet">
+
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../table_of_contents.html#pages">Pages</a>
+    <a href="../../table_of_contents.html#classes">Classes</a>
+    <a href="../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="DiskProtocol.html">PiMaker::DiskManagement::DiskProtocol</a>
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-byte_convert">::byte_convert</a>
+    
+    <li ><a href="#method-c-disk_info">::disk_info</a>
+    
+    <li ><a href="#method-c-dstruct">::dstruct</a>
+    
+    <li ><a href="#method-c-eject_disk">::eject_disk</a>
+    
+    <li ><a href="#method-c-list_blocks">::list_blocks</a>
+    
+    <li ><a href="#method-c-mount_disk">::mount_disk</a>
+    
+    <li ><a href="#method-c-parse_disk_plist_entry">::parse_disk_plist_entry</a>
+    
+    <li ><a href="#method-c-parse_diskinfo">::parse_diskinfo</a>
+    
+    <li ><a href="#method-c-raw_disk_path">::raw_disk_path</a>
+    
+    <li ><a href="#method-c-transform_diskinfo">::transform_diskinfo</a>
+    
+    <li ><a href="#method-c-unmount_disk">::unmount_disk</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-PiMaker::DiskManagement::MacOs">
+  <h1 id="class-PiMaker::DiskManagement::MacOs" class="class">
+    class PiMaker::DiskManagement::MacOs
+  </h1>
+
+  <section class="description">
+    
+<p>The disk protocol for Mac devices</p>
+
+  </section>
+
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-disk_info" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">disk_info</span><span
+            class="method-args">(dev_path)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Gets maximal info for disk at <code>dev_path</code> using diskutil info</p>
+          
+          
+
+          
+          <div class="method-source-code" id="disk_info-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">disk_info</span>(<span class="ruby-identifier">dev_path</span>)
+  <span class="ruby-identifier">parse_diskinfo</span>(<span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;diskutil info #{dev_path}&quot;</span>))
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-eject_disk" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">eject_disk</span><span
+            class="method-args">(dsk)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Prepare the disk <code>dsk</code> to be removed from the computer</p>
+          
+          
+
+          
+          <div class="method-source-code" id="eject_disk-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">eject_disk</span>(<span class="ruby-identifier">dsk</span>)
+  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;diskutil eject #{dsk}&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-list_blocks" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">list_blocks</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Gets all attached disks, turns them into DiskProtocol::Disk objects</p>
+          
+          
+
+          
+          <div class="method-source-code" id="list_blocks-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">list_blocks</span>
+  <span class="ruby-identifier">dinfo</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;diskutil list -plist&#39;</span>)
+  <span class="ruby-identifier">drm</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;diskutil list&#39;</span>).<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n\n&quot;</span>)
+               .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:lines</span>)
+               .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:first</span>)
+               .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39; (&#39;</span>) }
+               .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span>, <span class="ruby-identifier">b</span><span class="ruby-operator">|</span> [<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-identifier">a</span>)), <span class="ruby-identifier">b</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/external/</span>)] }
+
+  <span class="ruby-identifier">adp</span> = <span class="ruby-constant">Plist</span>.<span class="ruby-identifier">parse_xml</span>(<span class="ruby-identifier">dinfo</span>)[<span class="ruby-string">&#39;AllDisksAndPartitions&#39;</span>]
+  <span class="ruby-identifier">adp</span>.<span class="ruby-identifier">map!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">parse_disk_plist_entry</span>(<span class="ruby-identifier">x</span>) }
+
+  <span class="ruby-identifier">dstruct</span>(<span class="ruby-identifier">adp</span>, <span class="ruby-identifier">drm</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-mount_disk" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">mount_disk</span><span
+            class="method-args">(dsk, _mountp = nil)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Mounts the disk <code>dsk</code>, ignoring the <code>_mp</code> arg since Mac has default mounting paths under /Volumes</p>
+          
+          
+
+          
+          <div class="method-source-code" id="mount_disk-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 31</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mount_disk</span>(<span class="ruby-identifier">dsk</span>, <span class="ruby-identifier">_mountp</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;diskutil mountDisk #{dsk}&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-raw_disk_path" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">raw_disk_path</span><span
+            class="method-args">(dsk)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Prepends the <code>dev_path</code> with &#39;r&#39;</p>
+          
+          
+
+          
+          <div class="method-source-code" id="raw_disk_path-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 46</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">raw_disk_path</span>(<span class="ruby-identifier">dsk</span>)
+  <span class="ruby-identifier">dsk</span>.<span class="ruby-identifier">to_s</span>
+     .<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39;/&#39;</span>)
+     .<span class="ruby-identifier">tap</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span>[<span class="ruby-value">2</span>] = <span class="ruby-node">&quot;r#{a[2]}&quot;</span> }
+     .<span class="ruby-identifier">join</span>(<span class="ruby-string">&#39;/&#39;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-unmount_disk" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">unmount_disk</span><span
+            class="method-args">(dsk)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Unmounts the disk at <code>dsk</code></p>
+          
+          
+
+          
+          <div class="method-source-code" id="unmount_disk-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">unmount_disk</span>(<span class="ruby-identifier">dsk</span>)
+  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;diskutil unmountDisk #{dsk}&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="private-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Private Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-byte_convert" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">byte_convert</span><span
+            class="method-args">(bstr)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Takes in a string estimation of size in GB/MB and converts it to single byte representation</p>
+          
+          
+
+          
+          <div class="method-source-code" id="byte_convert-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 123</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">byte_convert</span>(<span class="ruby-identifier">bstr</span>)
+  <span class="ruby-identifier">sz</span> = <span class="ruby-regexp">/(\d+(?:\.\d)) (\w)B/</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">bstr</span>)
+
+  <span class="ruby-identifier">isz</span> = <span class="ruby-identifier">sz</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_f</span>
+
+  <span class="ruby-identifier">factor</span> = <span class="ruby-constant">StorageDevice</span><span class="ruby-operator">::</span><span class="ruby-constant">BYTE_SIZES</span>.<span class="ruby-identifier">detect</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">_v</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">k</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">chars</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">upcase</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">sz</span>[<span class="ruby-value">2</span>]
+  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">last</span>
+
+  (<span class="ruby-identifier">isz</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">factor</span>).<span class="ruby-identifier">floor</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-dstruct" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">dstruct</span><span
+            class="method-args">(plist, pathset)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Turns the passed plist <code>pl</code> and path/removability matrix <code>pathset</code> to create Disks</p>
+          
+          
+
+          
+          <div class="method-source-code" id="dstruct-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 89</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dstruct</span>(<span class="ruby-identifier">plist</span>, <span class="ruby-identifier">pathset</span>)
+  <span class="ruby-identifier">plist</span>.<span class="ruby-identifier">map!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">entry</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">merge!</span>(
+      <span class="ruby-value">removable:</span> <span class="ruby-identifier">pathset</span>.<span class="ruby-identifier">find</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">a</span>, <span class="ruby-identifier">_b</span><span class="ruby-operator">|</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:dev_path</span>].<span class="ruby-identifier">match</span>(<span class="ruby-identifier">a</span>) }[<span class="ruby-value">1</span>]
+    )
+
+    <span class="ruby-identifier">d</span> = <span class="ruby-constant">DiskProtocol</span><span class="ruby-operator">::</span><span class="ruby-constant">Disk</span>.<span class="ruby-identifier">new</span>
+
+    <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">each_pair</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">d</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">v</span> }
+    <span class="ruby-identifier">dstruct</span>(<span class="ruby-identifier">d</span>.<span class="ruby-identifier">partitions</span>, <span class="ruby-identifier">pathset</span>)
+    <span class="ruby-identifier">d</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-parse_disk_plist_entry" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">parse_disk_plist_entry</span><span
+            class="method-args">(plist)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Converts an individual entry from the plist <code>pl</code> into a hash of Disk options</p>
+          
+          
+
+          
+          <div class="method-source-code" id="parse_disk_plist_entry-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 104</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_disk_plist_entry</span>(<span class="ruby-identifier">plist</span>)
+  <span class="ruby-identifier">dpath</span> = <span class="ruby-node">&quot;/dev/#{plist[&#39;DeviceIdentifier&#39;]}&quot;</span>
+  <span class="ruby-identifier">parts</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">plist</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-string">&#39;Partitions&#39;</span>)
+            <span class="ruby-identifier">plist</span>[<span class="ruby-string">&#39;Partitions&#39;</span>].<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">parse_disk_plist_entry</span>(<span class="ruby-identifier">x</span>) }
+          <span class="ruby-keyword">else</span>
+            []
+          <span class="ruby-keyword">end</span>
+
+  {
+    <span class="ruby-value">dev_path:</span> <span class="ruby-identifier">dpath</span>,
+    <span class="ruby-value">bytesize:</span> <span class="ruby-identifier">plist</span>[<span class="ruby-string">&#39;Size&#39;</span>],
+    <span class="ruby-value">mount_point:</span> <span class="ruby-identifier">plist</span>[<span class="ruby-string">&#39;MountPoint&#39;</span>],
+    <span class="ruby-value">partitions:</span> <span class="ruby-identifier">parts</span>,
+    <span class="ruby-value">filesystem:</span> <span class="ruby-identifier">mount_fs</span>(<span class="ruby-identifier">dpath</span>)
+  }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-parse_diskinfo" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">parse_diskinfo</span><span
+            class="method-args">(dinfo)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Parse returned table from diskutil info <code>dinfo</code></p>
+          
+          
+
+          
+          <div class="method-source-code" id="parse_diskinfo-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 56</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">parse_diskinfo</span>(<span class="ruby-identifier">dinfo</span>)
+  <span class="ruby-identifier">info</span> = <span class="ruby-identifier">dinfo</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+              .<span class="ruby-identifier">reject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:empty?</span>)
+              .<span class="ruby-identifier">tap</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:shift</span>)
+              .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-regexp">/\s*(.*):\s*(.*)/</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">x</span>) }
+              .<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:captures</span>)
+              .<span class="ruby-identifier">to_h</span>
+
+  <span class="ruby-identifier">transform_diskinfo</span>(<span class="ruby-identifier">info</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-transform_diskinfo" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">transform_diskinfo</span><span
+            class="method-args">(dinfo)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Applies transformations to diskinfo</p>
+          
+          
+
+          
+          <div class="method-source-code" id="transform_diskinfo-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/mac_os.rb, line 68</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">transform_diskinfo</span>(<span class="ruby-identifier">dinfo</span>)
+  <span class="ruby-identifier">dinfo</span>.<span class="ruby-identifier">transform_keys!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-constant">Strings</span><span class="ruby-operator">::</span><span class="ruby-constant">Case</span>.<span class="ruby-identifier">underscore</span>(<span class="ruby-identifier">x</span>) }
+       .<span class="ruby-identifier">transform_keys!</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_sym</span>)
+
+  <span class="ruby-identifier">dinfo</span>.<span class="ruby-identifier">transform_values!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">next</span> <span class="ruby-identifier">x</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">match?</span>(<span class="ruby-regexp">/Bytes/</span>)
+
+    <span class="ruby-identifier">x</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/(\d+) Bytes/</span>)
+     .<span class="ruby-identifier">captures</span>
+     .<span class="ruby-identifier">first</span>
+     .<span class="ruby-identifier">to_i</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">dinfo</span>.<span class="ruby-identifier">transform_values!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">next</span> <span class="ruby-identifier">x</span> <span class="ruby-keyword">unless</span> <span class="ruby-node">%w[Yes No]</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">x</span>)
+
+    <span class="ruby-identifier">x</span> <span class="ruby-operator">==</span> <span class="ruby-string">&#39;Yes&#39;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.1.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

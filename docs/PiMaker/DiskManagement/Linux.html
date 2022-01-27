@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class PiMaker::DiskManagement::Linux - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../";
+  var index_rel_prefix = "../../";
+</script>
+
+<script src="../../js/navigation.js" defer></script>
+<script src="../../js/search.js" defer></script>
+<script src="../../js/search_index.js" defer></script>
+<script src="../../js/searcher.js" defer></script>
+<script src="../../js/darkfish.js" defer></script>
+
+<link href="../../css/fonts.css" rel="stylesheet">
+<link href="../../css/rdoc.css" rel="stylesheet">
+
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../table_of_contents.html#pages">Pages</a>
+    <a href="../../table_of_contents.html#classes">Classes</a>
+    <a href="../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="DiskProtocol.html">PiMaker::DiskManagement::DiskProtocol</a>
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-disk_info">::disk_info</a>
+    
+    <li ><a href="#method-c-dstruct">::dstruct</a>
+    
+    <li ><a href="#method-c-eject_disk">::eject_disk</a>
+    
+    <li ><a href="#method-c-list_blocks">::list_blocks</a>
+    
+    <li ><a href="#method-c-mount_disk">::mount_disk</a>
+    
+    <li ><a href="#method-c-raw_disk_path">::raw_disk_path</a>
+    
+    <li ><a href="#method-c-unmount_disk">::unmount_disk</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-PiMaker::DiskManagement::Linux">
+  <h1 id="class-PiMaker::DiskManagement::Linux" class="class">
+    class PiMaker::DiskManagement::Linux
+  </h1>
+
+  <section class="description">
+    
+<p>The disk protocol class for linux systems like Raspi</p>
+
+  </section>
+
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-disk_info" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">disk_info</span><span
+            class="method-args">(dev_path)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Gets maximal info for disk at <code>dev_path</code> from lsblk</p>
+          
+          
+
+          
+          <div class="method-source-code" id="disk_info-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/linux.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">disk_info</span>(<span class="ruby-identifier">dev_path</span>)
+  <span class="ruby-identifier">cmd</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;lsblk #{dev_path} -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM&quot;</span>)
+  <span class="ruby-identifier">data</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">cmd</span>)[<span class="ruby-string">&#39;blockdevices&#39;</span>].<span class="ruby-identifier">first</span>
+
+  <span class="ruby-identifier">dstruct</span>(<span class="ruby-identifier">data</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-eject_disk" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">eject_disk</span><span
+            class="method-args">(dsk)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Prepare the disk <code>dsk</code> to be removed from the computer</p>
+          
+          
+
+          
+          <div class="method-source-code" id="eject_disk-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/linux.rb, line 39</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">eject_disk</span>(<span class="ruby-identifier">dsk</span>)
+  <span class="ruby-identifier">unmount_disk</span>(<span class="ruby-identifier">dsk</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-list_blocks" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">list_blocks</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Gets all attached disks, turns them into DiskProtocol::Disk objects, and returns</p>
+          
+          
+
+          
+          <div class="method-source-code" id="list_blocks-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/linux.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">list_blocks</span>
+  <span class="ruby-identifier">cmd</span> = <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-string">&#39;lsblk -Jbo NAME,PATH,SIZE,MOUNTPOINT,FSTYPE,RM&#39;</span>)
+
+  <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">cmd</span>)[<span class="ruby-string">&#39;blockdevices&#39;</span>]
+      .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">di</span><span class="ruby-operator">|</span> <span class="ruby-identifier">dstruct</span>(<span class="ruby-identifier">di</span>) }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-mount_disk" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">mount_disk</span><span
+            class="method-args">(dsk, mountp = nil)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Uses the mount command to mount disk <code>dsk</code>, with mount point <code>mp</code></p>
+          
+          
+
+          
+          <div class="method-source-code" id="mount_disk-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/linux.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mount_disk</span>(<span class="ruby-identifier">dsk</span>, <span class="ruby-identifier">mountp</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-identifier">mtp</span> = <span class="ruby-identifier">mountp</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">dsk</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">mountp</span>
+
+  <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mkdir_p</span>(<span class="ruby-identifier">mtp</span>)
+  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-value">command:</span> [<span class="ruby-node">&quot;sudo mount #{dsk}&quot;</span>, <span class="ruby-identifier">mtp</span>])
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-raw_disk_path" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">raw_disk_path</span><span
+            class="method-args">(dsk)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Same dev and raw path on linux</p>
+          
+          
+
+          
+          <div class="method-source-code" id="raw_disk_path-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/linux.rb, line 44</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">raw_disk_path</span>(<span class="ruby-identifier">dsk</span>)
+  <span class="ruby-identifier">dsk</span>.<span class="ruby-identifier">dev_path</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-unmount_disk" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">unmount_disk</span><span
+            class="method-args">(dsk)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Unmounts the disk at path <code>dsk</code></p>
+          
+          
+
+          
+          <div class="method-source-code" id="unmount_disk-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/linux.rb, line 34</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">unmount_disk</span>(<span class="ruby-identifier">dsk</span>)
+  <span class="ruby-constant">PiMaker</span>.<span class="ruby-identifier">system_cmd</span>(<span class="ruby-node">&quot;sudo umount #{dsk}&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="private-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Private Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-dstruct" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">dstruct</span><span
+            class="method-args">(subhsh)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Takes in a <code>subhsh</code> from lksblk&#39;s json result and turns it into a DiskProtocol::Disk</p>
+          
+          
+
+          
+          <div class="method-source-code" id="dstruct-source">
+            <pre><span class="ruby-comment"># File lib/pi_maker/disk_management/linux.rb, line 51</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dstruct</span>(<span class="ruby-identifier">subhsh</span>)
+  <span class="ruby-identifier">md</span> = {
+    <span class="ruby-value">dev_path:</span> <span class="ruby-identifier">subhsh</span>[<span class="ruby-string">&#39;path&#39;</span>],
+    <span class="ruby-value">removable:</span> <span class="ruby-identifier">subhsh</span>[<span class="ruby-string">&#39;rm&#39;</span>],
+    <span class="ruby-value">size:</span> <span class="ruby-identifier">subhsh</span>[<span class="ruby-string">&#39;size&#39;</span>],
+    <span class="ruby-value">mount_point:</span> <span class="ruby-identifier">subhsh</span>[<span class="ruby-string">&#39;mountpoint&#39;</span>],
+    <span class="ruby-value">filesystem:</span> <span class="ruby-identifier">subhsh</span>[<span class="ruby-string">&#39;fstype&#39;</span>]
+  }
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">subhsh</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-string">&#39;children&#39;</span>)
+    <span class="ruby-identifier">chi</span> = <span class="ruby-identifier">subhsh</span>[<span class="ruby-string">&#39;children&#39;</span>].<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">b</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">dstruct</span>(<span class="ruby-identifier">b</span>)
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">md</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-value">partitions:</span> <span class="ruby-identifier">chi</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">d</span> = <span class="ruby-constant">DiskProtocol</span><span class="ruby-operator">::</span><span class="ruby-constant">Disk</span>.<span class="ruby-identifier">new</span>
+
+  <span class="ruby-identifier">md</span>.<span class="ruby-identifier">each_pair</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">d</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-identifier">v</span> }
+  <span class="ruby-identifier">d</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.1.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
