@@ -93,12 +93,12 @@ module PiMaker
         'sudo apt-get install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev',
         'git clone https://github.com/rbenv/rbenv.git ~/.rbenv',
         'cd ~/.rbenv && src/configure && make -C src',
-        %q(echo 'export PATH="$HOME/.rbenv/bin/:$PATH"' >> ~/.bashrc),
+        %q(echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc),
         %q(echo 'eval "$(rbenv init - bash)"' >> ~/.bashrc),
-        'mkdir -p "$(rbenv root)"/plugins',
-        'git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build',
-        "rbenv install #{instructions.ruby_version}",
-        "rbenv global #{instructions.ruby_version}"
+        'mkdir -p ~/.rbenv/plugins',
+        'git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build',
+        "~/.rbenv/bin/rbenv install #{instructions.ruby_version}",
+        "~/.rbenv/bin/rbenv global #{instructions.ruby_version}"
       ]
     end
 
