@@ -49,7 +49,11 @@ module PiMaker
           results = PiMaker::NetworkIdentifier.call(args)
 
           return nil if results.empty?
-          return results.first if results.one?
+
+          if results.one?
+            prompt.say(pastel.green("Connecting to #{results.first}"))
+            return results.first
+          end
 
           unless @options[:interactive]
             raise CLI::Error, "Multiple ips, please pass one as an argument:\n#{results.join("\n")}"

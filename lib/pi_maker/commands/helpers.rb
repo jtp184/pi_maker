@@ -120,6 +120,7 @@ module PiMaker
       def collect_instructions
         prompt.warn('Collecting instructions')
 
+        args = { ruby_version: ruby_version_prompt }.compact
         list_args = {}
         text_args = {}
 
@@ -143,7 +144,9 @@ module PiMaker
           end
         end
 
-        PiMaker::Instructions.new(list_args.merge(text_args))
+        args.merge!(list_args).merge!(text_args)
+
+        PiMaker::Instructions.new(args)
       end
 
       def choose_disk
@@ -173,6 +176,11 @@ module PiMaker
           { key: 'n', name: 'next', value: :next },
           { key: '?', name: 'END', value: nil }
         )
+      end
+
+      def ruby_version_prompt
+        return unless prompt.yes?('Install Ruby?')
+        return prompt.ask('Ruby version: ', default: '2.7.4')
       end
 
       def instruction_option_prompt(title)

@@ -32,6 +32,7 @@ module PiMaker
       end.compact
 
       cmds.unshift('mkdir -p ~/repos') unless instructions[:github_repos].empty?
+      cmds.unshift(ruby_version) unless instructions[:ruby_version].nil?
 
       unless instructions[:apt_packages].empty? || instructions[:gems].empty?
         cmds.unshift('sudo apt-get update')
@@ -84,11 +85,28 @@ module PiMaker
       end
     end
 
+    # Install rbenv and select a ruby version
+    def ruby_version
+      return [] unless instructions.ruby_version
+
+      [
+        'sudo apt-get install -y autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev',
+        'git clone https://github.com/rbenv/rbenv.git ~/.rbenv',
+        'cd ~/.rbenv && src/configure && make -C src',
+        %q(echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc),
+        %q(echo 'eval "$(rbenv init - bash)"' >> ~/.bashrc),
+        'mkdir -p ~/.rbenv/plugins',
+        'git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build',
+        "~/.rbenv/bin/rbenv install #{instructions.ruby_version}",
+        "~/.rbenv/bin/rbenv global #{instructions.ruby_version}"
+      ]
+    end
+
     # Construct a gem install string from the gems
     def gems
       return if instructions.gems.empty?
 
-      instructions.gems.reduce('sudo gem install') { |str, gm| [str, gm].join(' ') }
+      instructions.gems.reduce('gem install') { |str, gm| [str, gm].join(' ') }
     end
   end
 end

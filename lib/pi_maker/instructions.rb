@@ -18,9 +18,14 @@ module PiMaker
     # Generate accessors for the defined attributes
     attr_accessor(*LISTS.keys, *TEXT_BLOCKS.keys)
 
+    # Define a ruby version to install with rbenv
+    attr_accessor :ruby_version
+
     # Use the +opts+ hash to populate instance vars
     def initialize(opts = {})
       opt_hash = opts.to_h
+
+      @ruby_version = opt_hash[:ruby_version]
 
       LISTS.each do |c, t|
         instance_variable_set(:"@#{c}", opt_hash.key?(c.to_s) ? opt_hash[c.to_s] : t.new)
@@ -30,7 +35,7 @@ module PiMaker
         instance_variable_set(:"@#{c}", opt_hash.key?(c.to_s) ? opt_hash[c.to_s] : [])
       end
 
-      opts.to_h.each do |key, value|
+      opt_hash.each do |key, value|
         next unless valid_attribute?(key)
         next if LISTS.include?(key) && !value.is_a?(LISTS[key])
 
@@ -52,7 +57,7 @@ module PiMaker
 
     # Convert to a hash representation by map reducing the keys
     def to_h
-      (LISTS.keys + TEXT_BLOCKS.keys).map.with_object({}) do |val, acc|
+      valid_attributes.map.with_object({}) do |val, acc|
         acc[val] = send(val) if send(val)
       end
     end
@@ -61,7 +66,7 @@ module PiMaker
     def +(other)
       raise TypeError unless other.is_a?(self.class)
 
-      combo = self.class.new
+      combo = self.class.new(ruby_version: ruby_version)
 
       LISTS.each do |key, type|
         val = if type == Hash
@@ -82,9 +87,13 @@ module PiMaker
 
     private
 
+    def valid_attributes
+      LISTS.keys + TEXT_BLOCKS.keys + [:ruby_version]
+    end
+
     # Returns true if the +key+ is one of the LISTS or TEXT_BLOCKS keys
     def valid_attribute?(key)
-      LISTS.include?(key) || TEXT_BLOCKS.keys.include?(key)
+      valid_attributes.include?(key)
     end
   end
 end
