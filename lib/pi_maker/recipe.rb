@@ -16,6 +16,7 @@ module PiMaker
     # Other Instructions sets to apply
     attr_accessor :additional_setup
 
+    # The fields which are stored on the Recipe
     FIELDS = %i[hostname password wpa_config boot_config initial_setup additional_setup].freeze
 
     # Takes in +opts+ for the attributes
@@ -90,6 +91,7 @@ module PiMaker
       FileEncrypter.encrypt(yml, passwd)
     end
 
+    # Returns ruby code to recreate this recipe
     def to_rb
       <<~DOC
         #{self.class.name}.define do |re|
