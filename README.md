@@ -75,6 +75,8 @@ The `Instructions` class holds data for what should be installed or configured o
 ```ruby
 # Basic initialization with all options
 instructions = PiMaker::Instructions.new(
+  # Optional Ruby version to be installed using rbenv
+  ruby_version: '3.1.2',
   # Array of packages to install using apt-get install
   apt_packages: %w(neofetch kitty),
   # Array of gems to install to system using sudo gem install
