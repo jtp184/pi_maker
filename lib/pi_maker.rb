@@ -17,25 +17,18 @@ module PiMaker
     # Returns a symbol corresponding to the operating system
     def host_os
       case RUBY_PLATFORM
-      when /cygwin|mswin|mingw|bccwin|wince|emx/
-        :windows
-      when /darwin/
-        :mac
-      when /linux/
-        pi = File.read('/proc/cpuinfo') =~ /Raspberry Pi/
-        pi ? :raspberrypi : :linux
+      when /cygwin|mswin|mingw|bccwin|wince|emx/ then :windows
+      when /darwin/ then :mac
+      when /linux/ then determine_linux_platform
       end
     end
 
     # Default location for the config file
     def sd_card_path
       case PiMaker.host_os
-      when :mac
-        '/Volumes/boot'
-      when :linux, :raspberrypi
-        '/mnt/boot'
-      else
-        'E:'
+      when :mac then '/Volumes/boot'
+      when :linux, :raspberrypi then '/mnt/boot'
+      else 'E:'
       end
     end
 
@@ -67,6 +60,13 @@ module PiMaker
       end
 
       result.out
+    end
+
+    private
+
+    def determine_linux_platform
+      pi = File.read('/proc/cpuinfo') =~ /Raspberry Pi/
+      pi ? :raspberrypi : :linux
     end
   end
 end

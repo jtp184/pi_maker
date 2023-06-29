@@ -41,7 +41,9 @@ module PiMaker
       mac: :arp,
       linux: :nmap,
       raspberry: :nmap
-    }
+    }.freeze
+
+    DEFAULT_IP_RANGE = -'192.168.1.0/24'
 
     # Structured result from running a scan program
     ScanResult = Struct.new(:hostname, :ip_address, :mac_address, :manufacturer) do
@@ -64,12 +66,9 @@ module PiMaker
 
         output = opts.fetch(:run_with) do
           case prog
-          when :arp
-            -> { PiMaker.system_cmd('arp -a') }
-          when :nmap
-            -> { PiMaker.system_cmd("sudo nmap -sn #{opts.fetch(:ip_address, '192.168.1.0/24')}") }
-          else
-            -> { PiMaker.system_cmd(prog.to_s) }
+          when :arp then -> { PiMaker.system_cmd('arp -a') }
+          when :nmap then -> { PiMaker.system_cmd("sudo nmap -sn #{opts.fetch(:ip_address, DEFAULT_IP_RANGE)}") }
+          else -> { PiMaker.system_cmd(prog.to_s) }
           end
         end.call
 

@@ -23,10 +23,8 @@ module PiMaker
       # Returns the platform specific DiskProtocol in use
       def protocol
         case PiMaker.host_os
-        when :linux, :raspberrypi
-          DiskManagement::Linux
-        when :mac
-          DiskManagement::MacOs
+        when :linux, :raspberrypi then DiskManagement::Linux
+        when :mac then DiskManagement::MacOs
         end
       end
     end

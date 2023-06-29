@@ -75,6 +75,8 @@ module PiMaker
 
       # Returns a string representation with digits to +round_to+
       def size(round_to = 4)
+        return '0 bytes' if capacity.zero?
+
         unit = BYTE_SIZES.to_a.reject { |_scalar, value| capacity < value }.last
 
         value_str = (capacity / unit[1].to_f).round(round_to)

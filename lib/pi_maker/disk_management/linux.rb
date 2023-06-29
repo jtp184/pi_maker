@@ -52,23 +52,19 @@ module PiMaker
           md = {
             dev_path: subhsh['path'],
             removable: subhsh['rm'],
-            size: subhsh['size'],
+            bytesize: subhsh['size'],
             mount_point: subhsh['mountpoint'],
             filesystem: subhsh['fstype']
           }
 
           if subhsh.key?('children')
-            chi = subhsh['children'].map do |b|
-              dstruct(b)
-            end
-
+            chi = subhsh['children'].map { |b| dstruct(b) }
             md.merge!(partitions: chi)
           end
 
-          d = DiskProtocol::Disk.new
-
-          md.each_pair { |k, v| d[k] = v }
-          d
+          DiskProtocol::Disk.new.tap do |d|
+            md.each_pair { |k, v| d[k] = v }
+          end
         end
       end
     end

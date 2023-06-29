@@ -27,7 +27,7 @@ module PiMaker
         raise Errno::ENOENT 'Image does not exist' unless File.exist?(image_path)
 
         @pipe = IO.popen(
-          "sudo dd bs=1m if=#{image_path} of=#{disk.raw_disk_path}",
+          "sudo dd bs=1M if=#{image_path} of=#{disk.raw_disk_path}",
           err: %i[child out]
         )
 
