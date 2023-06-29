@@ -69,10 +69,9 @@ module PiMaker
       combo = self.class.new(ruby_version: ruby_version)
 
       LISTS.each do |key, type|
-        val = if type == Hash
-                send(key).merge(other.send(key))
-              elsif type == Array
-                send(key) + other.send(key)
+        val = case type
+              when Hash then send(key).merge(other.send(key))
+              when Array then send(key) + other.send(key)
               end
 
         combo.send(:"#{key}=", val)

@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'plist', '~> 3.6.0'
   spec.add_runtime_dependency 'strings-case', '~> 0.3.0'
   spec.add_runtime_dependency 'tty-box', '~> 0.7.0'
-  spec.add_runtime_dependency 'tty-command', '~> 0.10.0'
+  spec.add_runtime_dependency 'tty-command', '~> 0.10.1'
   spec.add_runtime_dependency 'tty-config', '~> 0.4.0'
   spec.add_runtime_dependency 'tty-editor', '~> 0.6.0'
   spec.add_runtime_dependency 'tty-exit', '~> 0.1.0'

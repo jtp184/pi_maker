@@ -29,7 +29,7 @@ module PiMaker
 
         # Given an image +img_path+, writes the image to the disk +dsk+
         def write_image(img_path, dsk)
-          unmount_disk(dsk)
+          unmount_disk(dsk) if dsk.is_a?(StorageDevice) && dsk.mounted?
           FlashingOperation.start(image_path: img_path, disk: dsk)
         end
 
@@ -58,10 +58,8 @@ module PiMaker
           return nil if mp.nil?
 
           case mp
-          when p2
-            mp.match(p2)[1]
-          when p3
-            mp.match(p3)[1]
+          when p2 then mp.match(p2)[1]
+          when p3 then mp.match(p3)[1]
           end
         end
 

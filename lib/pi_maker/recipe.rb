@@ -139,9 +139,10 @@ module PiMaker
       self.wpa_config ||= WpaConfig.new(conf.slice(:country_code))
 
       conf[:networks].each do |args|
-        if args.is_a?(Array)
+        case args
+        when Array
           self.wpa_config.append(*args)
-        elsif args.is_a?(String)
+        when String
           passwd = Pantry.global.wifi_networks[args]
           next unless passwd
 
