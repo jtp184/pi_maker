@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'psych'
 
 module PiMaker
   # Wrapper for the config.txt file on the boot volume
@@ -25,7 +26,7 @@ module PiMaker
 
     # Parse the +yml+ string and create a new instance from it
     def self.from_yaml(yml, encrypted = nil)
-      new(Psych.load(FileEncrypter.decrypt(yml, encrypted)))
+      new(Psych.unsafe_load(FileEncrypter.decrypt(yml, encrypted)))
     end
 
     # Takes in +opts+ for the config and path

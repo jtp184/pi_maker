@@ -1,3 +1,5 @@
+require 'ostruct'
+require 'psych'
 require 'tempfile'
 
 module PiMaker
@@ -108,7 +110,7 @@ module PiMaker
           when :clear
             boot[bf] = OpenStruct.new
           when :edit
-            boot[bf] = OpenStruct.new(Psych.load(editor_text(Psych.dump(boot.config[bf].to_h))))
+            boot[bf] = OpenStruct.new(Psych.unsafe_load(editor_text(Psych.dump(boot.config[bf].to_h))))
           end
 
           prompt.ok(Psych.dump(boot.config[bf].to_h))
@@ -180,7 +182,7 @@ module PiMaker
 
       def ruby_version_prompt
         return unless prompt.yes?('Install Ruby?')
-        return prompt.ask('Ruby version: ', default: '2.7.4')
+        return prompt.ask('Ruby version: ', default: '4.0.1')
       end
 
       def instruction_option_prompt(title)

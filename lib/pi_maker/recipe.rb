@@ -1,3 +1,4 @@
+require 'ostruct'
 require 'psych'
 
 module PiMaker
@@ -22,7 +23,7 @@ module PiMaker
     # Takes in +opts+ for the attributes
     def initialize(opts = {})
       FIELDS.each do |key|
-        instance_variable_set("@#{key}", opts[key]) if opts[key]
+        instance_variable_set(:"@#{key}", opts[key]) if opts[key]
       end
 
       parse_wifi_config_options(opts)
@@ -40,7 +41,7 @@ module PiMaker
 
     # Takes in the +yml+ string, loads the options from it and returns a new instance
     def self.from_yaml(yml, encrypted = nil)
-      yaml = Psych.load(FileEncrypter.decrypt(yml, encrypted))
+      yaml = Psych.unsafe_load(FileEncrypter.decrypt(yml, encrypted))
 
       inst = new(yaml.slice(:hostname, :password))
 

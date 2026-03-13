@@ -81,7 +81,7 @@ module PiMaker
 
         value_str = (capacity / unit[1].to_f).round(round_to)
 
-        unit_str = unit[0].to_s
+        unit_str = +unit[0].to_s
         unit_str << 's' unless capacity % 10 == 1
 
         "#{value_str} #{unit_str}"

@@ -1,6 +1,6 @@
 require 'bundler/setup'
 
-unless ENV['TRAVIS']
+unless ENV['CI']
   require 'simplecov'
 
   SimpleCov.start do

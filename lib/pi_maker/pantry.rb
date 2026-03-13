@@ -1,3 +1,5 @@
+require 'psych'
+
 module PiMaker
   # Stores recipes and wifi networks together in a securable bundle
   class Pantry
@@ -36,7 +38,7 @@ module PiMaker
 
     # If we can locate a global pantry, loads it. Override with +opts+
     def self.global(opts = {})
-      if global_exists? && !opts.key(:base_path)
+      if global_exists? && !opts.key?(:base_path)
         new({ base_path: File.read("#{global_exists?}/.pi_maker") }.merge(opts))
       else
         new({ base_path: Dir.pwd }.merge(opts))
@@ -111,7 +113,7 @@ module PiMaker
 
       return {} unless fi
 
-      inst = Psych.load(FileEncrypter.decrypt(File.read(fi), password))
+      inst = Psych.unsafe_load(FileEncrypter.decrypt(File.read(fi), password))
       file_paths[inst] = fi
       inst
     end
