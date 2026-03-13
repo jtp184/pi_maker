@@ -113,7 +113,7 @@ module PiMaker
 
       return {} unless fi
 
-      inst = Psych.safe_load(FileEncrypter.decrypt(File.read(fi), password), permitted_classes: [Symbol])
+      inst = Psych.safe_load(FileEncrypter.decrypt(File.read(fi), password))
       file_paths[inst] = fi
       inst
     end
