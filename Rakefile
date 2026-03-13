@@ -28,10 +28,6 @@ task :docs do
   sh "rdoc --output=docs --format=hanna --all --main=README.md #{RDOC_EXCLUDE}"
 end
 
-task :docs do
-  sh "rdoc --output=docs --format=hanna --all --main=README.md #{RDOC_EXCLUDE}"
-end
-
 task :reinstall do
   needs_sudo = Gem.platforms.last.os == 'linux'
   sh "#{needs_sudo ? 'sudo ' : ''}gem uninstall pi_maker"

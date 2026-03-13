@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'psych'
 
 module PiMaker
   # Captures multiple wifi network setups and the country code, generates the
@@ -29,7 +30,7 @@ module PiMaker
 
     # Parse the +yml+ string and create a new instance from it
     def self.from_yaml(yml, encrypted = nil)
-      new(Psych.load(FileEncrypter.decrypt(yml, encrypted)))
+      new(Psych.safe_load(FileEncrypter.decrypt(yml, encrypted), permitted_classes: [Symbol]))
     end
 
     # Take in +opts+ for networks and country_code

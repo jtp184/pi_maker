@@ -1,3 +1,5 @@
+require 'ostruct'
+require 'psych'
 require 'tempfile'
 
 module PiMaker
@@ -100,7 +102,7 @@ module PiMaker
 
         PiMaker::BootConfig::FILTERS.each do |bf|
           prompt.say("Group [#{bf}]\n")
-          prompt.ok(Psych.dump(boot.config[bf].to_h))
+          prompt.ok(Psych.dump(boot.config[bf].to_h.transform_keys(&:to_s)))
 
           case boot_option_prompt
           when :finish
@@ -108,10 +110,10 @@ module PiMaker
           when :clear
             boot[bf] = OpenStruct.new
           when :edit
-            boot[bf] = OpenStruct.new(Psych.load(editor_text(Psych.dump(boot.config[bf].to_h))))
+            boot[bf] = OpenStruct.new(Psych.safe_load(editor_text(Psych.dump(boot.config[bf].to_h.transform_keys(&:to_s)))))
           end
 
-          prompt.ok(Psych.dump(boot.config[bf].to_h))
+          prompt.ok(Psych.dump(boot.config[bf].to_h.transform_keys(&:to_s)))
         end
 
         boot
@@ -180,7 +182,7 @@ module PiMaker
 
       def ruby_version_prompt
         return unless prompt.yes?('Install Ruby?')
-        return prompt.ask('Ruby version: ', default: '2.7.4')
+        return prompt.ask('Ruby version: ', default: '4.0.1')
       end
 
       def instruction_option_prompt(title)
