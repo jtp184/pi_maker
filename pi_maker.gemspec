@@ -25,17 +25,17 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'factory_bot', '~> 6.5'
-  spec.add_development_dependency 'pry', '~> 0.15'
+  spec.add_development_dependency 'pry', '~> 0.16'
   spec.add_development_dependency 'rubocop', '~> 1.72'
   spec.add_development_dependency 'simplecov', '~> 0.22'
-  spec.add_development_dependency 'strings-case', '~> 0.3'
+  spec.add_development_dependency 'strings-case', '~> 0.4'
 
   spec.add_runtime_dependency 'ostruct', '~> 0.6'
   spec.add_runtime_dependency 'net-scp', '~> 4.0'
   spec.add_runtime_dependency 'net-ssh', '~> 7.3'
   spec.add_runtime_dependency 'pastel', '~> 0.8'
   spec.add_runtime_dependency 'plist', '~> 3.7'
-  spec.add_runtime_dependency 'strings-case', '~> 0.3'
+  spec.add_runtime_dependency 'strings-case', '~> 0.4'
   spec.add_runtime_dependency 'thor', '~> 1.3'
   spec.add_runtime_dependency 'tty-box', '~> 0.7'
   spec.add_runtime_dependency 'tty-command', '~> 0.10'
