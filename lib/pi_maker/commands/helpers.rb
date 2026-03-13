@@ -110,7 +110,7 @@ module PiMaker
           when :clear
             boot[bf] = OpenStruct.new
           when :edit
-            boot[bf] = OpenStruct.new(Psych.unsafe_load(editor_text(Psych.dump(boot.config[bf].to_h))))
+            boot[bf] = OpenStruct.new(Psych.safe_load(editor_text(Psych.dump(boot.config[bf].to_h)), permitted_classes: [Symbol]))
           end
 
           prompt.ok(Psych.dump(boot.config[bf].to_h))

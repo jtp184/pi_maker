@@ -26,7 +26,7 @@ module PiMaker
 
     # Parse the +yml+ string and create a new instance from it
     def self.from_yaml(yml, encrypted = nil)
-      new(Psych.unsafe_load(FileEncrypter.decrypt(yml, encrypted)))
+      new(Psych.safe_load(FileEncrypter.decrypt(yml, encrypted), permitted_classes: [Symbol]))
     end
 
     # Takes in +opts+ for the config and path
